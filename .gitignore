@@ -1,0 +1,5 @@
+# Ignore everything except kanban files
+*
+!pm-kanban.html
+!bookcase_dashboard.html
+!.gitignore
