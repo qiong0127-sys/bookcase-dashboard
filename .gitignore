@@ -1,5 +1,16 @@
-# Ignore everything except kanban files
+# Ignore everything except tracked files
 *
+!.gitignore
 !pm-kanban.html
 !bookcase_dashboard.html
-!.gitignore
+!pm-data.json
+!echarts.min.js
+!server.py
+!bookcase_parent_map.json
+!bookcase_asin_pivot.json
+!bookcase_asin_monthly.json
+!bookcase_data_v2.json
+!listing_date_map.json
+!bookcase_asin.js
+!bigbrand.js
+!bigbrand_data.json
