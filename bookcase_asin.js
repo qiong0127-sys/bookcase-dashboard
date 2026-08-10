@@ -99,22 +99,26 @@ function amGoPage(n) { amPage = n; renderAsinMonthly(); }
 function amReset() { amPage = 1; renderAsinMonthly(); }
 
 function amPopulateFilters() {
-  if (!amData.length) return;
+  if (!amData.length) { setTimeout(amPopulateFilters, 300); return; }
   var b = {}, c2 = {}, t2 = {}, ss = {}, ys = {};
   amData.forEach(function(r) { if (r.brand) b[r.brand] = 1; if (r.company) c2[r.company] = 1; if (r.listing_date) { var y = String(r.listing_date).slice(0,4); if (y) ys[y] = 1; } });
-  // Collect type/style from PA_TYPE_STYLE map
+  // Collect type/style from PA_TYPE_STYLE map + amData as fallback
   var pts = window.PA_TYPE_STYLE || {};
   Object.values(pts).forEach(function(v) { if (v.type) t2[v.type] = 1; if (v.style) ss[v.style] = 1; });
-  var sel = document.getElementById("amBrand");
-  if (sel) { Object.keys(b).sort().forEach(function(v) { if (!sel.querySelector('option[value="' + v + '"]')) { var o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o); } }); }
-  sel = document.getElementById("amCompany");
-  if (sel) { Object.keys(c2).sort().forEach(function(v) { if (!sel.querySelector('option[value="' + v + '"]')) { var o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o); } }); }
-  sel = document.getElementById("amType");
-  if (sel) { Object.keys(t2).sort().forEach(function(v) { if (!sel.querySelector('option[value="' + v + '"]')) { var o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o); } }); }
-  sel = document.getElementById("amStyle");
-  if (sel) { Object.keys(ss).sort().forEach(function(v) { if (!sel.querySelector('option[value="' + v + '"]')) { var o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o); } }); }
-  sel = document.getElementById("amYear");
-  if (sel) { Object.keys(ys).sort().forEach(function(v) { if (!sel.querySelector('option[value="' + v + '"]')) { var o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o); } }); }
+  // Fallback: if PA_TYPE_STYLE empty, collect from amData
+  if (!Object.keys(t2).length && !Object.keys(ss).length) {
+    amData.forEach(function(r) { if (r.type) t2[r.type] = 1; if (r.style) ss[r.style] = 1; });
+  }
+  function hasOpt(sel, v) { return Array.from(sel.options).some(function(o) { return o.value === v; }); }
+  function fill(selId, map) {
+    var sel = document.getElementById(selId);
+    if (!sel) return;
+    Object.keys(map).sort().forEach(function(v) {
+      if (!v || hasOpt(sel, v)) return;
+      var o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o);
+    });
+  }
+  fill("amBrand", b); fill("amCompany", c2); fill("amType", t2); fill("amStyle", ss); fill("amYear", ys);
 }
 
 function amSparkline(m3,m4,m5,m6,m7){var v=[m3||0,m4||0,m5||0,m6||0,m7||0];var max=Math.max.apply(null,v),min=Math.min.apply(null,v);if(max===0)return'<span style="color:var(--t2);font-size:12px">—</span>';var r=max-min||1,W=80,H=28,pad=4,iw=W-2*pad,ih=H-2*pad;var pts=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;return x.toFixed(1)+','+y.toFixed(1)}).join(' ');var dots=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;var color=i===0?'#4da6ff':v2>v[i-1]?'#22c55e':v2<v[i-1]?'#ef4444':'#4da6ff';var rad=i===4?3:2;return'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad+'" fill="'+color+'"/>';}).join('');return'<svg width="'+W+'" height="'+H+'" style="vertical-align:middle;display:block"><polyline points="'+pts+'" fill="none" stroke="#4da6ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';}
@@ -317,6 +321,7 @@ function renderAsinMonthly() {
     } else if (pg) {
       pg.innerHTML = "";
     }
+    amPopulateFilters();
   });
 }
 // ── 搜索栏事件绑定（addEventListener 双保险，确保 oninput 一定生效）──

@@ -86,10 +86,16 @@ td.asin a:hover{text-decoration:underline}
 @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr)}.chart-row{grid-template-columns:1fr}}
 @media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}body{padding:10px}}
 
-.sub-tabs{display:flex;gap:2px;margin-bottom:16px;background:var(--card-bg);padding:4px;border-radius:10px;width:fit-content;border:1px solid var(--border)}
+.sub-tabs{display:flex;gap:2px;margin-bottom:16px;background:var(--card-bg);padding:4px;border-radius:10px;width:fit-content;border:1px solid var(--border);transition:all .3s;position:relative}
 .sub-tab{padding:8px 20px;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--t2);transition:all .2s}
 .sub-tab.active{background:var(--accent);color:#0f1923}
 .sub-tab:hover:not(.active){color:var(--text)}
+.sub-tabs-toggle{width:30px;height:30px;border:none;border-radius:6px;background:transparent;color:var(--t2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;margin-left:2px;line-height:1}
+.sub-tabs-toggle:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.sub-tabs.collapsed{gap:0;padding:2px;border-radius:8px}
+.sub-tabs.collapsed .sub-tab{display:none}
+.sub-tabs.collapsed .sub-tabs-toggle{margin-left:0;background:rgba(255,255,255,.04);border-radius:6px;width:34px;height:34px;font-size:18px}
+.sub-tabs.collapsed .sub-tabs-toggle:hover{background:var(--accent);color:#0f1923}
 .sub-content{display:none !important}
 .sub-content.active{display:block !important}
 
@@ -172,10 +178,11 @@ td.asin a:hover{text-decoration:underline}
 <div class="kpi-grid" id="kpiGrid"></div>
 <div class="chart-summary" id="kpi-summary" style="margin-bottom:14px"></div>
 <div id="signalsPanel" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px"></div>
-<div class="sub-tabs">
+<div class="sub-tabs" id="subTabs">
 <button class="sub-tab active" data-stab="overview" onclick="switchSubTab('overview')">📊 市场概览</button>
 <button class="sub-tab" data-stab="compete" onclick="switchSubTab('compete')">🔍 竞品观测</button>
 <button class="sub-tab" data-stab="asin" onclick="switchSubTab('asin')">📦 ASIN追踪</button>
+<button class="sub-tabs-toggle" onclick="toggleNavBar()" title="隐藏导航栏">◀</button>
 </div>
 
 
@@ -309,7 +316,8 @@ td.asin a:hover{text-decoration:underline}
 <button class="dim-btn active" data-dim="w" onclick="switchDimC22('w',this)" style="font-size:11px">宽度W</button>
 <button class="dim-btn" data-dim="d" onclick="switchDimC22('d',this)" style="font-size:11px">纵深D</button>
 <button class="dim-btn" data-dim="h" onclick="switchDimC22('h',this)" style="font-size:11px">高度H</button>
-<select id="c22Type" onchange="updateC22_Dims()" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;outline:none;font-family:inherit;margin-left:auto"><option value="">全部类型</option></select>
+<select id="c22Type" onchange="updateC22_Dims()" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
+	<select id="c22Style" onchange="updateC22_Dims()" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
 </div>
 <div class="chart-box tall" id="c22"></div><div class="chart-summary" id="c22-summary"></div>
 </div></div>
@@ -481,12 +489,20 @@ var DIM_BINS_D=[{l:'0-9',lo:0,hi:9},{l:'9-10',lo:9,hi:10},{l:'10-11',lo:10,hi:11
 var DIM_BINS_H=[{l:'0-36',lo:0,hi:36},{l:'36-50',lo:36,hi:50},{l:'50-65',lo:50,hi:65},{l:'65-70',lo:65,hi:70},{l:'70-75',lo:70,hi:75},{l:'75-80',lo:75,hi:80},{l:'80以上',lo:80,hi:999}];
 function binVal(v,bins){for(var i=0;i<bins.length;i++){if(v>=bins[i].lo&&v<bins[i].hi)return bins[i].l}return bins[bins.length-1].l}
 function populateC22Types(d){
-  var sel=document.getElementById('c22Type');if(!sel)return;
-  var cur=sel.value;sel.innerHTML='<option value="">全部类型</option>';
   var su=document.getElementById('showUnlabeled');
   var showUnlabeled=su?su.checked:false;
-  var types={};d.forEach(function(r){var t=r[FI.type];if(!t)return;if(!showUnlabeled&&(t==='Unknown'||t==='未打标'||t==='0'))return;types[t]=1});
-  Object.keys(types).sort().forEach(function(t){sel.add(new Option(t,t))});sel.value=cur||'';
+  // Type dropdown
+  var selT=document.getElementById('c22Type');if(selT){
+    var curT=selT.value;selT.innerHTML='<option value="">全部类型</option>';
+    var types={};d.forEach(function(r){var t=r[FI.type];if(!t)return;if(!showUnlabeled&&(t==='Unknown'||t==='未打标'||t==='0'))return;types[t]=1});
+    Object.keys(types).sort().forEach(function(t){selT.add(new Option(t,t))});selT.value=curT||'';
+  }
+  // Style dropdown
+  var selS=document.getElementById('c22Style');if(selS){
+    var curS=selS.value;selS.innerHTML='<option value="">全部风格</option>';
+    var styles={};d.forEach(function(r){var s=r[FI.style];if(!s)return;if(!showUnlabeled&&(s==='Unknown'||s==='未打标'||s==='0'))return;styles[s]=1});
+    Object.keys(styles).sort().forEach(function(s){selS.add(new Option(s,s))});selS.value=curS||'';
+  }
 }
 function switchDimC22(dim,btn){
   c22Dim=dim;var btns=btn.parentElement.querySelectorAll('.dim-btn');
@@ -497,11 +513,13 @@ function updateC22_Dims(){
   var bins=c22Dim==='w'?DIM_BINS_W:c22Dim==='d'?DIM_BINS_D:DIM_BINS_H;
   var fiDim=c22Dim==='w'?FI.width:c22Dim==='d'?FI.depth:FI.height;
   var order=bins.map(function(b){return b.l});
+  var selStyle=document.getElementById('c22Style');var sst=selStyle?selStyle.value:'';
   // Dedup by parent ASIN: one ASIN = one product, counted once per interval
   var seen={},skipped={asin:0,type:0,dim:0};
   d.forEach(function(r){
     var pa=r[FI.parent_asin];if(!pa||pa==='nan'){skipped.asin++;return}
     var dv=r[fiDim];if(dv===null||dv===undefined){skipped.dim++;return}
+    if(sst&&r[FI.style]!==sst){skipped.dim++;return}
     if(seen[pa]){seen[pa].gmv+=r[FI.gmv]||0}else{seen[pa]={type:r[FI.type],dim:dv,gmv:r[FI.gmv]||0}}
   });
   // Aggregate by bin + type
@@ -515,14 +533,14 @@ function updateC22_Dims(){
     var series=tn.map(function(t,i){return{name:t,type:'bar',stack:'total',data:order.map(function(b){return byBin[b][t]?byBin[b][t].asin:0}),itemStyle:{color:CP[i%CP.length]}}});
     var gmvData=order.map(function(b){var s=0;tn.forEach(function(t){s+=byBin[b][t]?byBin[b][t].gmv:0});return Math.round(s)});
     series.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#ffb347'},label:{show:true,position:'top',color:'#ffb347',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
-    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var s=p[0].axisValue+'<br/>';var t=0;p.forEach(function(x){if(!x.value)return;if(x.seriesName!=='GMV'){s+=x.marker+x.seriesName+': '+x.value+'<br/>';t+=x.value}});s+='<b>ASIN合计: '+t+'</b>';return s}},legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series};
+    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var s=p[0].axisValue+'<br/>';var t=0,gTotal=0;p.forEach(function(x){if(!x.value)return;if(x.seriesName!=='GMV'){var bn=p[0].axisValue;var gmv=byBin[bn]&&byBin[bn][x.seriesName]?Math.round(byBin[bn][x.seriesName].gmv):0;s+=x.marker+x.seriesName+': <b>'+x.value+'</b>个 <span style=\"color:#ffb347\">$'+gmv.toLocaleString()+'</span><br/>';t+=x.value;gTotal+=gmv}});s+='<b>ASIN合计: '+t+'个 | GMV合计: $'+gTotal.toLocaleString()+'</b>';return s}},legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series};
   } else {
     // Single type mode: bar + line
     var asinData=order.map(function(b){return byBin[b][st]?byBin[b][st].asin:0});
     var gmvData=order.map(function(b){return byBin[b][st]?Math.round(byBin[b][st].gmv):0});
     var totalA=0;asinData.forEach(function(v){totalA+=v});
     var asinPct=order.map(function(b){return totalA>0?(asinData[order.indexOf(b)]/totalA*100).toFixed(1):'0.0'});
-    var opt={tooltip:{trigger:'axis',axisPointer:{type:'cross'},formatter:function(p){var s=p[0].axisValue+'<br/>';p.forEach(function(x){var idx=order.indexOf(x.axisValue);s+=x.marker+x.seriesName+': '+x.value.toLocaleString()+' ('+asinPct[idx]+'％)<br/>'});return s}},legend:{data:['父ASIN数','GMV'],bottom:0,textStyle:{color:'#8899aa',fontSize:11}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:[{name:'父ASIN数',type:'bar',yAxisIndex:0,data:asinData,itemStyle:{color:'#4da6ff'},label:{show:true,position:'top',color:'#8899aa',fontSize:9,formatter:function(p){var idx=order.indexOf(p.name);return p.value+' ('+asinPct[idx]+'％)'}}},{name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#ffb347'},label:{show:true,position:'top',color:'#ffb347',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}}]};
+    var opt={tooltip:{trigger:'axis',axisPointer:{type:'cross'},formatter:function(p){var s=p[0].axisValue+'<br/>';p.forEach(function(x){var idx=order.indexOf(x.axisValue);s+=x.marker+x.seriesName+': '+x.value.toLocaleString()+' ('+asinPct[idx]+'％)<br/>'});return s}},legend:{data:['父ASIN数','GMV'],bottom:0,textStyle:{color:'#8899aa',fontSize:11}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:[{name:'父ASIN数',type:'bar',yAxisIndex:0,data:asinData,itemStyle:{color:'#4da6ff'},label:{show:true,position:'top',color:'#8899aa',fontSize:9,formatter:function(p){var idx=order.indexOf(p.name);return p.value+' ('+asinPct[idx]+'％)'}}},{name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#4da6ff'},label:{show:true,position:'top',color:'#4da6ff',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}}]};
   }
   charts.c22.clear();charts.c22.setOption(opt);
   // Summary: top 5 intervals
@@ -1682,10 +1700,27 @@ function switchSubTab(t){
   _currentTab=t;
   document.querySelectorAll(".sub-tab").forEach(function(b){b.classList.toggle("active",b.dataset.stab===t)});
   document.querySelectorAll(".sub-content").forEach(function(c){if(c.id==="sc-"+t)c.classList.add("active");else c.classList.remove("active")});
-  if(t==="asin"){renderAsinMonthly();setTimeout(amPopulateFilters,500)}
+  if(t==="asin"){renderAsinMonthly()}
   else if(t==='compete'){updateCompanyAnalysis()}
   requestAnimationFrame(function(){setTimeout(function(){Object.values(charts).forEach(function(ch){try{ch.resize()}catch(e){}})},100)})
 }
+function toggleNavBar(){
+  var el=document.getElementById('subTabs');
+  if(!el)return;
+  var collapsed=el.classList.toggle('collapsed');
+  var btn=el.querySelector('.sub-tabs-toggle');
+  if(btn){btn.innerHTML=collapsed?'▶':'◀';btn.title=collapsed?'展开导航栏':'隐藏导航栏'}
+  try{localStorage.setItem('nav-collapsed',collapsed?'1':'0')}catch(e){}
+  requestAnimationFrame(function(){setTimeout(function(){Object.values(charts).forEach(function(ch){try{ch.resize()}catch(e){}})},300)})
+}
+// Restore nav state on load
+(function(){
+  try{var s=localStorage.getItem('nav-collapsed')}catch(e){}
+  if(s==='1'){
+    var el=document.getElementById('subTabs');
+    if(el){el.classList.add('collapsed');var btn=el.querySelector('.sub-tabs-toggle');if(btn){btn.innerHTML='▶';btn.title='展开导航栏'}}
+  }
+})();
 function toggleCollapse(hd){hd.classList.toggle("open");hd.nextElementSibling.classList.toggle("open")}
 // ── ASIN表格列宽拖拽 ──
 (function(){
@@ -1754,5 +1789,6 @@ fetch("bookcase_data_v2.json").then(function(r){return r.json()}).then(function(
   }).catch(function(e){console.error('parent_map:',e)});
 }).catch(function(e){var lo=document.getElementById('loadingOverlay');if(lo){lo.innerHTML='<div style="color:#ff6b8a;text-align:center"><h1>数据加载失败</h1><p>'+e.message+'</p><p style="color:var(--t2);margin-top:12px">请确认已通过 <code>http://localhost:8080/</code> 访问，而非 file:// 协议</p></div>';}});
 </script>
+
 </body>
 </html>
