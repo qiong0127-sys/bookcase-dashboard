@@ -119,6 +119,7 @@ function amPopulateFilters() {
     });
   }
   fill("amBrand", b); fill("amCompany", c2); fill("amType", t2); fill("amStyle", ss); fill("amYear", ys);
+  if(typeof refreshSelectUI === 'function'){['amBrand','amCompany','amType','amStyle','amYear'].forEach(function(id){refreshSelectUI(id)});}
 }
 
 function amSparkline(m3,m4,m5,m6,m7){var v=[m3||0,m4||0,m5||0,m6||0,m7||0];var max=Math.max.apply(null,v),min=Math.min.apply(null,v);if(max===0)return'<span style="color:var(--t2);font-size:12px">—</span>';var r=max-min||1,W=80,H=28,pad=4,iw=W-2*pad,ih=H-2*pad;var pts=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;return x.toFixed(1)+','+y.toFixed(1)}).join(' ');var dots=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;var color=i===0?'#4da6ff':v2>v[i-1]?'#22c55e':v2<v[i-1]?'#ef4444':'#4da6ff';var rad=i===4?3:2;return'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad+'" fill="'+color+'"/>';}).join('');return'<svg width="'+W+'" height="'+H+'" style="vertical-align:middle;display:block"><polyline points="'+pts+'" fill="none" stroke="#4da6ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';}
@@ -130,11 +131,18 @@ function renderAsinMonthly() {
 
     var D = amData.slice();
     var sEl = document.getElementById("amSearch"), sortEl = document.getElementById("amSort");
-    var brandEl = document.getElementById("amBrand"), companyEl = document.getElementById("amCompany"), typeEl = document.getElementById("amType"), styleEl = document.getElementById("amStyle");
     var rawVal = sEl ? sEl.value : "";
-    var search = rawVal.trim().toLowerCase(), sort = sortEl ? sortEl.value : "gmv_total";
+    var search = rawVal.trim().toLowerCase(), sort = (typeof getSelectVal === 'function' ? getSelectVal("amSort") : sortEl ? sortEl.value : "gmv_total");
+    if(typeof sort !== 'string') sort = "gmv_total";
+    var brand = (typeof getSelectVal === 'function' ? getSelectVal("amBrand") : brandEl ? brandEl.value : "");
+    var company = (typeof getSelectVal === 'function' ? getSelectVal("amCompany") : companyEl ? companyEl.value : "");
+    var atype = (typeof getSelectVal === 'function' ? getSelectVal("amType") : typeEl ? typeEl.value : "");
+    var style = (typeof getSelectVal === 'function' ? getSelectVal("amStyle") : styleEl ? styleEl.value : "");
+    if(typeof brand === 'string') brand = brand ? [brand] : [];
+    if(typeof company === 'string') company = company ? [company] : [];
+    if(typeof atype === 'string') atype = atype ? [atype] : [];
+    if(typeof style === 'string') style = style ? [style] : [];
     console.log("[ASIN] search raw='"+rawVal+"' trimmed='"+search+"' amData="+amData.length+" D_before="+D.length);
-    var brand = (brandEl ? brandEl.value : ""), company = (companyEl ? companyEl.value : ""), atype = (typeEl ? typeEl.value : ""), style = (styleEl ? styleEl.value : "");
 
     if (search) D = D.filter(function(r) {
       return (r.asin || "").toLowerCase().indexOf(search) >= 0
@@ -145,8 +153,8 @@ function renderAsinMonthly() {
           || (r.type || "").toLowerCase().indexOf(search) >= 0
           || (r.style || "").toLowerCase().indexOf(search) >= 0;
     });
-    if (brand) D = D.filter(function(r) { return r.brand === brand; });
-    if (company) D = D.filter(function(r) { return r.company === company; });
+    if (brand.length) D = D.filter(function(r) { return brand.includes(r.brand); });
+    if (company.length) D = D.filter(function(r) { return company.includes(r.company); });
     // Enrich rows with type/style from main data map
     var pts = window.PA_TYPE_STYLE || {};
     D.forEach(function(r) {
@@ -154,10 +162,11 @@ function renderAsinMonthly() {
       if (!r.type && pts[pa]) r.type = pts[pa].type;
       if (!r.style && pts[pa]) r.style = pts[pa].style;
     });
-    if (atype) D = D.filter(function(r) { return r.type === atype; });
-    if (style) D = D.filter(function(r) { return r.style === style; });
-    var yearEl = document.getElementById("amYear"); var year = (yearEl ? yearEl.value : "");
-    if (year) D = D.filter(function(r) { return String(r.listing_date||'').slice(0,4) === year; });
+    if (atype.length) D = D.filter(function(r) { return atype.includes(r.type); });
+    if (style.length) D = D.filter(function(r) { return style.includes(r.style); });
+    var year = (typeof getSelectVal === 'function' ? getSelectVal("amYear") : (function(){var yel=document.getElementById("amYear");return yel?yel.value:''})());
+    if(typeof year === 'string') year = year ? [year] : [];
+    if (year.length) D = D.filter(function(r) { return year.includes(String(r.listing_date||'').slice(0,4)); });
 
     // 去重父ASIN：按父ASIN聚合，GMV/销量累加，单价取当月GMV最高子体
     var dedupEl = document.getElementById("amDedup");
@@ -213,8 +222,8 @@ function renderAsinMonthly() {
     else if (sort === "company") D.sort(function(a, b) { return (a.company || "").localeCompare(b.company || ""); });
 
     // Metric filter
-    var metricEl = document.getElementById("amMetric");
-    var metric = metricEl ? metricEl.value : "gmv";
+    var metric = (typeof getSelectVal === 'function' ? getSelectVal("amMetric") : (function(){var mel=document.getElementById("amMetric");return mel?mel.value:'gmv'})());
+    if(typeof metric !== 'string') metric = 'gmv';
     var amTable = document.getElementById("amTable");
     if (amTable) {
       amTable.className = amTable.className.replace(/metric-\w+/g,'').trim();

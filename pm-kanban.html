@@ -314,7 +314,7 @@ td.c-link:focus{background:#fdf6ee;border-radius:2px;box-shadow:inset 0 0 0 1px 
       <h1>🏷️ 大牌 Home Office <span style="font-size:13px;font-weight:400;color:var(--t3)" id="bb-total"></span></h1>
       <div style="display:flex;gap:6px;align-items:center">
         <input id="bb-search" placeholder="🔍 搜索..." oninput="renderBigBrand()" style="padding:6px 10px;font-size:13px;border:1px solid var(--border);border-radius:6px;width:160px;font-family:inherit;color:var(--text);background:var(--surface)">
-        <select id="bb-band" onchange="renderBigBrand()" style="padding:6px 8px;font-size:13px;border:1px solid var(--border);border-radius:6px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer"><option value="">全部价格</option><option value="0-200"><$200</option><option value="200-500">$200-500</option><option value="500-1000">$500-1K</option><option value="1000-2000">$1K-2K</option><option value="2000-5000">$2K-5K</option><option value="5000-99999">$5K+</option></select>
+        <select id="bb-band" onchange="renderBigBrand()" style="padding:6px 8px;font-size:13px;border:1px solid var(--border);border-radius:6px;font-family:inherit;color:var(--text);background:var(--surface);cursor:pointer"><option value="">全部时间</option><option value="2026/04">2026/04</option><option value="2026/08">2026/08</option></select>
       </div>
     </div>
     <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap" id="bb-filters"></div>
@@ -331,6 +331,7 @@ td.c-link:focus{background:#fdf6ee;border-radius:2px;box-shadow:inset 0 0 0 1px 
       <th style="width:100px;padding:10px 8px;font-size:11px;color:var(--t2);border-bottom:2px solid var(--border);cursor:pointer;text-align:right" data-sort="price_asc" onclick="bbSort('price')">价格 ⇅</th>
       <th style="width:40px;padding:10px 8px;font-size:11px;color:var(--t2);border-bottom:2px solid var(--border);text-align:center">链接</th>
       <th style="width:80px;padding:10px 8px;font-size:11px;color:var(--t2);border-bottom:2px solid var(--border);text-align:center">Best Seller</th>
+      <th style="width:80px;padding:10px 8px;font-size:11px;color:var(--t2);border-bottom:2px solid var(--border);text-align:center">上传时间</th>
     </tr>
     </thead>
     <tbody id="bb-tbody"></tbody>
@@ -1030,6 +1031,6 @@ switchTab=function(t){
 // --- 初始化 ---
 loadNotes();
 </script>
-<script src="bigbrand.js?v=3"></script>
+<script src="bigbrand.js?v=6"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -22,15 +22,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC
 .filter-btn .count{color:var(--accent);font-size:11px}
 .filter-btn .arrow{font-size:10px;color:var(--t2);transition:transform .2s}
 .filter-btn.active .arrow{transform:rotate(180deg)}
-.filter-dropdown{display:none;position:absolute;top:100%;left:0;margin-top:6px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:8px 0;min-width:180px;max-height:280px;overflow-y:auto;z-index:100;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.filter-dropdown{display:none;position:absolute;top:100%;left:0;margin-top:6px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:0;min-width:200px;max-height:340px;overflow:hidden;z-index:100;box-shadow:0 12px 40px rgba(0,0,0,.5)}
 .filter-dropdown.show{display:block}
+.filter-dd-search{display:block;width:100%;padding:8px 12px;border:none;border-bottom:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none;font-family:inherit;box-sizing:border-box}
+.filter-dd-search::placeholder{color:var(--t2)}
+.filter-dd-actions{display:flex;gap:4px;padding:6px 10px;border-bottom:1px solid var(--border)}
+.filter-dd-actions button{flex:1;padding:4px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s}
+.filter-dd-actions button:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.filter-dd-list{max-height:220px;overflow-y:auto;padding:6px 0}
 .filter-dropdown label{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px;color:var(--text);cursor:pointer;transition:background .15s}
 .filter-dropdown label:hover{background:rgba(255,255,255,.04)}
-.filter-dropdown input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
+.filter-dropdown label.hidden{display:none}
+.filter-dropdown input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0}
 .filter-actions{display:flex;gap:6px;margin-left:auto}
 .btn-reset{padding:6px 14px;background:transparent;border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:12px;cursor:pointer;transition:all .2s}
 .btn-reset:hover{background:rgba(255,107,138,.1)}
 .filter-stats{font-size:12px;color:var(--t2);padding:4px 8px;background:var(--bg);border-radius:6px}
+
+/* Chart Select Widget */
+.sel-wrap{position:relative;display:inline-block;vertical-align:middle}
+.sel-btn{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;white-space:nowrap;transition:border-color .2s;font-family:inherit;text-align:left;user-select:none;min-width:100px}
+.sel-btn:hover,.sel-btn.open{border-color:var(--accent)}
+.sel-btn .sel-txt{overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.sel-btn .sel-arrow{font-size:10px;color:var(--t2);margin-left:auto;flex-shrink:0;transition:transform .2s}
+.sel-btn.open .sel-arrow{transform:rotate(180deg)}
+.sel-dd{display:none;position:absolute;top:100%;left:0;margin-top:4px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:0;min-width:200px;max-height:320px;overflow:hidden;z-index:101;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.sel-dd.show{display:block}
+.sel-dd .filter-dd-list{max-height:180px}
+.sel-dd label{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px;color:var(--text);cursor:pointer;transition:background .15s}
+.sel-dd label:hover{background:rgba(255,255,255,.04)}
+.sel-dd label.hidden{display:none}
+.sel-dd input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.sel-dd label.sel-active{background:rgba(0,212,170,.12);color:var(--accent);font-weight:600}
 
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:20px}
@@ -196,7 +219,7 @@ td.asin a:hover{text-decoration:underline}
     <select id="coSelect" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:200px"><option value="">全部公司</option></select>
     <select id="coBrand" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部品牌</option></select>
     <select id="coTopN" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
-    <button onclick="document.getElementById('coSelect').value='';document.getElementById('coBrand').value='';document.getElementById('coTopN').value='';updateCompanyAnalysis()" style="padding:6px 14px;background:var(--bg);border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap">🗑 清除</button>
+    <button onclick="resetSelectWidget('coSelect');resetSelectWidget('coBrand');resetSelectWidget('coTopN');updateCompanyAnalysis()" style="padding:6px 14px;background:var(--bg);border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap">🗑 清除</button>
   </div>
   <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px 18px;margin-bottom:12px">
     <div id="coKpiBar"></div>
@@ -237,7 +260,7 @@ td.asin a:hover{text-decoration:underline}
         <select id="c25Type" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:140px"><option value="">全部类型</option></select>
         <select id="c25Style" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:140px"><option value="">全部风格</option></select>
         <select id="c25Year" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:130px"><option value="">全部年份</option></select>
-        <button onclick="document.getElementById('c25Company').value='';document.getElementById('c25Brand').value='';document.getElementById('c25Type').value='';document.getElementById('c25Style').value='';document.getElementById('c25Year').value='';document.getElementById('c25TopN').value='';updateC25_Scatter(null,true)" style="padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit">✕ 清除筛选</button>
+        <button onclick="resetSelectWidget('c25Company');resetSelectWidget('c25Brand');resetSelectWidget('c25Type');resetSelectWidget('c25Style');resetSelectWidget('c25Year');resetSelectWidget('c25TopN');updateC25_Scatter(null,true)" style="padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit">✕ 清除筛选</button>
         <select id="c25TopN" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;margin-left:auto"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
       </div>
       <div class="chart-box tall" id="c25"></div><div class="chart-summary" id="c25-summary"></div>
@@ -256,7 +279,7 @@ td.asin a:hover{text-decoration:underline}
       <select id="coTopStyle" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
       <select id="coTopType" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
       <select id="coTopYear" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部年份</option></select>
-      <button onclick="document.getElementById('coTopStyle').value='';document.getElementById('coTopType').value='';document.getElementById('coTopYear').value='';updateCoProducts(null,true)" style="padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit">✕ 清除筛选</button>
+      <button onclick="resetSelectWidget('coTopStyle');resetSelectWidget('coTopType');resetSelectWidget('coTopYear');updateCoProducts(null,true)" style="padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit">✕ 清除筛选</button>
     </div>
     <div id="coProductGrid" style="display:flex;flex-direction:column;gap:14px;margin-top:8px"></div>
   </div>
@@ -493,15 +516,17 @@ function populateC22Types(d){
   var showUnlabeled=su?su.checked:false;
   // Type dropdown
   var selT=document.getElementById('c22Type');if(selT){
-    var curT=selT.value;selT.innerHTML='<option value="">全部类型</option>';
+    selT.innerHTML='<option value="">全部类型</option>';
     var types={};d.forEach(function(r){var t=r[FI.type];if(!t)return;if(!showUnlabeled&&(t==='Unknown'||t==='未打标'||t==='0'))return;types[t]=1});
-    Object.keys(types).sort().forEach(function(t){selT.add(new Option(t,t))});selT.value=curT||'';
+    Object.keys(types).sort().forEach(function(t){selT.add(new Option(t,t))});
+    refreshSelectUI('c22Type');
   }
   // Style dropdown
   var selS=document.getElementById('c22Style');if(selS){
-    var curS=selS.value;selS.innerHTML='<option value="">全部风格</option>';
+    selS.innerHTML='<option value="">全部风格</option>';
     var styles={};d.forEach(function(r){var s=r[FI.style];if(!s)return;if(!showUnlabeled&&(s==='Unknown'||s==='未打标'||s==='0'))return;styles[s]=1});
-    Object.keys(styles).sort().forEach(function(s){selS.add(new Option(s,s))});selS.value=curS||'';
+    Object.keys(styles).sort().forEach(function(s){selS.add(new Option(s,s))});
+    refreshSelectUI('c22Style');
   }
 }
 function switchDimC22(dim,btn){
@@ -513,20 +538,20 @@ function updateC22_Dims(){
   var bins=c22Dim==='w'?DIM_BINS_W:c22Dim==='d'?DIM_BINS_D:DIM_BINS_H;
   var fiDim=c22Dim==='w'?FI.width:c22Dim==='d'?FI.depth:FI.height;
   var order=bins.map(function(b){return b.l});
-  var selStyle=document.getElementById('c22Style');var sst=selStyle?selStyle.value:'';
+  var sst=getSelectVal('c22Style');if(typeof sst==='string')sst=sst?[sst]:[];
   // Dedup by parent ASIN: one ASIN = one product, counted once per interval
   var seen={},skipped={asin:0,type:0,dim:0};
   d.forEach(function(r){
     var pa=r[FI.parent_asin];if(!pa||pa==='nan'){skipped.asin++;return}
     var dv=r[fiDim];if(dv===null||dv===undefined){skipped.dim++;return}
-    if(sst&&r[FI.style]!==sst){skipped.dim++;return}
+    if(sst.length&&!sst.includes(r[FI.style])){skipped.dim++;return}
     if(seen[pa]){seen[pa].gmv+=r[FI.gmv]||0}else{seen[pa]={type:r[FI.type],dim:dv,gmv:r[FI.gmv]||0}}
   });
   // Aggregate by bin + type
   var byBin={};order.forEach(function(b){byBin[b]={}});
   for(var pa in seen){var s=seen[pa];var bin=binVal(s.dim,bins);if(!byBin[bin][s.type])byBin[bin][s.type]={asin:0,gmv:0};byBin[bin][s.type].asin+=1;byBin[bin][s.type].gmv+=s.gmv}
-  var selType=document.getElementById('c22Type');var st=selType?selType.value:'';
-  if(!st){
+  var st=getSelectVal('c22Type');if(typeof st==='string')st=st?[st]:[];
+  if(!st.length){
     // Stacked mode: all types, GMV line
     var allTypes={};order.forEach(function(b){for(var t in byBin[b])allTypes[t]=1});
     var tn=Object.keys(allTypes).filter(function(t){if(!showUnlabeled&&(t==='Unknown'||t==='未打标'||t==='0'))return false;return true;}).sort(function(a,b){var ta=0,tb=0;order.forEach(function(x){ta+=byBin[x][a]?byBin[x][a].asin:0;tb+=byBin[x][b]?byBin[x][b].asin:0});return tb-ta});
@@ -534,13 +559,22 @@ function updateC22_Dims(){
     var gmvData=order.map(function(b){var s=0;tn.forEach(function(t){s+=byBin[b][t]?byBin[b][t].gmv:0});return Math.round(s)});
     series.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#ffb347'},label:{show:true,position:'top',color:'#ffb347',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
     var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var s=p[0].axisValue+'<br/>';var t=0,gTotal=0;p.forEach(function(x){if(!x.value)return;if(x.seriesName!=='GMV'){var bn=p[0].axisValue;var gmv=byBin[bn]&&byBin[bn][x.seriesName]?Math.round(byBin[bn][x.seriesName].gmv):0;s+=x.marker+x.seriesName+': <b>'+x.value+'</b>个 <span style=\"color:#ffb347\">$'+gmv.toLocaleString()+'</span><br/>';t+=x.value;gTotal+=gmv}});s+='<b>ASIN合计: '+t+'个 | GMV合计: $'+gTotal.toLocaleString()+'</b>';return s}},legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series};
-  } else {
+  } else if(st.length===1){
     // Single type mode: bar + line
-    var asinData=order.map(function(b){return byBin[b][st]?byBin[b][st].asin:0});
-    var gmvData=order.map(function(b){return byBin[b][st]?Math.round(byBin[b][st].gmv):0});
+    var st0=st[0];
+    var asinData=order.map(function(b){return byBin[b][st0]?byBin[b][st0].asin:0});
+    var gmvData=order.map(function(b){return byBin[b][st0]?Math.round(byBin[b][st0].gmv):0});
     var totalA=0;asinData.forEach(function(v){totalA+=v});
     var asinPct=order.map(function(b){return totalA>0?(asinData[order.indexOf(b)]/totalA*100).toFixed(1):'0.0'});
     var opt={tooltip:{trigger:'axis',axisPointer:{type:'cross'},formatter:function(p){var s=p[0].axisValue+'<br/>';p.forEach(function(x){var idx=order.indexOf(x.axisValue);s+=x.marker+x.seriesName+': '+x.value.toLocaleString()+' ('+asinPct[idx]+'％)<br/>'});return s}},legend:{data:['父ASIN数','GMV'],bottom:0,textStyle:{color:'#8899aa',fontSize:11}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:[{name:'父ASIN数',type:'bar',yAxisIndex:0,data:asinData,itemStyle:{color:'#4da6ff'},label:{show:true,position:'top',color:'#8899aa',fontSize:9,formatter:function(p){var idx=order.indexOf(p.name);return p.value+' ('+asinPct[idx]+'％)'}}},{name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#4da6ff'},label:{show:true,position:'top',color:'#4da6ff',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}}]};
+  } else {
+    // Multi-type filtered stacked mode
+    var allTypes2={};order.forEach(function(b){for(var t in byBin[b]){if(!st.length||st.includes(t))allTypes2[t]=1}});
+    var tn2=Object.keys(allTypes2).filter(function(t){if(!showUnlabeled&&(t==='Unknown'||t==='未打标'||t==='0'))return false;return true;}).sort(function(a,b){var ta=0,tb=0;order.forEach(function(x){ta+=byBin[x][a]?byBin[x][a].asin:0;tb+=byBin[x][b]?byBin[x][b].asin:0});return tb-ta});
+    var series2=tn2.map(function(t,i){return{name:t,type:'bar',stack:'total',data:order.map(function(b){return byBin[b][t]?byBin[b][t].asin:0}),itemStyle:{color:CP[i%CP.length]}}});
+    var gmvData2=order.map(function(b){var s=0;tn2.forEach(function(t){s+=byBin[b][t]?byBin[b][t].gmv:0});return Math.round(s)});
+    series2.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData2,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#ffb347'},label:{show:true,position:'top',color:'#ffb347',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
+    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var s=p[0].axisValue+'<br/>';var t=0,gTotal=0;p.forEach(function(x){if(!x.value)return;if(x.seriesName!=='GMV'){var bn=p[0].axisValue;var gmv=byBin[bn]&&byBin[bn][x.seriesName]?Math.round(byBin[bn][x.seriesName].gmv):0;s+=x.marker+x.seriesName+': <b>'+x.value+'</b>个 <span style=\"color:#ffb347\">$'+gmv.toLocaleString()+'</span><br/>';t+=x.value;gTotal+=gmv}});s+='<b>ASIN合计: '+t+'个 | GMV合计: $'+gTotal.toLocaleString()+'</b>';return s}},legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series2};
   }
   charts.c22.clear();charts.c22.setOption(opt);
   // Summary: top 5 intervals
@@ -575,6 +609,20 @@ function updateAll(){
   updateC22_Dims();
   updateSignals(ad);
   if(_currentTab==='compete'||typeof _currentTab==='undefined'){updateCompanyAnalysis();}
+}
+
+function initAllSelectWidgets(){
+  // Multi-select (filtering)
+  var multiIds=['c21Style','c21Type','c22Type','c22Style',
+    'c28Type','c28Style','c28Year','c24Company',
+    'c25Company','c25Brand','c25Type','c25Style','c25Year',
+    'coSelect','coBrand','coTopStyle','coTopType','coTopYear',
+    'amBrand','amCompany','amType','amStyle','amYear'];
+  multiIds.forEach(function(id){initSelectWidget(id,true)});
+  // Single-select (parameter)
+  var singleIds=['coTopN','c28Stack','c28TopN','c24TopN','c25TopN',
+    'coProdTopN','amMetric','amSort'];
+  singleIds.forEach(function(id){initSelectWidget(id,false)});
 }
 // ── KPI ──
 function updateKPIs(d){
@@ -702,27 +750,26 @@ function updateC21_YearDim(d){
     d.forEach(function(r){ var v=r[fi]; if(v&&v!=='Unknown'&&v!=='0') vals[v]=1; });
     var opts=Object.keys(vals).sort();
     var sel=document.getElementById(sid);
-    var cur=sel.value;
     var defText=sid==='c21Style'?'全部风格':'全部类型';
     sel.innerHTML='<option value="">'+defText+'</option>'+opts.map(function(o){ return '<option value="'+o+'">'+o+'</option>'; }).join('');
-    if(cur&&vals[cur]) sel.value=cur;
+    refreshSelectUI(sid);
   });
-  var pickStyle=document.getElementById('c21Style').value;
-  var pickType=document.getElementById('c21Type').value;
+  var pickStyle=getSelectVal('c21Style');if(typeof pickStyle==='string')pickStyle=pickStyle?[pickStyle]:[];
+  var pickType=getSelectVal('c21Type');if(typeof pickType==='string')pickType=pickType?[pickType]:[];
   // stackBy: whichever dimension is NOT pinned gets stacked
-  // pickStyle=T pickType=F → stack by type (show type breakdown within the style)
-  // pickStyle=F pickType=T → stack by style (show style breakdown within the type)
-  // both false → stack by style (default overview)
-  // both true  → single bar+line (intersection, nothing left to stack)
-  var stackBy=(pickStyle&&!pickType)?'type':'style';
-  var singleMode=pickStyle&&pickType;
+  // single style selected + no type → stack by type
+  // single type selected + no style → stack by style
+  // both none → stack by style (default)
+  // both single → single bar+line
+  var stackBy=(pickStyle.length===1&&!pickType.length)?'type':'style';
+  var singleMode=pickStyle.length===1&&pickType.length===1;
   var stackFi=stackBy==='type'?FI.type:FI.style;
   // Aggregate: year × stackDim
   var years={}, dimData={};
   d.forEach(function(r){
     var y=r[FI.listing_year]; if(!y||y<2015||y>2026) return;
-    if(pickStyle && r[FI.style]!==pickStyle) return;
-    if(pickType && r[FI.type]!==pickType) return;
+    if(pickStyle.length && !pickStyle.includes(r[FI.style])) return;
+    if(pickType.length && !pickType.includes(r[FI.type])) return;
     var dv=r[stackFi]; if(!dv||dv==='Unknown'||dv=='0') dv='未打标';
     var a=r[FI.asin]; if(!a) return;
     var pa=r[FI.parent_asin];
@@ -744,7 +791,7 @@ function updateC21_YearDim(d){
     });
     var totalA=asinCnt.reduce(function(a,b){return a+b},0)||1;
     var totalG=gmvVals.reduce(function(a,b){return a+b},0)||1;
-    var label=pickStyle+'+'+pickType;
+    var label=pickStyle[0]+'+'+pickType[0];
     charts.c21.setOption({
       tooltip:{trigger:'axis',formatter:function(p){
         var y=p[0].axisValue, a=p[0].value, g=p[1].value;
@@ -771,7 +818,7 @@ function updateC21_YearDim(d){
     var CP=['#00d4aa','#4da6ff','#ff6b8a','#ffb347','#a78bfa','#ffd700','#44d960','#ff7043','#40c4ff','#ff4081','#69f0ae','#7c4dff','#ffab00','#18ffff','#a1887f','#f06292','#b2ff59','#448aff'];
     var series=allDims.map(function(dv,j){ return { name:dv, type:'bar', stack:'total', data:yl.map(function(y){ return years[y][dv]?Object.keys(years[y][dv].asin).length:0; }), itemStyle:{color:CP[j%CP.length]}, barMaxWidth:36, emphasis:{focus:'series'} }; });
     var gmvTotal=yl.map(function(y){ var sum=0; allDims.forEach(function(dv){ if(years[y][dv]) sum+=years[y][dv].gmv; }); return Math.round(sum); });
-    var titleLabel=pickStyle||pickType||'全部';
+    var titleLabel=pickStyle[0]||pickType[0]||'全部';
     charts.c21.setOption({
       tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){
         var h='<b>'+titleLabel+' '+p[0].axisValue+'</b>';
@@ -978,17 +1025,15 @@ function populateCompanySelect(){
   var d=getAggregated(getFiltered());
   var companies={};d.forEach(function(r){var c=r[FI.company];if(c&&c!=='Unknown'&&c!=='0')companies[c]=1});
   var sel=document.getElementById('coSelect');if(!sel)return;
-  var cur=sel.value;
   sel.innerHTML='<option value="">全部公司</option>'+Object.keys(companies).sort().map(function(c){return '<option value="'+c+'">'+c+'</option>'}).join('');
-  if(cur&&companies[cur])sel.value=cur;
+  refreshSelectUI('coSelect');
 }
 function populateCoBrand(){
   var d=getAggregated(getFiltered());
   var brands={};d.forEach(function(r){var b=r[FI.brand];if(b&&b!=='Unknown')brands[b]=1});
   var sel=document.getElementById('coBrand');if(!sel)return;
-  var cur=sel.value;
   sel.innerHTML='<option value="">全部品牌</option>'+Object.keys(brands).sort().map(function(b){return '<option value="'+b+'">'+b+'</option>'}).join('');
-  if(cur&&brands[cur])sel.value=cur;
+  refreshSelectUI('coBrand');
 }
 function updateCoKPIs(cd,coName){
   var brands={},pas={},totalG=0,totalP=0,pc=0,totalR=0,rc=0;
@@ -1073,30 +1118,28 @@ function updateC23_CompanyRank(cd){
 
 }
 function updateC24_CompanyTrend(cd,fromFilter){
-  var selC=document.getElementById("c24Company");
   var su=document.getElementById("showUnlabeled");var showUL=su&&su.checked;
+  var coVal=getSelectVal("c24Company");if(typeof coVal==='string')coVal=coVal?[coVal]:[];
   // 如果是从筛选触发或未传数据，重新获取
   if(fromFilter||!cd||!cd.length){
     var d=getAggregated(getFiltered());
     // 全局模式：按showUnlabeled过滤公司
     if(!showUL){d=d.filter(function(r){var c=r[FI.company];if(!c||c==="Unknown"||c==="未打标"||c==="无标识"||c==="0")return false;return true})}
     // Apply C24 company filter
-    var coVal=selC?selC.value:"";
-    if(coVal)d=d.filter(function(r){return r[FI.company]===coVal});
+    if(coVal.length)d=d.filter(function(r){return coVal.includes(r[FI.company])});
     cd=d;
   } else {
     // 使用updateCompanyAnalysis传入的已筛选数据，仅叠加C24公司筛选
-    var coVal=selC?selC.value:"";
-    if(coVal)cd=cd.filter(function(r){return r[FI.company]===coVal});
+    if(coVal.length)cd=cd.filter(function(r){return coVal.includes(r[FI.company])});
   }
   // Populate C24 company dropdown (always based on current filtered data)
+  var selC=document.getElementById("c24Company");
   if(selC&&selC.options.length<=1){
     var baseD=fromFilter?cd:getAggregated(getFiltered());
     if(!showUL){baseD=baseD.filter(function(r){var c=r[FI.company];if(!c||c==="Unknown"||c==="未打标"||c==="无标识"||c==="0")return false;return true})}
     var cs={};baseD.forEach(function(r){var co=r[FI.company];if(co&&co!=="Unknown"&&co!=="未打标"&&co!=="0")cs[co]=1});
-    var curC=selC.value;
     selC.innerHTML='<option value="">全部公司</option>'+Object.keys(cs).sort().map(function(c){return '<option value="'+c+'">'+c+'</option>'}).join('');
-    selC.value=curC;
+    refreshSelectUI('c24Company');
   }
   var months=["3月","4月","5月","6月","7月"];
   // 第一步: parent_asin × month 去重取GMV（全局模式：按showUnlabeled过滤品牌）
@@ -1110,14 +1153,14 @@ function updateC24_CompanyTrend(cd,fromFilter){
     parentMonth[pa][mKey]=(parentMonth[pa][mKey]||0)+(r[FI.gmv]||0);
   });
   // Top N 公司筛选: 每月父ASIN GMV→跨月累加→公司排名
-  var selTopN=document.getElementById("c24TopN");
+  var topNVal2=getSelectVal("c24TopN");if(typeof topNVal2!=='string')topNVal2='';
   var tSet=null;
-  if(selTopN&&selTopN.value){
+  if(topNVal2){
     var coGMV={};for(var pa in parentMonth){
       var pm=parentMonth[pa],co=pm.company;if(!co||co==="Unknown"||co==="未打标")continue;
       coGMV[co]=(coGMV[co]||0);months.forEach(function(m){coGMV[co]+=pm[m]||0});
     }
-    var topN=parseInt(selTopN.value);
+    var topN=parseInt(topNVal2);
     var topCos=Object.keys(coGMV).sort(function(a,b){return coGMV[b]-coGMV[a]}).slice(0,topN);
     tSet={};topCos.forEach(function(co){tSet[co]=1});
   }
@@ -1135,8 +1178,8 @@ function updateC24_CompanyTrend(cd,fromFilter){
     return {name:b,type:"line",data:months.map(function(m){return Math.round(brands[b][m]||0)}),smooth:true,symbol:"none",lineStyle:{width:1.5},itemStyle:{color:CP[i%CP.length]}}
   });
   if(!charts.c24)return;
-  var coLabel=document.getElementById("c24Company");coLabel=coLabel&&coLabel.value?coLabel.value:"全部公司";
-  var topNLabel=tSet?" [Top"+selTopN.value+"]":"";
+  var coLabel=coVal.length?coVal.join(', '):"全部公司";
+  var topNLabel=tSet?" [Top"+topNVal2+"]":"";
   _setChart("c24",{
     title:{text:coLabel+topNLabel+" 品牌月度GMV",left:"center",top:2,textStyle:{color:"#8899aa",fontSize:11,fontWeight:"normal"}},
     tooltip:{trigger:"axis",formatter:function(p){var h="<b>"+p[0].axisValue+"</b>";p.forEach(function(s){if(!s.value)return;h+="<br/>"+s.marker+s.seriesName+": <b>$"+s.value.toLocaleString()+"</b>"});return h}},
@@ -1272,8 +1315,7 @@ function updateC27_RatingBSR(cd){
 
 function updateC28_Layout(cd,fromFilter){
   if(!cd||!cd.length){var d=getAggregated(getFiltered());var su=document.getElementById('showUnlabeled');if(!su||!su.checked){d=d.filter(function(r){var c=r[FI.company];if(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0')return false;return true})};cd=d}
-  var selT=document.getElementById('c28Type'),selS=document.getElementById('c28Style'),selY=document.getElementById('c28Year'),selSt=document.getElementById('c28Stack');
-  var stackBy=selSt?selSt.value:'type';
+  var stackBy=getSelectVal('c28Stack');if(typeof stackBy!=='string')stackBy='type';if(!stackBy)stackBy='type';
   var su=document.getElementById('showUnlabeled');var showUL=su&&su.checked;
   // Build deduplicated product list (parent ASIN level)
   var seen={},prods=[];
@@ -1290,21 +1332,24 @@ function updateC28_Layout(cd,fromFilter){
   for(var k in seen)if(seen[k].company)prods.push(seen[k]);
   // Populate filter dropdowns
   if(!fromFilter){
-    var curT=selT?selT.value:'',curS=selS?selS.value:'',curY=selY?selY.value:'';
     var ts={},ss={},ys={};prods.forEach(function(p){ts[p.type]=1;ss[p.style]=1;ys[p.year]=1});
-    if(selT){selT.innerHTML='<option value=\"\">全部类型</option>';Object.keys(ts).sort().forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;selT.appendChild(o)});selT.value=curT}
-    if(selS){selS.innerHTML='<option value=\"\">全部风格</option>';Object.keys(ss).sort().forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;selS.appendChild(o)});selS.value=curS}
-    if(selY){selY.innerHTML='<option value=\"\">全部年份</option>';Object.keys(ys).sort(function(a,b){return a-b}).forEach(function(y){var o=document.createElement('option');o.value=y;o.textContent=y>0?y+'年':'未知';selY.appendChild(o)});selY.value=curY}
+    var selT=document.getElementById('c28Type');var selS=document.getElementById('c28Style');var selY=document.getElementById('c28Year');
+    if(selT){selT.innerHTML='<option value="">全部类型</option>';Object.keys(ts).sort().forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;selT.appendChild(o)});refreshSelectUI('c28Type')}
+    if(selS){selS.innerHTML='<option value="">全部风格</option>';Object.keys(ss).sort().forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;selS.appendChild(o)});refreshSelectUI('c28Style')}
+    if(selY){selY.innerHTML='<option value="">全部年份</option>';Object.keys(ys).sort(function(a,b){return a-b}).forEach(function(y){var o=document.createElement('option');o.value=y;o.textContent=y>0?y+'年':'未知';selY.appendChild(o)});refreshSelectUI('c28Year')}
   }
   // Apply C28-specific filters
-  if(selT&&selT.value)prods=prods.filter(function(p){return p.type===selT.value});
-  if(selS&&selS.value)prods=prods.filter(function(p){return p.style===selS.value});
-  if(selY&&selY.value)prods=prods.filter(function(p){return p.year===parseInt(selY.value)});
+  var stVals=getSelectVal('c28Type');if(typeof stVals==='string')stVals=stVals?[stVals]:[];
+  var ssVals=getSelectVal('c28Style');if(typeof ssVals==='string')ssVals=ssVals?[ssVals]:[];
+  var syVals=getSelectVal('c28Year');if(typeof syVals==='string')syVals=syVals?[syVals]:[];
+  if(stVals.length)prods=prods.filter(function(p){return stVals.includes(p.type)});
+  if(ssVals.length)prods=prods.filter(function(p){return ssVals.includes(p.style)});
+  if(syVals.length)prods=prods.filter(function(p){return syVals.includes(String(p.year))});
   // Top N: Step1-每月每父ASIN取最高GMV Step2-跨月累加 Step3-公司汇总排名
-  var selTopN=document.getElementById('c28TopN');
-  if(selTopN&&selTopN.value){
+  var topNVal=getSelectVal('c28TopN');if(typeof topNVal!=='string')topNVal='';
+  if(topNVal){
     var gByCo={};cd.forEach(function(r){var c3=r[FI.company];gByCo[c3]=(gByCo[c3]||0)+(r[FI.gmv]||0)});
-    var topN=parseInt(selTopN.value);
+    var topN=parseInt(topNVal);
     var topCos=Object.keys(gByCo).sort(function(a,b){return gByCo[b]-gByCo[a]}).slice(0,topN);
     var tSet={};topCos.forEach(function(c){tSet[c]=1});
     prods=prods.filter(function(p){return tSet[p.company]});
@@ -1368,24 +1413,24 @@ function updateC28_Layout(cd,fromFilter){
 function updateCompanyAnalysis(){
   var d=getAggregated(getFiltered());populateCompanySelect();populateCoBrand();
   var co=document.getElementById('coSelect');if(!co)return;
-  var coVal=co.value;
-  var br=document.getElementById('coBrand');var brVal=br?br.value:'';
-  var cd=coVal?d.filter(function(r){return r[FI.company]===coVal}):d;
-  if(brVal)cd=cd.filter(function(r){return r[FI.brand]===brVal});
+  var coVal=getSelectVal('coSelect');if(typeof coVal==='string')coVal=coVal?[coVal]:[];
+  var brVal=getSelectVal('coBrand');if(typeof brVal==='string')brVal=brVal?[brVal]:[];
+  var cd=coVal.length?d.filter(function(r){return coVal.includes(r[FI.company])}):d;
+  if(brVal.length)cd=cd.filter(function(r){return brVal.includes(r[FI.brand])});
   var su=document.getElementById('showUnlabeled');
   if(!su||!su.checked){
     cd=cd.filter(function(r){var c=r[FI.company];if(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0')return false;return true});
   }
   // Top N: Step1-每月每父ASIN取最高GMV(getAggregated已完成) Step2-跨月累加 Step3-公司汇总排名
-  var coTopN=document.getElementById('coTopN');
-  if(coTopN&&coTopN.value){
+  var coTopN=getSelectVal('coTopN');if(typeof coTopN!=='string')coTopN='';
+  if(coTopN){
     var gByCo2={};cd.forEach(function(r){gByCo2[r[FI.company]]=(gByCo2[r[FI.company]]||0)+(r[FI.gmv]||0)});
     var tN2=parseInt(coTopN.value);
     var topCs=Object.keys(gByCo2).sort(function(a,b){return gByCo2[b]-gByCo2[a]}).slice(0,tN2);
     var tSet2={};topCs.forEach(function(c2){tSet2[c2]=1});
     cd=cd.filter(function(r){return tSet2[r[FI.company]]});
   }
-  updateCoKPIs(cd,coVal||'全部公司');
+  updateCoKPIs(cd,coVal.length?coVal.join(', '):'全部公司');
   updateC23_CompanyRank(cd);
   updateC24_CompanyTrend(cd);
   updateC25_Scatter(cd);
@@ -1402,7 +1447,7 @@ function updateCompanyAnalysis(){
 
 // ── C25: 公司×上架年份 产品散点图 ──
 function updateC25_Scatter(cd,fromFilter){
-  if(!cd||!cd.length){var d=getAggregated(getFiltered());var co=document.getElementById('coSelect');var br=document.getElementById('coBrand');var coVal=co?co.value:'';var brVal=br?br.value:'';cd=coVal?d.filter(function(r){return r[FI.company]===coVal}):d;if(brVal)cd=cd.filter(function(r){return r[FI.brand]===brVal});var su=document.getElementById('showUnlabeled');if(!su||!su.checked){cd=cd.filter(function(r){var c=r[FI.company];if(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0')return false;return true})}}
+  if(!cd||!cd.length){var d=getAggregated(getFiltered());var coVal2=getSelectVal('coSelect');var brVal2=getSelectVal('coBrand');if(typeof coVal2==='string')coVal2=coVal2?[coVal2]:[];if(typeof brVal2==='string')brVal2=brVal2?[brVal2]:[];cd=coVal2.length?d.filter(function(r){return coVal2.includes(r[FI.company])}):d;if(brVal2.length)cd=cd.filter(function(r){return brVal2.includes(r[FI.brand])});var su=document.getElementById('showUnlabeled');if(!su||!su.checked){cd=cd.filter(function(r){var c=r[FI.company];if(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0')return false;return true})}}
   var su=document.getElementById('showUnlabeled');var showUL=su&&su.checked;
   var seen={},prods=[];
   cd.forEach(function(r){
@@ -1420,29 +1465,33 @@ function updateC25_Scatter(cd,fromFilter){
   // Populate filters
   var selC=document.getElementById('c25Company'),selB=document.getElementById('c25Brand'),selT=document.getElementById('c25Type'),selS=document.getElementById('c25Style'),selY=document.getElementById('c25Year');
   if(selC&&!fromFilter){
-    var curC=selC.value,curB=selB?selB.value:'',curT=selT?selT.value:'',curS=selS?selS.value:'',curY=selY?selY.value:'';
     var cs={},bs={},ts={},ss={},ys={};prods.forEach(function(p){cs[p.company]=1;bs[p.brand]=1;ts[p.type]=1;ss[p.style]=1;ys[p.year]=1});
-    selC.innerHTML='<option value="">全部公司</option>';Object.keys(cs).sort().forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;selC.appendChild(o)});selC.value=curC;
-    if(selB){selB.innerHTML='<option value="">全部品牌</option>';Object.keys(bs).sort().forEach(function(b){var o=document.createElement('option');o.value=b;o.textContent=b;selB.appendChild(o)});selB.value=curB}
-    if(selT){selT.innerHTML='<option value="">全部类型</option>';Object.keys(ts).sort().forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;selT.appendChild(o)});selT.value=curT}
-    if(selS){selS.innerHTML='<option value="">全部风格</option>';Object.keys(ss).sort().forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;selS.appendChild(o)});selS.value=curS}
-    if(selY){selY.innerHTML='<option value="">全部年份</option>';Object.keys(ys).sort().forEach(function(y){var o=document.createElement('option');o.value=y;o.textContent=y+'年';selY.appendChild(o)});selY.value=curY}
+    selC.innerHTML='<option value="">全部公司</option>';Object.keys(cs).sort().forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;selC.appendChild(o)});refreshSelectUI('c25Company');
+    if(selB){selB.innerHTML='<option value="">全部品牌</option>';Object.keys(bs).sort().forEach(function(b){var o=document.createElement('option');o.value=b;o.textContent=b;selB.appendChild(o)});refreshSelectUI('c25Brand')}
+    if(selT){selT.innerHTML='<option value="">全部类型</option>';Object.keys(ts).sort().forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;selT.appendChild(o)});refreshSelectUI('c25Type')}
+    if(selS){selS.innerHTML='<option value="">全部风格</option>';Object.keys(ss).sort().forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;selS.appendChild(o)});refreshSelectUI('c25Style')}
+    if(selY){selY.innerHTML='<option value="">全部年份</option>';Object.keys(ys).sort().forEach(function(y){var o=document.createElement('option');o.value=y;o.textContent=y+'年';selY.appendChild(o)});refreshSelectUI('c25Year')}
   }
   // ── Top N: Step1-每月每父ASIN取最高GMV Step2-跨月累加 Step3-公司汇总排名 ──
-  var selTopN=document.getElementById("c25TopN");
+  var topNVal3=getSelectVal("c25TopN");if(typeof topNVal3!=='string')topNVal3='';
   var tSet=null;
-  if(selTopN&&selTopN.value){
+  if(topNVal3){
     var gByCo={};cd.forEach(function(r){var c3=r[FI.company];gByCo[c3]=(gByCo[c3]||0)+(r[FI.gmv]||0)});
-    var topN=parseInt(selTopN.value);
+    var topN=parseInt(topNVal3);
     var topCos=Object.keys(gByCo).sort(function(a,b){return gByCo[b]-gByCo[a]}).slice(0,topN);
     tSet={};topCos.forEach(function(c){tSet[c]=1});
   }
   // Apply C25-specific filters
-  if(selC&&selC.value)prods=prods.filter(function(p){return p.company===selC.value});
-  if(selB&&selB.value)prods=prods.filter(function(p){return p.brand===selB.value});
-  if(selT&&selT.value)prods=prods.filter(function(p){return p.type===selT.value});
-  if(selS&&selS.value)prods=prods.filter(function(p){return p.style===selS.value});
-  if(selY&&selY.value)prods=prods.filter(function(p){return p.year===parseInt(selY.value)});
+  var cVals=getSelectVal('c25Company');if(typeof cVals==='string')cVals=cVals?[cVals]:[];
+  var bVals=getSelectVal('c25Brand');if(typeof bVals==='string')bVals=bVals?[bVals]:[];
+  var tVals=getSelectVal('c25Type');if(typeof tVals==='string')tVals=tVals?[tVals]:[];
+  var sVals=getSelectVal('c25Style');if(typeof sVals==='string')sVals=sVals?[sVals]:[];
+  var yVals=getSelectVal('c25Year');if(typeof yVals==='string')yVals=yVals?[yVals]:[];
+  if(cVals.length)prods=prods.filter(function(p){return cVals.includes(p.company)});
+  if(bVals.length)prods=prods.filter(function(p){return bVals.includes(p.brand)});
+  if(tVals.length)prods=prods.filter(function(p){return tVals.includes(p.type)});
+  if(sVals.length)prods=prods.filter(function(p){return sVals.includes(p.style)});
+  if(yVals.length)prods=prods.filter(function(p){return yVals.includes(String(p.year))});
   // Apply Top N filter after other filters
   if(tSet){prods=prods.filter(function(p){return tSet[p.company]});}
   // Group by brand for coloring
@@ -1456,8 +1505,7 @@ function updateC25_Scatter(cd,fromFilter){
   var gMin=gmvs[0]||0,gMax=gmvs[gmvs.length-1]||1;
   function gS(g){return gMax>gMin?14+Math.round((g-gMin)/(gMax-gMin)*28):22}
   if(!charts.c25)return;
-  var selY=document.getElementById('c25Year');
-  var yearActive=selY&&selY.value;
+  var yearActive=yVals.length===1?yVals[0]:'';
   if(yearActive){
     var typeSet={};allP.forEach(function(p){typeSet[p.type]=1});
     var typeList=Object.keys(typeSet).sort();
@@ -1555,30 +1603,31 @@ function updateC25_Scatter(cd,fromFilter){
 function updateCoProducts(cd,fromFilter){
   if(!cd||!cd.length){cd=getAggregated(getFiltered());var su=document.getElementById('showUnlabeled');if(!su||!su.checked){cd=cd.filter(function(r){var c=r[FI.company];if(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0')return false;return true})}}
   var su=document.getElementById('showUnlabeled');var showUL=su&&su.checked;
-  var topSel=document.getElementById('coProdTopN');var topN=topSel?parseInt(topSel.value)||10:10;
+  var topNVal4=getSelectVal('coProdTopN');if(typeof topNVal4!=='string')topNVal4='';var topN=topNVal4?parseInt(topNVal4)||10:10;
   // Populate & read filters
   var stSel=document.getElementById('coTopStyle'),tpSel=document.getElementById('coTopType');
-  var stVal=stSel?stSel.value:'',tpVal=tpSel?tpSel.value:'';
   if(stSel&&stSel.options.length<=1){
     var styles={};cd.forEach(function(r){var s=r[FI.style];if(s&&s!=='Unknown'&&s!=='0')styles[s]=1});
     Object.keys(styles).sort().forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;stSel.appendChild(o)});
-    stSel.value=stVal;
+    refreshSelectUI('coTopStyle');
   }
   if(tpSel&&tpSel.options.length<=1){
     var types={};cd.forEach(function(r){var t=r[FI.type];if(t&&t!=='Unknown'&&t!=='0')types[t]=1});
     Object.keys(types).sort().forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;tpSel.appendChild(o)});
-    tpSel.value=tpVal;
+    refreshSelectUI('coTopType');
   }
   var yrSel=document.getElementById('coTopYear');
-  var yrVal=yrSel?yrSel.value:'';
   if(yrSel&&yrSel.options.length<=1){
     var yrs={};cd.forEach(function(r){var y=r[FI.listing_year];if(y&&y>=2015)yrs[y]=1});
     Object.keys(yrs).sort().forEach(function(y){var o=document.createElement('option');o.value=y;o.textContent=y+'年';yrSel.appendChild(o)});
-    yrSel.value=yrVal;
+    refreshSelectUI('coTopYear');
   }
-  if(stVal)cd=cd.filter(function(r){return r[FI.style]===stVal});
-  if(tpVal)cd=cd.filter(function(r){return r[FI.type]===tpVal});
-  if(yrVal)cd=cd.filter(function(r){return r[FI.listing_year]===parseInt(yrVal)});
+  var stVals2=getSelectVal('coTopStyle');if(typeof stVals2==='string')stVals2=stVals2?[stVals2]:[];
+  var tpVals2=getSelectVal('coTopType');if(typeof tpVals2==='string')tpVals2=tpVals2?[tpVals2]:[];
+  var yrVals2=getSelectVal('coTopYear');if(typeof yrVals2==='string')yrVals2=yrVals2?[yrVals2]:[];
+  if(stVals2.length)cd=cd.filter(function(r){return stVals2.includes(r[FI.style])});
+  if(tpVals2.length)cd=cd.filter(function(r){return tpVals2.includes(r[FI.type])});
+  if(yrVals2.length)cd=cd.filter(function(r){return yrVals2.includes(String(r[FI.listing_year]))});
   var companies={};cd.forEach(function(r){
     var c=r[FI.company];if(!showUL&&(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0'))return;
     if(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0')c='未打标';
@@ -1625,6 +1674,97 @@ function setSummary(id,text){var el=document.getElementById(id);if(el)el.innerHT
 function fmt(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}
 function fmt$(v){return v>=1e6?'$'+(v/1e6).toFixed(1)+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+Math.round(v).toLocaleString()}
 
+// ── Universal Select Widget ──
+var _selWidgets={};
+function initSelectWidget(id,multi){
+  var sel=document.getElementById(id);if(!sel||_selWidgets[id])return;
+  var wrap=document.createElement('span');wrap.className='sel-wrap';
+  // Inherit inline styles from original select for width/min-width
+  if(sel.style.minWidth)wrap.style.minWidth=sel.style.minWidth;
+  var btn=document.createElement('div');btn.className='sel-btn';btn.innerHTML='<span class=sel-txt>—</span><span class=sel-arrow>▼</span>';
+  var dd=document.createElement('div');dd.className='sel-dd';
+  dd.innerHTML='<input class=filter-dd-search placeholder="搜索..." oninput="selDDSearch(this)">'+(multi?'<div class=filter-dd-actions><button onclick="selDDAll(this,\'all\')">全选</button><button onclick="selDDAll(this,\'none\')">取消</button></div>':'')+'<div class=filter-dd-list></div>';
+  var list=dd.querySelector('.filter-dd-list');
+  wrap.appendChild(btn);wrap.appendChild(dd);
+  sel.style.display='none';sel.parentNode.insertBefore(wrap,sel);wrap.appendChild(sel);
+  var w={multi:!!multi,sel:sel,wrap:wrap,btn:btn,dd:dd,list:list,_selected:multi?[]:''};
+  _selWidgets[id]=w;
+  // Read initial selection
+  if(multi){Array.from(sel.options).forEach(function(o){if(o.selected&&o.value)w._selected.push(o.value)})}
+  else{w._selected=sel.value||''}
+  // Click: toggle dropdown
+  btn.addEventListener('click',function(e){e.stopPropagation();selToggle(id)});
+  // Selection events
+  if(multi){list.addEventListener('change',function(e){if(e.target.type==='checkbox')selUpdateMulti(id)})}
+  else{list.addEventListener('click',function(e){var lb=e.target.closest('label');if(!lb)return;selPickSingle(id,lb.dataset.value);selClose(id)})}
+  // Initial render
+  selRebuildUI(id);updateSelTrigger(id);
+}
+function selToggle(id){
+  var w=_selWidgets[id];if(!w)return;
+  var isOpen=w.dd.classList.contains('show');
+  for(var k in _selWidgets){if(k!==id){_selWidgets[k].dd.classList.remove('show');_selWidgets[k].btn.classList.remove('open')}}
+  if(!isOpen){w.dd.classList.add('show');w.btn.classList.add('open');var si=w.dd.querySelector('.filter-dd-search');if(si)si.value='';var lbs=w.list.querySelectorAll('label');lbs.forEach(function(l){l.classList.remove('hidden')})}
+}
+function selClose(id){var w=_selWidgets[id];if(w){w.dd.classList.remove('show');w.btn.classList.remove('open')}}
+function selDDSearch(input){var dd=input.closest('.sel-dd');var q=input.value.toLowerCase();var lbs=dd.querySelectorAll('label');lbs.forEach(function(l){l.classList.toggle('hidden',q&&l.textContent.toLowerCase().indexOf(q)<0)})}
+function selDDAll(btn,act){
+  var dd=btn.closest('.sel-dd');var cbs=dd.querySelectorAll('input[type=checkbox]');
+  cbs.forEach(function(cb){if(!cb.closest('label.hidden'))cb.checked=(act==='all')});
+  for(var k in _selWidgets){if(_selWidgets[k].dd===dd){selUpdateMulti(k);break}}
+}
+function selRebuildUI(id){
+  var w=_selWidgets[id];if(!w)return;
+  var opts=Array.from(w.sel.options);
+  if(w.multi){
+    w.list.innerHTML=opts.map(function(o){var c=w._selected.indexOf(o.value)>=0?' checked':'';return '<label><input type=checkbox value="'+o.value.replace(/"/g,'&quot;')+'"'+c+'>'+o.textContent+'</label>'}).join('');
+  }else{
+    w.list.innerHTML=opts.map(function(o){var cls=o.value===w._selected?' class=sel-active':'';return '<label data-value="'+o.value.replace(/"/g,'&quot;')+'"'+cls+'>'+o.textContent+'</label>'}).join('');
+  }
+}
+function selUpdateMulti(id){
+  var w=_selWidgets[id];if(!w)return;
+  var cbs=w.list.querySelectorAll('input[type=checkbox]');w._selected=[];
+  cbs.forEach(function(cb){if(cb.checked)w._selected.push(cb.value)});
+  for(var i=0;i<w.sel.options.length;i++){w.sel.options[i].selected=w._selected.indexOf(w.sel.options[i].value)>=0}
+  updateSelTrigger(id);w.sel.dispatchEvent(new Event('change',{bubbles:true}));
+}
+function selPickSingle(id,val){
+  var w=_selWidgets[id];if(!w)return;
+  w._selected=val;w.sel.value=val;
+  selRebuildUI(id);updateSelTrigger(id);
+  w.sel.dispatchEvent(new Event('change',{bubbles:true}));
+}
+function updateSelTrigger(id){
+  var w=_selWidgets[id];if(!w)return;
+  var txt=w.btn.querySelector('.sel-txt');
+  if(w.multi){
+    if(!w._selected.length)txt.textContent='全部';
+    else if(w._selected.length<=2)txt.textContent=w._selected.join(', ');
+    else txt.textContent=w._selected.length+'项';
+  }else{
+    var opt=w.sel.querySelector('option[value="'+w._selected.replace(/"/g,'\\"')+'"]');
+    txt.textContent=(opt&&w._selected)?opt.textContent:(w.sel.options[0]?w.sel.options[0].textContent:'全部');
+  }
+}
+function refreshSelectUI(id){if(_selWidgets[id]){selRebuildUI(id);updateSelTrigger(id)}}
+function getSelectVal(id){
+  var w=_selWidgets[id];
+  if(!w){var s=document.getElementById(id);return s?(s.multiple?Array.from(s.selectedOptions).map(function(o){return o.value}):s.value):''}
+  return w.multi?w._selected.slice():w._selected;
+}
+function resetSelectWidget(id){
+  var w=_selWidgets[id];if(!w)return;
+  if(w.multi){w._selected=[];for(var i=0;i<w.sel.options.length;i++)w.sel.options[i].selected=false;selRebuildUI(id);updateSelTrigger(id)}
+  else{selPickSingle(id,'')}
+}
+// Close all select dropdowns on outside click
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.sel-wrap')){
+    for(var k in _selWidgets){_selWidgets[k].dd.classList.remove('show');_selWidgets[k].btn.classList.remove('open')}
+  }
+});
+
 // ── C5: Top N 公司 GMV (可筛选 Top 10/20/50/100，默认隐藏无标识) ──
 function buildFilterBar(){
   var html='';
@@ -1633,9 +1773,12 @@ function buildFilterBar(){
   keys.forEach(function(k){
     var opts=FILTER_OPTS[k]||[];
     html+='<div class=filter-group><div class="filter-btn" onclick="toggleDD(\''+k+'\')" id="btn_'+k+'"><span class=filter-label>'+names[k]+'</span><span class=count id="cnt_'+k+'">全部</span><span class=arrow>▼</span></div>';
-    html+='<div class=filter-dropdown id="dd_'+k+'">';
+    html+='<div class=filter-dropdown id="dd_'+k+'" onclick="event.stopPropagation()">';
+    html+='<input class=filter-dd-search placeholder="搜索..." oninput="filterDDSearch(\''+k+'\')">';
+    html+='<div class=filter-dd-actions><button onclick="filterDDAll(\''+k+'\',true)">全选</button><button onclick="filterDDAll(\''+k+'\',false)">取消</button></div>';
+    html+='<div class=filter-dd-list id="ddlist_'+k+'">';
     opts.forEach(function(o){ html+='<label><input type=checkbox value="'+o.replace(/"/g,'&quot;')+'" onchange="onFilterChange(\''+k+'\')">'+o+'</label>'; });
-    html+='</div></div>';
+    html+='</div></div></div>';
   });
   html+='<label style=\"font-size:12px;color:var(--t2);cursor:pointer;user-select:none;margin-right:8px\"><input type=\"checkbox\" id=\"showUnlabeled\" onchange=\"updateAll()\"> 含未打标</label>';
   html+='<div class=filter-actions><span class=filter-stats id="filterStats">全部</span><button class=btn-reset onclick="resetFilters()">✕ 重置筛选</button></div>';
@@ -1646,7 +1789,23 @@ function toggleDD(k){
   var btn=document.getElementById('btn_'+k);
   var isOpen=dd.classList.contains('show');
   Object.keys(dropdowns).forEach(function(dk){ document.getElementById('dd_'+dk).classList.remove('show'); document.getElementById('btn_'+dk).classList.remove('active'); });
-  if(!isOpen){ dd.classList.add('show'); btn.classList.add('active'); }
+  if(!isOpen){
+    dd.classList.add('show'); btn.classList.add('active');
+    // Reset search input and show all labels
+    var si=dd.querySelector('.filter-dd-search'); if(si) si.value='';
+    var labels=dd.querySelectorAll('label'); labels.forEach(function(l){ l.classList.remove('hidden'); });
+  }
+}
+function filterDDSearch(k){
+  var q=document.getElementById('dd_'+k).querySelector('.filter-dd-search').value.toLowerCase();
+  var labels=document.getElementById('ddlist_'+k).querySelectorAll('label');
+  labels.forEach(function(l){ l.classList.toggle('hidden', q && l.textContent.toLowerCase().indexOf(q)<0); });
+}
+function filterDDAll(k,select){
+  var cbs=document.getElementById('ddlist_'+k).querySelectorAll('input[type=checkbox]');
+  // Only toggle visible (non-hidden) checkboxes
+  cbs.forEach(function(cb){ if(!cb.closest('label.hidden')){ cb.checked=select; } });
+  onFilterChange(k);
 }
 function onFilterChange(k){
   var cbs=document.querySelectorAll('#dd_'+k+' input[type=checkbox]');
@@ -1661,6 +1820,8 @@ function onFilterChange(k){
 function resetFilters(){
   Object.keys(ACTIVE).forEach(function(k){ ACTIVE[k]=[]; });
   document.querySelectorAll('.filter-dropdown input[type=checkbox]').forEach(function(cb){ cb.checked=false; });
+  document.querySelectorAll('.filter-dropdown .filter-dd-search').forEach(function(si){ si.value=''; });
+  document.querySelectorAll('.filter-dropdown label').forEach(function(l){ l.classList.remove('hidden'); });
   document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
   document.querySelectorAll('.count').forEach(function(el){ el.textContent='全部'; });
   updateAll();
@@ -1784,6 +1945,8 @@ fetch("bookcase_data_v2.json").then(function(r){return r.json()}).then(function(
     LISTING_DATE=m;
   }).catch(function(e){console.error('listing_date:',e)});
   try{buildFilterBar()}catch(e){console.error('buildFilterBar:',e)}
+  // Init all chart select widgets
+  try{initAllSelectWidgets()}catch(e){console.error('initSelectWidgets:',e)}
   // Hide loading overlay
   var lo=document.getElementById('loadingOverlay');if(lo)lo.classList.add('hidden');
   }).catch(function(e){console.error('parent_map:',e)});

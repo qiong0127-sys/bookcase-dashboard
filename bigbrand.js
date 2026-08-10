@@ -7,7 +7,7 @@ function bbOnLoad(cb) {
   bbCallbacks.push(cb);
   if (bbLoading) return;
   bbLoading = true;
-  fetch('bigbrand_data.json?v=2')
+  fetch('bigbrand_data.json?v=4')
     .then(function(r) { return r.json(); })
     .then(function(d) { bigBrandData = d; bbLoading = false; var q = bbCallbacks; bbCallbacks = []; q.forEach(function(f) { f(); }); })
     .catch(function() { bigBrandData = []; bbLoading = false; var q = bbCallbacks; bbCallbacks = []; q.forEach(function(f) { f(); }); });
@@ -94,7 +94,7 @@ function renderBigBrand() {
     var A = bigBrandData;
     var tbody = document.getElementById('bb-tbody');
     if (!A || !A.length) {
-      if (tbody) tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--t3);padding:60px">数据加载失败</td></tr>';
+      if (tbody) tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:var(--t3);padding:60px">数据加载失败</td></tr>';
       return;
     }
 
@@ -106,11 +106,11 @@ function renderBigBrand() {
     if (bbActiveBrand) D = D.filter(function(p) { return p.brand === bbActiveBrand; });
     if (bbActiveCat) D = D.filter(function(p) { return bbCat(p.name) === bbActiveCat; });
     // Reset page only when not navigating pages
+    var wasPageNav = bbFromGoPage;
     if (!bbFromGoPage) { bbPage = 1; }
     bbFromGoPage = false;
     if (band) {
-      var bp = band.split('-'), lo = +bp[0], hi = +bp[1];
-      D = D.filter(function(p) { var x = bbPrice(p); return x >= lo && x < hi; });
+      D = D.filter(function(p) { return p.upload_time === band; });
     }
     if (search) D = D.filter(function(p) {
       return p.name.toLowerCase().indexOf(search) >= 0 || p.brand.toLowerCase().indexOf(search) >= 0;
@@ -143,8 +143,7 @@ function renderBigBrand() {
     var allFiltered = A.slice();
     if (bbActiveBrand) allFiltered = allFiltered.filter(function(p) { return p.brand === bbActiveBrand; });
     if (band) {
-      var bp2 = band.split('-'), lo2 = +bp2[0], hi2 = +bp2[1];
-      allFiltered = allFiltered.filter(function(p) { var x = bbPrice(p); return x >= lo2 && x < hi2; });
+      allFiltered = allFiltered.filter(function(p) { return p.upload_time === band; });
     }
     catOrder.forEach(function(c) { cats[c] = 0; });
     allFiltered.forEach(function(p) { var c = bbCat(p.name); cats[c] = (cats[c] || 0) + 1; });
@@ -180,6 +179,7 @@ function renderBigBrand() {
         '<td class="bb-td-price">' + priceHtml + '</td>' +
         '<td style="text-align:center">' + (p.link ? '<a href="' + p.link + '" target="_blank" class="bb-link">🔗</a>' : '') + '</td>' +
         '<td></td>' +
+        '<td style="text-align:center;font-size:11px;color:var(--t2)">' + (p.upload_time || '') + '</td>' +
         '</tr>';
     }).join('');
     // Add column resize handles
@@ -201,6 +201,11 @@ function renderBigBrand() {
       pager.innerHTML = ph;
     } else if (pager) {
       pager.innerHTML = D.length <= bbPageSize ? '' : '<span style="font-size:12px;color:var(--t3)">共 ' + D.length + ' 件</span>';
+    }
+    // Scroll to top after page change
+    if (wasPageNav) {
+      var tbl = document.getElementById('bb-table');
+      if (tbl && tbl.parentElement) { tbl.parentElement.scrollTop = 0; }
     }
   });
 }
