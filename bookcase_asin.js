@@ -32,7 +32,7 @@ function renderAsinPivot() {
       var hasKids = r.children && r.children.length > 0;
       var arrow = hasKids ? "<span class='ap-arrow'>▶</span>" : "";
       var rows = "<tr class='ap-parent' data-ap='" + pid + "' onclick=\"apToggle('" + pid + "')\"><td>" + arrow + "</td>";
-      rows += "<td><img src='" + (r.image_url || "") + "' style='width:120px;height:120px;object-fit:contain;border-radius:6px;background:#1a2634' onerror=\"this.style.display='none'\" loading='lazy'></td>";
+      rows += "<td><img src='" + (r.image_url || "") + "' style='width:120px;height:120px;object-fit:contain;border-radius:6px;background:#1a2634;cursor:pointer' title='点击放大' onclick='zoomImage(this)' onerror=\"this.style.display='none'\" loading='lazy'></td>";
       rows += "<td><a href='https://www.amazon.com/dp/" + r.parent_asin + "' target=_blank>" + r.parent_asin + "</a></td>";
       rows += "<td>" + (r.brand || "") + "</td><td>" + (r.company || "") + "</td>";
       rows += "<td class=price>$" + (r.gmv_m3 || 0).toLocaleString() + "</td>";
@@ -51,7 +51,7 @@ function renderAsinPivot() {
         r.children.forEach(function(c2) {
           rows += "<tr class='ap-child' data-ap='" + pid + "' style='display:none;background:rgba(255,255,255,.02)'>";
           rows += "<td></td><td></td>";
-          rows += "<td style='padding-left:20px;font-size:15px'><a href='https://www.amazon.com/dp/" + c2.asin + "' target=_blank>" + c2.asin + "</a></td>";
+          rows += "<td style='padding-left:20px;font-size:16px'><a href='https://www.amazon.com/dp/" + c2.asin + "' target=_blank>" + c2.asin + "</a></td>";
           rows += "<td>" + (c2.brand || "") + "</td><td>" + (c2.company || "") + "</td>";
           rows += "<td class=price>$" + (c2.gmv_m3 || 0).toLocaleString() + "</td>";
           rows += "<td class=price>$" + (c2.gmv_m4 || 0).toLocaleString() + "</td>";
@@ -69,6 +69,7 @@ function renderAsinPivot() {
       }
       return rows;
     }).join("");
+    if (window.__initFrozen) window.__initFrozen();
   });
 }
 
@@ -122,7 +123,7 @@ function amPopulateFilters() {
   if(typeof refreshSelectUI === 'function'){['amBrand','amCompany','amType','amStyle','amYear'].forEach(function(id){refreshSelectUI(id)});}
 }
 
-function amSparkline(m3,m4,m5,m6,m7){var v=[m3||0,m4||0,m5||0,m6||0,m7||0];var max=Math.max.apply(null,v),min=Math.min.apply(null,v);if(max===0)return'<span style="color:var(--t2);font-size:12px">—</span>';var r=max-min||1,W=80,H=28,pad=4,iw=W-2*pad,ih=H-2*pad;var pts=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;return x.toFixed(1)+','+y.toFixed(1)}).join(' ');var dots=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;var color=i===0?'#4da6ff':v2>v[i-1]?'#22c55e':v2<v[i-1]?'#ef4444':'#4da6ff';var rad=i===4?3:2;return'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad+'" fill="'+color+'"/>';}).join('');return'<svg width="'+W+'" height="'+H+'" style="vertical-align:middle;display:block"><polyline points="'+pts+'" fill="none" stroke="#4da6ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';}
+function amSparkline(m3,m4,m5,m6,m7){var v=[m3||0,m4||0,m5||0,m6||0,m7||0];var max=Math.max.apply(null,v),min=Math.min.apply(null,v);if(max===0)return'<span style="color:var(--t2);font-size:13px">—</span>';var r=max-min||1,W=80,H=28,pad=4,iw=W-2*pad,ih=H-2*pad;var pts=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;return x.toFixed(1)+','+y.toFixed(1)}).join(' ');var dots=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;var color=i===0?'#4da6ff':v2>v[i-1]?'#22c55e':v2<v[i-1]?'#ef4444':'#4da6ff';var rad=i===4?3:2;return'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad+'" fill="'+color+'"/>';}).join('');return'<svg width="'+W+'" height="'+H+'" style="vertical-align:middle;display:block"><polyline points="'+pts+'" fill="none" stroke="#4da6ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';}
 
 function renderAsinMonthly() {
   loadAmData(function() {
@@ -256,7 +257,12 @@ function renderAsinMonthly() {
       if (r.price_m7 > 0) { sP7 += r.price_m7; c7++; }
     });
     var sumHTML = '<tr>';
-    sumHTML += '<td data-metric="all" colspan="7" style="color:var(--accent);text-align:right">合计 (' + D.length + '条)</td>';
+    // 左3列冻结区域：td[1] td[2] 空，td[3] 放合计标签
+    sumHTML += '<td data-metric="all"></td>';
+    sumHTML += '<td data-metric="all"></td>';
+    sumHTML += '<td data-metric="all" style="color:var(--accent);text-align:right;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">合计(' + D.length + ')</td>';
+    // 父ASIN~上市列合并（4列）
+    sumHTML += '<td data-metric="all" colspan="4"></td>';
     sumHTML += '<td data-metric="all">$' + (sUT > 0 ? (sGT / sUT).toFixed(2) : '0.00') + '</td>';
     sumHTML += '<td data-metric="gmv" style="color:var(--a4)">$' + sG3.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="gmv" style="color:var(--a4)">$' + sG4.toLocaleString() + '</td>';
@@ -275,7 +281,7 @@ function renderAsinMonthly() {
     sumHTML += '<td data-metric="price" style="color:var(--t2)">$' + (c7 ? sP7 / c7 : 0).toFixed(0) + '</td>';
     sumHTML += '<td data-metric="all" style="color:var(--a4);font-size:18px">$' + sGT.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="all" style="text-align:center;padding:2px 4px">' + amSparkline(sG3, sG4, sG5, sG6, sG7) + '</td></tr>';
-    document.getElementById("amSummary").innerHTML = sumHTML;
+    document.getElementById("amSummaryRow").innerHTML = sumHTML;
 
     // 检测重复父ASIN：同一父ASIN出现≥2次 → 整行高亮
     var paCount = {};
@@ -288,10 +294,10 @@ function renderAsinMonthly() {
       var isDup = dupSet[r.parent_asin];
       var dupClass = isDup ? " class='dup-row'" : "";
       return "<tr" + dupClass + ">"
-        + "<td data-metric='all' style='text-align:center;color:var(--t2);font-size:14px'>" + (start + i + 1) + "</td>"
-        + "<td data-metric='all' style='padding:2px'><img src='" + (r.image_url || "") + "' style='width:120px;height:120px;object-fit:contain;border-radius:6px;background:#1a2634' onerror=\"this.style.display='none'\" loading='lazy'></td>"
+        + "<td data-metric='all' style='text-align:center;color:var(--t2);font-size:15px'>" + (start + i + 1) + "</td>"
+        + "<td data-metric='all' style='padding:2px'><img src='" + (r.image_url || "") + "' style='width:120px;height:120px;object-fit:contain;border-radius:6px;background:#1a2634;cursor:pointer' title='点击放大' onclick='zoomImage(this)' onerror=\"this.style.display='none'\" loading='lazy'></td>"
         + "<td data-metric='all'>" + (dedupEl && dedupEl.checked ? "" : "<a href='https://www.amazon.com/dp/" + r.asin + "' target=_blank style='color:var(--text);text-decoration:none'>" + r.asin + "</a>") + "</td>"
-        + "<td data-metric='all'>" + (r.parent_asin || "") + "</td>"
+        + "<td data-metric='all'>" + (r.parent_asin ? "<a href='https://www.amazon.com/dp/" + r.parent_asin + "' target=_blank style='color:var(--text);text-decoration:none'>" + r.parent_asin + "</a>" : "") + "</td>"
         + "<td data-metric='all'>" + (r.brand || "") + "</td><td data-metric='all'>" + (r.company || "") + "</td><td data-metric='all'>" + (r.listing_date || "") + "</td>"
         + "<td data-metric='all'>$" + (r.units_total > 0 ? (r.gmv_total / r.units_total).toFixed(2) : '0.00') + "</td>"
         + "<td data-metric='gmv' class=price>$" + (r.gmv_m3 || 0).toLocaleString() + "</td>"
@@ -317,36 +323,52 @@ function renderAsinMonthly() {
     var pg = document.getElementById("amPager");
     if (pg && totalPages > 1) {
       var ph = "";
-      if (amPage > 1) ph += '<button class="btn" onclick="amGoPage(' + (amPage - 1) + ')" style="font-size:11px;padding:4px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);cursor:pointer">◀</button>';
+      if (amPage > 1) ph += '<button class="btn" onclick="amGoPage(' + (amPage - 1) + ')" style="font-size:12px;padding:4px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);cursor:pointer">◀</button>';
       for (var i = 1; i <= totalPages; i++) {
         if (i === 1 || i === totalPages || (i >= amPage - 2 && i <= amPage + 2)) {
-          ph += '<button class="btn" onclick="amGoPage(' + i + ')" style="font-size:11px;padding:4px 8px;min-width:30px;background:' + (i === amPage ? 'var(--accent)' : 'var(--bg)') + ';border:1px solid var(--border);border-radius:6px;color:' + (i === amPage ? '#000' : 'var(--text)') + ';cursor:pointer;font-weight:' + (i === amPage ? '600' : '400') + '">' + i + '</button>';
+          ph += '<button class="btn" onclick="amGoPage(' + i + ')" style="font-size:12px;padding:4px 8px;min-width:30px;background:' + (i === amPage ? 'var(--accent)' : 'var(--bg)') + ';border:1px solid var(--border);border-radius:6px;color:' + (i === amPage ? '#000' : 'var(--text)') + ';cursor:pointer;font-weight:' + (i === amPage ? '600' : '400') + '">' + i + '</button>';
         } else if (i === amPage - 3 || i === amPage + 3) {
           ph += '<span style="color:var(--t2)">...</span>';
         }
       }
-      if (amPage < totalPages) ph += '<button class="btn" onclick="amGoPage(' + (amPage + 1) + ')" style="font-size:11px;padding:4px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);cursor:pointer">▶</button>';
+      if (amPage < totalPages) ph += '<button class="btn" onclick="amGoPage(' + (amPage + 1) + ')" style="font-size:12px;padding:4px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);cursor:pointer">▶</button>';
       pg.innerHTML = ph;
     } else if (pg) {
       pg.innerHTML = "";
     }
     amPopulateFilters();
+    if (window.__initFrozen) window.__initFrozen();
   });
 }
 // ── 搜索栏事件绑定（addEventListener 双保险，确保 oninput 一定生效）──
 (function(){
+  window.zoomImage = function(img){
+    var modal = document.getElementById('img-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'img-modal';
+      modal.className = 'img-modal';
+      modal.onclick = function(){ modal.classList.remove('show'); };
+      modal.innerHTML = '<span class="img-modal-close">&times;</span><img id="modal-img" src="" alt="Product">';
+      document.body.appendChild(modal);
+    }
+    var modalImg = document.getElementById('modal-img');
+    if (!modalImg) {
+      modalImg = document.createElement('img');
+      modalImg.id = 'modal-img';
+      modal.appendChild(modalImg);
+    }
+    modalImg.src = img.src;
+    modal.classList.add('show');
+  };
   function bindImageZoom(){
+    // Kept for backward compat, but onclick on img is the primary trigger
     var table = document.getElementById('amTable');
     if (!table || table._imgZoomBound) return;
     table._imgZoomBound = true;
     table.addEventListener('click', function(e){
       if (e.target.tagName === 'IMG' && e.target.closest('#amTbody, #amPivotTbody')) {
-        var modal = document.getElementById('img-modal');
-        var modalImg = document.getElementById('modal-img');
-        if (modal && modalImg) {
-          modalImg.src = e.target.src;
-          modal.classList.add('show');
-        }
+        window.zoomImage(e.target);
       }
     });
   }
@@ -377,72 +399,44 @@ function renderAsinMonthly() {
     bindSearch();
     bindImageZoom();
   }
-  // ── 冻结滚动: 表头(CSS sticky兜底) + 合计行(JS累积transform) ──
-  var _freezeWrapper = null, _freezeThead = null, _freezeSummary = null, _freezeOn = false;
-  function setupFreeze(){
-    _freezeWrapper = document.querySelector('#sc-asin .table-wrapper');
-    _freezeThead = document.querySelector('#amTable thead');
-    _freezeSummary = document.getElementById('amSummary');
-    _freezeOn = !!(_freezeWrapper && _freezeThead && _freezeSummary);
-    if (_freezeOn && !window._freezeListening) {
-      window._freezeListening = true;
-      window.addEventListener('scroll', onFreezeScroll, {passive: true});
-    }
+})();
+
+// ═══ 冻结列引擎: position:sticky 方案 ══
+// 左侧 3 列 (# 图片 ASIN) 用 CSS position:sticky 固定
+// 只需计算各列 left 偏移量的 CSS 变量
+(function(){
+  var FZ_L = 3;
+  var _timer = null;
+
+  function updateFrozenVars(){
+    var table = document.getElementById('amTable');
+    if (!table) return;
+    var ths = table.querySelectorAll('thead tr:first-child th');
+    if (ths.length < FZ_L) return;
+    var col1w = ths[0].offsetWidth;
+    var col2w = ths[1].offsetWidth;
+    document.documentElement.style.setProperty('--fz-l-col1', col1w + 'px');
+    document.documentElement.style.setProperty('--fz-l-col2', (col1w + col2w) + 'px');
+    // --fz-l-col1 = 第1列宽, --fz-l-col2 = 第1+2列宽
   }
-  function onFreezeScroll(){
-    if (!_freezeOn) { setupFreeze(); if (!_freezeOn) return; }
-    var wr = _freezeWrapper.getBoundingClientRect();
-    // 表头 (CSS sticky 兜底)
-    if (wr.top < 0 && wr.bottom > 0) {
-      _freezeThead.style.transform = 'translateY(' + (-wr.top) + 'px)';
-    } else {
-      _freezeThead.style.transform = '';
-    }
-    // 合计行: 累积transform，抵消自然滚动位移
-    if (_freezeSummary && wr.bottom > 0) {
-      var thR = _freezeThead.getBoundingClientRect();
-      var sr = _freezeSummary.getBoundingClientRect();
-      var target = thR.bottom;
-      // sr.top 包含已有transform; 减去已有T值得自然位置
-      var curT = _freezeSummary._tfY || 0;
-      var natural = sr.top - curT;
-      if (natural < target) {
-        var newT = target - natural;
-        _freezeSummary._tfY = newT;
-        _freezeSummary.style.transform = 'translateY(' + newT + 'px)';
-      } else {
-        _freezeSummary._tfY = 0;
-        _freezeSummary.style.transform = '';
-      }
-    }
+
+  function initFrozen(){
+    updateFrozenVars();
+    clearTimeout(_timer);
+    _timer = setTimeout(updateFrozenVars, 500);
+    _timer = setTimeout(updateFrozenVars, 1500);
   }
-  // renderAsinMonthly 会用 innerHTML 重建子元素，重置了 tbody 的 style.transform。
-  // 包装原 renderAsinMonthly 在其后恢复冻结。
-  (function(){
-    var _origRender = window.renderAsinMonthly;
-    if (_origRender && !_origRender._freezePatched) {
-      _origRender._freezePatched = true;
-      window.renderAsinMonthly = function(){
-        _origRender.apply(this, arguments);
-        if (_freezeSummary && _freezeSummary._tfY) {
-          _freezeSummary.style.transform = 'translateY(' + _freezeSummary._tfY + 'px)';
-        }
-      };
-    }
-  })();
-  setupFreeze();
-  onFreezeScroll();
-  // 切ASIN tab后重新绑定
-  var _wrapPoll = setInterval(function(){
-    if (typeof window.switchSubTab === 'function' && !window.switchSubTab._wrapped) {
-      window.switchSubTab._wrapped = true;
-      var _orig = window.switchSubTab;
-      window.switchSubTab = function(t) {
-        _orig(t);
-        if (t === 'asin') { setTimeout(bindSearch, 300); setTimeout(setupFreeze, 400); setTimeout(onFreezeScroll, 500); }
-      };
-      clearInterval(_wrapPoll);
-    }
-  }, 30);
-  setTimeout(function(){ clearInterval(_wrapPoll); }, 5000);
+
+  window.__initFrozen = initFrozen;
+  window.__syncFrozen = function(){};
+  window.__syncRowHeights = function(){};
+  window.__onImagesLoaded = function(){
+    clearTimeout(_timer);
+    _timer = setTimeout(updateFrozenVars, 300);
+  };
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(initFrozen, 100); });
+  else
+    setTimeout(initFrozen, 100);
 })();

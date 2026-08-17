@@ -3,101 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amazon Bookcase Market Dashboard</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Amazon Bookcase Market Dashboard v20260814</title>
 <script src="echarts.min.js"></script>
 <style>
-:root{--bg:#0f1923;--card-bg:#1a2634;--text:#e0e6ed;--t2:#8899aa;--accent:#00d4aa;--a2:#4da6ff;--a3:#ff6b8a;--a4:#ffb347;--border:#2a3a4a;--shadow:0 4px 24px rgba(0,0,0,.3)}
+:root{--bg:#faf6f8;--card-bg:#ffffff;--text:#1a1517;--t2:#5a5055;--accent:#b8a6d4;--a2:#d4a5c7;--a3:#e8a0b4;--a4:#d4b8a6;--border:#e8dfe3;--shadow:0 4px 24px rgba(180,160,170,.12)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);padding:24px;min-height:100vh}
 .header{text-align:center;margin-bottom:20px}
-.header h1{font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
-.header p{color:var(--t2);font-size:13px}
+.header h1{font-size:30px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.header p{color:var(--t2);font-size:14px}
 
 /* Filter Bar */
 .filter-bar{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.filter-bar .filter-label{color:var(--t2);font-size:12px;margin-right:4px;white-space:nowrap}
+.filter-bar .filter-label{color:var(--t2);font-size:13px;margin-right:4px;white-space:nowrap}
 .filter-group{position:relative}
-.filter-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;white-space:nowrap;transition:border-color .2s}
+.filter-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap;transition:border-color .2s}
 .filter-btn:hover,.filter-btn.active{border-color:var(--accent)}
-.filter-btn .count{color:var(--accent);font-size:11px}
-.filter-btn .arrow{font-size:10px;color:var(--t2);transition:transform .2s}
+.filter-btn .count{color:var(--accent);font-size:12px}
+.filter-btn .arrow{font-size:11px;color:var(--t2);transition:transform .2s}
 .filter-btn.active .arrow{transform:rotate(180deg)}
-.filter-dropdown{display:none;position:absolute;top:100%;left:0;margin-top:6px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:0;min-width:200px;max-height:340px;overflow:hidden;z-index:100;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.filter-dropdown{display:none;position:absolute;top:100%;left:0;margin-top:6px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:0;min-width:200px;max-height:340px;overflow:hidden;z-index:100;box-shadow:0 12px 40px rgba(180,160,170,.12)}
 .filter-dropdown.show{display:block}
-.filter-dd-search{display:block;width:100%;padding:8px 12px;border:none;border-bottom:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none;font-family:inherit;box-sizing:border-box}
+.filter-dd-search{display:block;width:100%;padding:8px 12px;border:none;border-bottom:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;box-sizing:border-box}
 .filter-dd-search::placeholder{color:var(--t2)}
 .filter-dd-actions{display:flex;gap:4px;padding:6px 10px;border-bottom:1px solid var(--border)}
-.filter-dd-actions button{flex:1;padding:4px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s}
-.filter-dd-actions button:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.filter-dd-actions button{flex:1;padding:4px 8px;border:1px solid var(--border);border-radius:5px;background:transparent;color:var(--t2);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.filter-dd-actions button:hover{background:rgba(184,166,212,.06);color:var(--text)}
 .filter-dd-list{max-height:220px;overflow-y:auto;padding:6px 0}
-.filter-dropdown label{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px;color:var(--text);cursor:pointer;transition:background .15s}
-.filter-dropdown label:hover{background:rgba(255,255,255,.04)}
+.filter-dropdown label{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:13px;color:var(--text);cursor:pointer;transition:background .15s}
+.filter-dropdown label:hover{background:rgba(184,166,212,.06)}
 .filter-dropdown label.hidden{display:none}
 .filter-dropdown input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0}
 .filter-actions{display:flex;gap:6px;margin-left:auto}
-.btn-reset{padding:6px 14px;background:transparent;border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:12px;cursor:pointer;transition:all .2s}
-.btn-reset:hover{background:rgba(255,107,138,.1)}
-.filter-stats{font-size:12px;color:var(--t2);padding:4px 8px;background:var(--bg);border-radius:6px}
+.btn-reset{padding:6px 14px;background:transparent;border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:13px;cursor:pointer;transition:all .2s}
+.btn-reset:hover{background:rgba(232,160,180,.1)}
+.filter-stats{font-size:13px;color:var(--t2);padding:4px 8px;background:var(--bg);border-radius:6px}
 
 /* Chart Select Widget */
 .sel-wrap{position:relative;display:inline-block;vertical-align:middle}
-.sel-btn{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;white-space:nowrap;transition:border-color .2s;font-family:inherit;text-align:left;user-select:none;min-width:100px}
+.sel-btn{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap;transition:border-color .2s;font-family:inherit;text-align:left;user-select:none;min-width:100px}
 .sel-btn:hover,.sel-btn.open{border-color:var(--accent)}
 .sel-btn .sel-txt{overflow:hidden;text-overflow:ellipsis;max-width:150px}
-.sel-btn .sel-arrow{font-size:10px;color:var(--t2);margin-left:auto;flex-shrink:0;transition:transform .2s}
+.sel-btn .sel-arrow{font-size:11px;color:var(--t2);margin-left:auto;flex-shrink:0;transition:transform .2s}
 .sel-btn.open .sel-arrow{transform:rotate(180deg)}
-.sel-dd{display:none;position:absolute;top:100%;left:0;margin-top:4px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:0;min-width:200px;max-height:320px;overflow:hidden;z-index:101;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.sel-dd{display:none;position:absolute;top:100%;left:0;margin-top:4px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:0;min-width:200px;max-height:360px;overflow:hidden;z-index:101;box-shadow:0 12px 40px rgba(180,160,170,.12)}
 .sel-dd.show{display:block}
-.sel-dd .filter-dd-list{max-height:180px}
-.sel-dd label{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:12px;color:var(--text);cursor:pointer;transition:background .15s}
-.sel-dd label:hover{background:rgba(255,255,255,.04)}
+.sel-dd .filter-dd-list{max-height:220px;overflow-y:auto}
+.sel-dd label{display:flex;align-items:center;gap:8px;padding:5px 14px;font-size:13px;color:var(--text);cursor:pointer;transition:background .15s}
+.sel-dd label:hover{background:rgba(184,166,212,.06)}
 .sel-dd label.hidden{display:none}
 .sel-dd input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0}
-.sel-dd label.sel-active{background:rgba(0,212,170,.12);color:var(--accent);font-weight:600}
+.sel-dd label.sel-active{background:rgba(184,166,212,.12);color:var(--accent);font-weight:600}
 
 /* KPI Cards */
 .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:20px}
 .kpi-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
-.kpi-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.kpi-card .label{font-size:11px;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
-.kpi-card .value{font-size:20px;font-weight:700}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(180,160,170,.12)}
+.kpi-card .label{font-size:12px;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-card .value{font-size:21px;font-weight:700}
 .kpi-card:nth-child(1) .value{color:var(--accent)}
 .kpi-card:nth-child(2) .value{color:var(--a2)}
 .kpi-card:nth-child(3) .value{color:var(--a4)}
-.kpi-card:nth-child(4) .value{color:#ffd700}
+.kpi-card:nth-child(4) .value{color:#d4a0c0}
 .kpi-card:nth-child(5) .value{color:var(--a3)}
-.kpi-card:nth-child(6) .value{color:#a78bfa}
+.kpi-card:nth-child(6) .value{color:#c7b0e0}
 
 /* Charts */
 .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
 .chart-panel{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px 20px;box-shadow:var(--shadow)}
-.chart-panel h3{font-size:13px;color:var(--t2);margin-bottom:10px;font-weight:500}
+.chart-panel h3{font-size:14px;color:var(--t2);margin-bottom:10px;font-weight:500}
 .chart-box{width:100%;height:360px}
 .chart-box.tall{height:600px}
 .chart-box.short{height:340px}
 
 /* Table */
-.section-title{font-size:17px;font-weight:600;color:var(--text);margin:24px 0 10px 0;padding-left:12px;border-left:3px solid var(--accent)}
+.section-title{font-size:18px;font-weight:600;color:var(--text);margin:24px 0 10px 0;padding-left:12px;border-left:3px solid var(--accent)}
 .table-panel{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
 .table-controls{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;position:relative;z-index:10;overflow:visible}
-.table-controls input{flex:1;min-width:180px;padding:7px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;outline:none}
-.table-controls input:focus{border-color:var(--accent)}
+.table-controls input[type=text]{flex:1;min-width:180px;padding:7px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none}
+.table-controls input[type=text]:focus{border-color:var(--accent)}
+.table-controls .sel-dd input[type=checkbox]{width:14px;min-width:14px;flex:0 0 auto}
 .table-wrapper{overflow-x:auto;overflow-y:clip}
-table{width:100%;border-collapse:collapse;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
 thead{position:sticky;top:0;z-index:1}
-th{background:#1d2d3d;color:var(--t2);padding:9px 10px;text-align:left;font-weight:600;white-space:nowrap;cursor:pointer;user-select:none}
+th{background:#f5f0f3;color:var(--t2);padding:9px 10px;text-align:left;font-weight:600;white-space:nowrap;cursor:pointer;user-select:none}
 th:hover{color:var(--accent)}
-th .sort-icon{font-size:9px;margin-left:3px;opacity:.3}
+th .sort-icon{font-size:10px;margin-left:3px;opacity:.3}
 th.sorted .sort-icon{opacity:1;color:var(--accent)}
 td{padding:7px 10px;border-bottom:1px solid var(--border);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-tr:hover td{background:rgba(255,255,255,.03)}
+tr:hover td{background:rgba(184,166,212,.04)}
 td.price{color:var(--a4);font-weight:600}
 td.gmv{color:var(--accent);font-weight:600}
-td.rating{color:#ffd700}
+td.rating{color:#d4a0c0}
 td.asin a{color:var(--a2);text-decoration:none}
 td.asin a:hover{text-decoration:underline}
 
-.footer{text-align:center;color:var(--t2);font-size:11px;margin-top:36px;padding:16px}
+.footer{text-align:center;color:var(--t2);font-size:12px;margin-top:36px;padding:16px}
 
 /* Image lightbox */
 .img-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;cursor:pointer;align-items:center;justify-content:center}
@@ -110,96 +114,112 @@ td.asin a:hover{text-decoration:underline}
 @media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}body{padding:10px}}
 
 .sub-tabs{display:flex;gap:2px;margin-bottom:16px;background:var(--card-bg);padding:4px;border-radius:10px;width:fit-content;border:1px solid var(--border);transition:all .3s;position:relative}
-.sub-tab{padding:8px 20px;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--t2);transition:all .2s}
-.sub-tab.active{background:var(--accent);color:#0f1923}
+.sub-tab{padding:8px 20px;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--t2);transition:all .2s}
+.sub-tab.active{background:var(--accent);color:#ffffff}
 .sub-tab:hover:not(.active){color:var(--text)}
-.sub-tabs-toggle{width:30px;height:30px;border:none;border-radius:6px;background:transparent;color:var(--t2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;margin-left:2px;line-height:1}
-.sub-tabs-toggle:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.sub-tabs-toggle{width:30px;height:30px;border:none;border-radius:6px;background:transparent;color:var(--t2);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;margin-left:2px;line-height:1}
+.sub-tabs-toggle:hover{background:rgba(184,166,212,.08);color:var(--text)}
 .sub-tabs.collapsed{gap:0;padding:2px;border-radius:8px}
 .sub-tabs.collapsed .sub-tab{display:none}
-.sub-tabs.collapsed .sub-tabs-toggle{margin-left:0;background:rgba(255,255,255,.04);border-radius:6px;width:34px;height:34px;font-size:18px}
-.sub-tabs.collapsed .sub-tabs-toggle:hover{background:var(--accent);color:#0f1923}
+.sub-tabs.collapsed .sub-tabs-toggle{margin-left:0;background:rgba(184,166,212,.06);border-radius:6px;width:34px;height:34px;font-size:18px}
+.sub-tabs.collapsed .sub-tabs-toggle:hover{background:var(--accent);color:#ffffff}
 .sub-content{display:none !important}
 .sub-content.active{display:block !important}
 
-.dim-btn{padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit}.dim-btn.active{background:var(--accent);color:#0f1923;border-color:var(--accent)}
+.dim-btn{padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--t2);font-size:12px;cursor:pointer;font-family:inherit}.dim-btn.active{background:var(--accent);color:#ffffff;border-color:var(--accent)}
 /* Metric column visibility */
 #amTable.metric-gmv [data-metric="units"],#amTable.metric-gmv [data-metric="price"]{display:none}
 #amTable.metric-units [data-metric="gmv"],#amTable.metric-units [data-metric="price"]{display:none}
 #amTable.metric-price [data-metric="gmv"],#amTable.metric-price [data-metric="units"]{display:none}
-#amTable{font-size:15px;margin:0 auto;border-collapse:separate}#amTable th{font-size:13px;padding:6px 4px;position:relative;user-select:none;text-align:center}#amTable td{padding:8px 5px;text-align:center}
+#amTable{font-size:16px;margin:0 auto;border-collapse:separate !important;border-spacing:0;width:auto;min-width:2100px}#amTable th{font-size:14px;padding:6px 4px;position:relative;user-select:none;text-align:center}#amTable td{padding:8px 5px;text-align:center}
 #amTable td img{width:80px!important;height:80px!important}
 /* 父ASIN重复行高亮 */
 #amTbody tr.dup-row td{background:rgba(255,180,80,.18)}
 #amTbody tr.dup-row td:nth-child(1){background:rgba(255,180,80,.22)}
 #amTbody tr.dup-row td:nth-child(2){background:rgba(255,180,80,.22)}
 #amTbody tr.dup-row td:nth-child(3){background:rgba(255,180,80,.22)}
-/* 表头行冻结 */
-#amTable thead th{position:sticky;top:0;z-index:3;background:#1d2d3d}
-/* 冻结列: # 图片 ASIN（仅thead + amTbody，不含amSummary） */
-#amTable thead th:nth-child(1),#amTbody td:nth-child(1){position:sticky;left:0;z-index:2;background:#1a2634}
-#amTable thead th:nth-child(2),#amTbody td:nth-child(2){position:sticky;left:32px;z-index:2;background:#1a2634}
-#amTable thead th:nth-child(3),#amTbody td:nth-child(3){position:sticky;left:122px;z-index:2;background:#1a2634}
-/* 角单元格: 表头∩冻结列 = 最高层级 */
-#amTable thead th:nth-child(1),
-#amTable thead th:nth-child(2),
-#amTable thead th:nth-child(3){z-index:5;background:#1d2d3d}
-/* Excel冻结窗格分隔线 */
-#amTbody td:nth-child(3){border-right:2px solid #4da6ff}
-#amTable thead th{border-bottom:2px solid #4da6ff}
-#amTable thead th:nth-child(3){border-right:2px solid #4da6ff}
-/* 单双月列颜色区分 — 单月(3,5,7)浅底，双月(4,6)深底 (col 9=3月GMV) */
+/* ══ 冻结列方案 ═══
+   thead sticky → 上下滚动时整个表头固定（含合计行）
+   左3列 (# 图片 ASIN) position:sticky; left → 左右滚动时固定
+   6个冻结格 = thead th×3 + #amSummaryRow td×3 */
+#amTable thead{position:sticky;top:0;z-index:10;background:#f5f0f3}
+#amTable thead th{border-bottom:2px solid #d4a5c7}
+/* 表头行左3列水平冻结 */
+#amTable thead tr:first-child th:nth-child(1){position:sticky;left:0;z-index:12;background:#f5f0f3}
+#amTable thead tr:first-child th:nth-child(2){position:sticky;left:var(--fz-l-col1,0);z-index:12;background:#f5f0f3}
+#amTable thead tr:first-child th:nth-child(3){position:sticky;left:var(--fz-l-col2,0);z-index:12;background:#f5f0f3;border-right:2px solid #d4a5c7}
+/* 合计行左3列水平冻结（合计行在 thead 内，垂直冻结由 thead sticky 处理） */
+#amSummaryRow td:nth-child(1){position:sticky;left:0;z-index:12;background:#f5f0f3 !important}
+#amSummaryRow td:nth-child(2){position:sticky;left:var(--fz-l-col1,0);z-index:12;background:#f5f0f3 !important}
+#amSummaryRow td:nth-child(3){position:sticky;left:var(--fz-l-col2,0);z-index:12;background:#f5f0f3 !important;border-right:2px solid #d4a5c7}
+/* tbody 左3列水平冻结（垂直方向随整行滚动） */
+#amTbody td:nth-child(1){position:sticky;left:0;z-index:5;background:#fff}
+#amTbody td:nth-child(2){position:sticky;left:var(--fz-l-col1,0);z-index:5;background:#fff}
+#amTbody td:nth-child(3){position:sticky;left:var(--fz-l-col2,0);z-index:5;background:#fff;border-right:2px solid #d4a5c7}
+#amTbody tr.dup-row td:nth-child(-n+3){background:rgba(255,180,80,.22) !important}
+/* 单双月列颜色区分 — 单月(3,5,7)浅底，双月(4,6)稍深底 (col 9=3月GMV) */
 #amTbody td:nth-child(9),#amTbody td:nth-child(11),#amTbody td:nth-child(13),
 #amTbody td:nth-child(14),#amTbody td:nth-child(16),#amTbody td:nth-child(18),
 #amTbody td:nth-child(19),#amTbody td:nth-child(21),#amTbody td:nth-child(23),
 #amTable thead th:nth-child(9),#amTable thead th:nth-child(11),#amTable thead th:nth-child(13),
 #amTable thead th:nth-child(14),#amTable thead th:nth-child(16),#amTable thead th:nth-child(18),
 #amTable thead th:nth-child(19),#amTable thead th:nth-child(21),#amTable thead th:nth-child(23)
-{background:rgba(255,255,255,0.045)}
+{background:rgba(184,166,212,.15);color:#5a5055;font-weight:500}
 #amTbody td:nth-child(10),#amTbody td:nth-child(12),
 #amTbody td:nth-child(15),#amTbody td:nth-child(17),
 #amTbody td:nth-child(20),#amTbody td:nth-child(22),
 #amTable thead th:nth-child(10),#amTable thead th:nth-child(12),
 #amTable thead th:nth-child(15),#amTable thead th:nth-child(17),
 #amTable thead th:nth-child(20),#amTable thead th:nth-child(22)
-{background:rgba(0,0,0,0.1)}
+{background:rgba(212,165,199,.28);color:#3d3638;font-weight:600}
 /* 平均单价列专属颜色 */
-#amTbody td:nth-child(8){color:#4d7cff;font-weight:600}
-#amSummary td:nth-child(2){color:#4d7cff}
-#amTable thead th:nth-child(8){color:#4d7cff}
-/* 合计行: td样式，首格水平冻结(left)，垂直由JS transform控制 */
-#amSummary td{background:#1d2d3d;font-weight:700;border-bottom:2px solid var(--accent)}
-#amSummary td:first-child{position:sticky;left:0;z-index:4;background:#1d2d3d;border-right:2px solid #4da6ff}
+#amTbody td:nth-child(8){color:#b8a6d4;font-weight:600}
+#amSummaryRow td:nth-child(2){color:#b8a6d4}
+#amTable thead th:nth-child(8){color:#b8a6d4}
+/* 月列数据颜色覆盖 — 确保 GMV/销量数据在彩色背景上清晰可读 */
+#amTbody td[data-metric="gmv"],#amTbody td[data-metric="units"]{color:#2a2527;font-weight:600}
+/* 合计行样式（thead内第二行，随表头垂直冻结） */
+#amSummaryRow{background:#f5f0f3;font-weight:700;border-bottom:2px solid var(--accent);font-size:16px}
+#amSummaryRow td{padding:8px 5px;text-align:center;color:#2a2527;font-weight:700;background:#f5f0f3 !important}
+#amSummaryRow td[data-metric="gmv"],#amSummaryRow td[data-metric="units"]{color:var(--accent)}
+#amSummaryRow td:first-child{border-right:none}
 #amTable th .resize-handle{position:absolute;right:0;top:0;bottom:0;width:10px;cursor:col-resize;z-index:2;transition:background .15s}
-#amTable th .resize-handle:hover,#amTable th .resize-handle.dragging{background:rgba(77,166,255,.35)}
+#amTable th .resize-handle:hover,#amTable th .resize-handle.dragging{background:rgba(184,166,212,.35)}
 </style>
 </head>
 <body>
 
-<div id="loadingOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0f1923;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:inherit">
-<div style="width:48px;height:48px;border:4px solid rgba(255,255,255,.1);border-top:4px solid #4da6ff;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px"></div>
-<div style="color:var(--text);font-size:16px;font-weight:600">加载中...</div>
-<div style="color:var(--t2);font-size:12px;margin-top:6px">正在读取市场数据</div>
+<div id="loadingOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#faf6f8;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:inherit">
+<div style="width:48px;height:48px;border:4px solid rgba(184,166,212,.1);border-top:4px solid #d4a5c7;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px"></div>
+<div style="color:var(--text);font-size:17px;font-weight:600">加载中...</div>
+<div style="color:var(--t2);font-size:13px;margin-top:6px">正在读取市场数据</div>
 </div>
 <style>@keyframes spin{to{transform:rotate(360deg)}}#loadingOverlay.hidden{opacity:0;pointer-events:none;transition:opacity .3s}
-.chart-summary{font-size:14px;color:#e0e6ed;padding:10px 14px;margin-top:8px;background:#0d2b4e;border-radius:8px;border-left:4px solid var(--accent);line-height:2.0}
-.chart-summary b{color:#ffffff;font-weight:700}
-.chart-summary .hi{color:var(--accent);font-weight:700;font-size:15px}
-#am-summary{font-size:14px!important;color:#e0e6ed!important;line-height:2.0;background:#0d2b4e;padding:8px 14px;border-radius:8px}
-#am-summary b{color:#ffffff;font-weight:700}
-#co-summary{font-size:14px!important;background:#0d2b4e;padding:6px 12px;border-radius:6px}</style>
+.chart-summary{font-size:15px;color:#1a1517;padding:10px 14px;margin-top:8px;background:#f5f0f3;border-radius:8px;border-left:4px solid var(--accent);line-height:2.0}
+.chart-summary b{color:#1a1517;font-weight:700}
+.chart-summary .hi{color:var(--accent);font-weight:700;font-size:16px}
+#am-summary{font-size:15px!important;color:#1a1517!important;line-height:2.0;background:#f5f0f3;padding:8px 14px;border-radius:8px}
+#am-summary b{color:#1a1517;font-weight:700}
+#co-summary{font-size:15px!important;background:#f5f0f3;padding:6px 12px;border-radius:6px}</style>
 
 <div class="header">
 <h1>Amazon Bookcase 品类市场数据看板</h1>
-<p>v20260806a | Bookcase Category Market Intelligence · 含竞品观测 · 3-7月完整数据</p>
+<p style="color:#e8a0b4;font-weight:600">⚡ v20260814-sticky-v3 | Bookcase Category Market Intelligence · 含竞品观测 · 3-7月完整数据 · 左侧3列冻结（随整行滚动）</p>
 </div>
 
 <!-- Filter Bar -->
 <div class="filter-bar" id="filterBar"></div>
 
+<!-- ═══ 市场综合总结 ═══ -->
+<div class="chart-panel" style="margin-bottom:16px;border-left:4px solid var(--accent)">
+  <h3 style="font-size:16px;color:var(--accent);margin-bottom:10px">📋 市场综合总结</h3>
+  <div id="market-overview-summary" style="font-size:15px;color:#1a1517;line-height:2.0;padding:4px 0">
+    <div style="color:var(--t2)">加载中...</div>
+  </div>
+</div>
+
 <!-- KPI Cards -->
 <div class="kpi-grid" id="kpiGrid"></div>
-<div class="chart-summary" id="kpi-summary" style="margin-bottom:14px"></div>
 <div id="signalsPanel" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px"></div>
 <div class="sub-tabs" id="subTabs">
 <button class="sub-tab active" data-stab="overview" onclick="switchSubTab('overview')">📊 市场概览</button>
@@ -215,15 +235,15 @@ td.asin a:hover{text-decoration:underline}
 <!-- 公司维度分析 -->
 <div id="companyAnalysis" style="margin-bottom:16px">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
-    <span style="font-weight:700;font-size:15px;color:var(--accent)">🏢 公司维度分析</span>
-    <select id="coSelect" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:200px"><option value="">全部公司</option></select>
-    <select id="coBrand" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部品牌</option></select>
-    <select id="coTopN" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
-    <button onclick="resetSelectWidget('coSelect');resetSelectWidget('coBrand');resetSelectWidget('coTopN');updateCompanyAnalysis()" style="padding:6px 14px;background:var(--bg);border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap">🗑 清除</button>
+    <span style="font-weight:700;font-size:16px;color:var(--accent)">🏢 公司维度分析</span>
+    <select id="coSelect" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;min-width:200px"><option value="">全部公司</option></select>
+    <select id="coBrand" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部品牌</option></select>
+    <select id="coTopN" onchange="updateCompanyAnalysis()" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
+    <button onclick="resetSelectWidget('coSelect');resetSelectWidget('coBrand');resetSelectWidget('coTopN');updateCompanyAnalysis()" style="padding:6px 14px;background:var(--bg);border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap">🗑 清除</button>
   </div>
   <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:10px 18px;margin-bottom:12px">
     <div id="coKpiBar"></div>
-    <div style="flex:1;min-width:200px;text-align:right;font-size:12px;color:var(--t2)" id="co-summary"></div>
+    <div style="flex:1;min-width:200px;text-align:right;font-size:13px;color:var(--t2)" id="co-summary"></div>
   </div>
   <div class="chart-row">
     <div class="chart-panel" style="grid-column:1/-1"><h3>📊 公司排名</h3><div class="chart-box" style="height:520px" id="c23"></div><div class="chart-summary" id="c23-summary"></div></div>
@@ -232,11 +252,11 @@ td.asin a:hover{text-decoration:underline}
     <div class="chart-panel" style="grid-column:1/-1">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
         <h3 style="margin:0">📏 公司布局</h3>
-        <select id="c28Type" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
-        <select id="c28Style" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
-        <select id="c28Year" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部年份</option></select>
-        <select id="c28Stack" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="type">堆叠:类型</option><option value="style">堆叠:风格</option></select>
-        <select id="c28TopN" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;margin-left:auto"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
+        <select id="c28Type" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
+        <select id="c28Style" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
+        <select id="c28Year" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部年份</option></select>
+        <select id="c28Stack" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="type">堆叠:类型</option><option value="style">堆叠:风格</option></select>
+        <select id="c28TopN" onchange="updateC28_Layout(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;margin-left:auto"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
       </div>
       <div class="chart-box tall" id="c28"></div><div class="chart-summary" id="c28-summary"></div>
     </div>
@@ -244,9 +264,9 @@ td.asin a:hover{text-decoration:underline}
   <div class="chart-row">
     <div class="chart-panel" style="grid-column:1/-1">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
-        <h3 style="margin:0">📈 品牌月度GMV走势</h3>
-        <select id="c24Company" onchange="updateC24_CompanyTrend(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部公司</option></select>
-        <select id="c24TopN" onchange="updateC24_CompanyTrend(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
+        <h3 style="margin:0">📈 公司月度GMV走势</h3>
+        <select id="c24Company" onchange="updateC24_CompanyTrend(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部公司</option></select>
+        <select id="c24TopN" onchange="updateC24_CompanyTrend(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
       </div>
       <div class="chart-box" style="height:520px" id="c24"></div><div class="chart-summary" id="c24-summary"></div>
     </div>
@@ -255,13 +275,13 @@ td.asin a:hover{text-decoration:underline}
     <div class="chart-panel" style="grid-column:1/-1">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
         <h3 style="margin:0">📅 公司 × 上架年份 — 产品散点图</h3>
-        <select id="c25Company" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部公司</option></select>
-        <select id="c25Brand" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部品牌</option></select>
-        <select id="c25Type" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:140px"><option value="">全部类型</option></select>
-        <select id="c25Style" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:140px"><option value="">全部风格</option></select>
-        <select id="c25Year" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:130px"><option value="">全部年份</option></select>
-        <button onclick="resetSelectWidget('c25Company');resetSelectWidget('c25Brand');resetSelectWidget('c25Type');resetSelectWidget('c25Style');resetSelectWidget('c25Year');resetSelectWidget('c25TopN');updateC25_Scatter(null,true)" style="padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit">✕ 清除筛选</button>
-        <select id="c25TopN" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;margin-left:auto"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
+        <select id="c25Company" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部公司</option></select>
+        <select id="c25Brand" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;min-width:180px"><option value="">全部品牌</option></select>
+        <select id="c25Type" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;min-width:140px"><option value="">全部类型</option></select>
+        <select id="c25Style" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;min-width:140px"><option value="">全部风格</option></select>
+        <select id="c25Year" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;min-width:130px"><option value="">全部年份</option></select>
+        <button onclick="resetSelectWidget('c25Company');resetSelectWidget('c25Brand');resetSelectWidget('c25Type');resetSelectWidget('c25Style');resetSelectWidget('c25Year');resetSelectWidget('c25TopN');updateC25_Scatter(null,true)" style="padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:12px;cursor:pointer;font-family:inherit">✕ 清除筛选</button>
+        <select id="c25TopN" onchange="updateC25_Scatter(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;margin-left:auto"><option value="">全部公司</option><option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option></select>
       </div>
       <div class="chart-box tall" id="c25"></div><div class="chart-summary" id="c25-summary"></div>
     </div>
@@ -273,13 +293,13 @@ td.asin a:hover{text-decoration:underline}
   <div class="chart-panel" style="margin-bottom:14px">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;flex-wrap:wrap">
       <h3 style="margin:0">🖼️ 各公司TOP产品</h3>
-      <select id="coProdTopN" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit">
+      <select id="coProdTopN" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit">
         <option value="10">TOP 10</option><option value="20">TOP 20</option><option value="30">TOP 30</option><option value="50">TOP 50</option><option value="100">TOP 100</option>
       </select>
-      <select id="coTopStyle" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
-      <select id="coTopType" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
-      <select id="coTopYear" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部年份</option></select>
-      <button onclick="resetSelectWidget('coTopStyle');resetSelectWidget('coTopType');resetSelectWidget('coTopYear');updateCoProducts(null,true)" style="padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:11px;cursor:pointer;font-family:inherit">✕ 清除筛选</button>
+      <select id="coTopStyle" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
+      <select id="coTopType" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
+      <select id="coTopYear" onchange="updateCoProducts(null,true)" style="padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部年份</option></select>
+      <button onclick="resetSelectWidget('coTopStyle');resetSelectWidget('coTopType');resetSelectWidget('coTopYear');updateCoProducts(null,true)" style="padding:5px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--t2);font-size:12px;cursor:pointer;font-family:inherit">✕ 清除筛选</button>
     </div>
     <div id="coProductGrid" style="display:flex;flex-direction:column;gap:14px;margin-top:8px"></div>
   </div>
@@ -290,25 +310,33 @@ td.asin a:hover{text-decoration:underline}
 <div class="table-controls" style="margin-bottom:10px;display:flex;flex-direction:column;gap:8px">
   <!-- Row 1: 搜索 + 指标 + 排序 + 去重 -->
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-    <input type="text" id="amSearch" placeholder="🔍 搜索 ASIN / 品牌 / 公司 / 标题..." style="flex:1;min-width:280px;padding:8px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none;font-family:inherit">
-    <select id="amMetric" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="gmv" selected>📊 GMV</option><option value="units">📦 销量</option><option value="price">💰 单价</option></select>
-    <select id="amSort" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="gmv_total">GMV汇总↓</option><option value="gmv_m7">7月GMV↓</option><option value="gmv_m6">6月GMV↓</option><option value="gmv_m5">5月GMV↓</option><option value="gmv_m4">4月GMV↓</option><option value="gmv_m3">3月GMV↓</option></select>
-    <label style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;user-select:none"><input type="checkbox" id="amDedup" style="cursor:pointer;accent-color:var(--accent)"> 🔗 去重父ASIN</label>
+    <input type="text" id="amSearch" placeholder="🔍 搜索 ASIN / 品牌 / 公司 / 标题..." style="flex:1;min-width:280px;padding:8px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;font-family:inherit">
+    <select id="amMetric" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="gmv" selected>📊 GMV</option><option value="units">📦 销量</option><option value="price">💰 单价</option></select>
+    <select id="amSort" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="gmv_total">GMV汇总↓</option><option value="gmv_m7">7月GMV↓</option><option value="gmv_m6">6月GMV↓</option><option value="gmv_m5">5月GMV↓</option><option value="gmv_m4">4月GMV↓</option><option value="gmv_m3">3月GMV↓</option></select>
+    <label style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;user-select:none"><input type="checkbox" id="amDedup" style="cursor:pointer;accent-color:var(--accent)"> 🔗 去重父ASIN</label>
   </div>
   <!-- Row 2: 维度筛选 + 统计 -->
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-    <span style="font-size:11px;color:var(--t2);white-space:nowrap;margin-right:2px">筛选</span>
-    <select id="amBrand" style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:130px"><option value="">🏷 全部品牌</option></select>
-    <select id="amCompany" style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:130px"><option value="">🏢 全部公司</option></select>
-    <select id="amType" style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:110px"><option value="">📂 全部类型</option></select>
-    <select id="amStyle" style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:110px"><option value="">🎨 全部风格</option></select>
-    <select id="amYear" style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit;min-width:110px"><option value="">📅 全部上市年</option></select>
-    <span id="am-summary" style="margin-left:auto;font-size:12px;color:var(--t2);white-space:nowrap"></span>
+    <span style="font-size:13px;color:var(--t2);white-space:nowrap;margin-right:2px;display:inline-flex;align-items:center">筛选</span>
+    <select id="amBrand" multiple style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;flex:1;min-width:100px"><option value="">🏷 全部品牌</option></select>
+    <select id="amCompany" multiple style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;flex:1;min-width:100px"><option value="">🏢 全部公司</option></select>
+    <select id="amType" multiple style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;flex:1;min-width:100px"><option value="">📂 全部类型</option></select>
+    <select id="amStyle" multiple style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;flex:1;min-width:100px"><option value="">🎨 全部风格</option></select>
+    <select id="amYear" multiple style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;flex:1;min-width:100px"><option value="">📅 全部上市年</option></select>
   </div>
+  <span id="am-summary" style="font-size:13px;color:var(--t2);white-space:nowrap"></span>
 </div>
-<div class="table-wrapper" style="overflow-x:auto"><table id="amTable"><thead><tr><th data-metric="all" style="width:32px">#</th><th data-metric="all" style="width:90px">图片</th><th data-metric="all" style="width:100px">ASIN</th><th data-metric="all" style="width:90px">父ASIN</th><th data-metric="all" style="width:70px">品牌</th><th data-metric="all" style="width:85px">公司</th><th data-metric="all" style="width:65px">上市</th><th data-metric="all" style="width:70px">平均单价</th><th data-metric="gmv">3月GMV</th><th data-metric="gmv">4月GMV</th><th data-metric="gmv">5月GMV</th><th data-metric="gmv">6月GMV</th><th data-metric="gmv">7月GMV</th><th data-metric="units">3月销量</th><th data-metric="units">4月销量</th><th data-metric="units">5月销量</th><th data-metric="units">6月销量</th><th data-metric="units">7月销量</th><th data-metric="price">3月单价</th><th data-metric="price">4月单价</th><th data-metric="price">5月单价</th><th data-metric="price">6月单价</th><th data-metric="price">7月单价</th><th data-metric="all">GMV汇总</th><th data-metric="all">趋势</th></tr></thead><tbody id="amSummary"></tbody><tbody id="amTbody"></tbody></table><div id="amPager" style="display:flex;justify-content:center;gap:6px;padding:8px 0"></div></div></div>
+<div class="table-wrapper" style="overflow:auto;max-height:80vh;position:relative"><table id="amTable"><thead><tr><th data-metric="all" style="width:32px">#</th><th data-metric="all" style="width:90px">图片</th><th data-metric="all" style="width:100px">ASIN</th><th data-metric="all" style="width:90px">父ASIN</th><th data-metric="all" style="width:70px">品牌</th><th data-metric="all" style="width:85px">公司</th><th data-metric="all" style="width:65px">上市</th><th data-metric="all" style="width:70px">平均单价</th><th data-metric="gmv">3月GMV</th><th data-metric="gmv">4月GMV</th><th data-metric="gmv">5月GMV</th><th data-metric="gmv">6月GMV</th><th data-metric="gmv">7月GMV</th><th data-metric="units">3月销量</th><th data-metric="units">4月销量</th><th data-metric="units">5月销量</th><th data-metric="units">6月销量</th><th data-metric="units">7月销量</th><th data-metric="price">3月单价</th><th data-metric="price">4月单价</th><th data-metric="price">5月单价</th><th data-metric="price">6月单价</th><th data-metric="price">7月单价</th><th data-metric="all">GMV汇总</th><th data-metric="all">趋势</th></tr><tr id="amSummaryRow" style="background:#f5f0f3;font-weight:700;border-bottom:2px solid var(--accent);font-size:16px"></tr></thead><tbody id="amTbody"></tbody></table>
+</div>
+<div id="amPager" style="display:flex;justify-content:center;align-items:center;gap:6px;padding:12px 0;border-top:1px solid var(--border);margin-top:4px"></div></div>
 <div class="sub-content active" id="sc-overview">
-<div class="chart-row"><div class="chart-panel" style="grid-column:1/-1"><h3>📈 月度GMV趋势（全部风格）</h3><div class="chart-box short" id="c20"></div><div class="chart-summary" id="c20-summary"></div></div></div>
+<div class="chart-row"><div class="chart-panel" style="grid-column:1/-1">
+<div style="display:flex;gap:4px;margin-bottom:8px">
+<h3>📈 月度GMV趋势</h3>
+<button class="dim-btn active" data-dim="style" onclick="switchDimC20('style',this)">风格</button>
+<button class="dim-btn" data-dim="type" onclick="switchDimC20('type',this)">类型</button>
+</div>
+<div class="chart-box short" id="c20"></div><div class="chart-summary" id="c20-summary"></div></div></div>
 <div class="chart-row">
 <div class="chart-panel"><h3>🎨 风格分布（父ASIN）</h3><div class="chart-box" style="height:420px" id="c5"></div><div class="chart-summary" id="c5-summary"></div></div>
 <div class="chart-panel"><h3>📂 类型分布（父ASIN）</h3><div class="chart-box" style="height:420px" id="c6"></div><div class="chart-summary" id="c6-summary"></div></div>
@@ -328,23 +356,25 @@ td.asin a:hover{text-decoration:underline}
 <div class="chart-row"><div class="chart-panel" style="grid-column:1/-1">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
 <h3 style="margin:0">📊 年度多维度趋势分析</h3>
-<select id="c21Style" onchange="updateC21_YearDim(getAggregated(getFiltered()))" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
-<select id="c21Type" onchange="updateC21_YearDim(getAggregated(getFiltered()))" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
+<button class="dim-btn active" data-dim="style" onclick="switchDimC21('style',this)">风格</button>
+<button class="dim-btn" data-dim="type" onclick="switchDimC21('type',this)">类型</button>
+<select id="c21Style" onchange="updateC21_YearDim(getAggregated(getFiltered()))" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
+<select id="c21Type" onchange="updateC21_YearDim(getAggregated(getFiltered()))" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
 </div>
 <div class="chart-box tall" id="c21"></div><div class="chart-summary" id="c21-summary"></div>
+</div></div>
 
 <div class="chart-row"><div class="chart-panel" style="grid-column:1/-1">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
 <h3 style="margin:0">📏 各类型尺寸区间分布</h3>
-<button class="dim-btn active" data-dim="w" onclick="switchDimC22('w',this)" style="font-size:11px">宽度W</button>
-<button class="dim-btn" data-dim="d" onclick="switchDimC22('d',this)" style="font-size:11px">纵深D</button>
-<button class="dim-btn" data-dim="h" onclick="switchDimC22('h',this)" style="font-size:11px">高度H</button>
-<select id="c22Type" onchange="updateC22_Dims()" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
-	<select id="c22Style" onchange="updateC22_Dims()" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:11px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
+<button class="dim-btn active" data-dim="w" onclick="switchDimC22('w',this)" style="font-size:12px">宽度W</button>
+<button class="dim-btn" data-dim="d" onclick="switchDimC22('d',this)" style="font-size:12px">纵深D</button>
+<button class="dim-btn" data-dim="h" onclick="switchDimC22('h',this)" style="font-size:12px">高度H</button>
+<select id="c22Type" onchange="updateC22_Dims()" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部类型</option></select>
+	<select id="c22Style" onchange="updateC22_Dims()" style="padding:4px 8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer;outline:none;font-family:inherit"><option value="">全部风格</option></select>
 </div>
 <div class="chart-box tall" id="c22"></div><div class="chart-summary" id="c22-summary"></div>
 </div></div>
-</div>
 
 <div class="footer">Amazon Bookcase Market Dashboard · Source: bookcase月全.xlsx · Powered by ECharts</div>
 
@@ -434,7 +464,7 @@ function initCharts(){
     try{charts[id]=echarts.init(el);charts[id].setOption({backgroundColor:'transparent'})}catch(e){console.error('initCharts '+id+':',e)}
   });
 }
-var CP = ['#00d4aa','#4da6ff','#ff6b8a','#ffb347','#a78bfa','#ffd700','#44d960','#ff7043','#40c4ff','#ff4081','#69f0ae','#7c4dff','#ffab00','#18ffff','#a1887f','#f06292','#b2ff59','#448aff'];
+var CP = ['#b8a6d4','#d4a5c7','#e8a0b4','#d4b8a6','#c7b0e0','#d4a0c0','#a8c7d4','#d4a5b4','#b4c7d4','#c7d4a5','#d4b4c7','#a5c7b4','#c7a5b4','#b4d4c7','#d4c7a5','#a5b4d4','#c7b4d4','#d4a5c7'];
 
 // ── Update all ──
 function updateSignals(d){
@@ -449,9 +479,9 @@ function updateSignals(d){
   gainers.forEach(function(g){g.gain=g.m5>0?(g.m6-g.m5)/g.m5*100:0});
   gainers.sort(function(a,b){return b.gain-a.gain});
   var topG=gainers.slice(0,3);
-  h+='<div class="chart-panel" style="padding:12px;border-left:3px solid var(--accent)"><div style="font-weight:700;font-size:12px;color:var(--accent);margin-bottom:6px">🚀 GMV飙升 Top 3</div>';
-	  topG.forEach(function(g){h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><img src="'+g.img+'" style="width:44px;height:44px;object-fit:contain;border-radius:4px;background:#1a2634" onerror="this.style.display=\'none\'"><div style="font-size:11px;line-height:1.6;color:var(--t2);min-width:0"><b style="color:var(--text)">'+g.title.substring(0,30)+'</b><br><a href="https://www.amazon.com/dp/'+g.asin+'" target="_blank" style="font-size:10px;color:var(--accent);text-decoration:none">'+g.asin+'</a> | $'+g.m6.toLocaleString()+' <span style="color:'+(g.gain>0?'var(--accent)':'var(--a3)')+'">'+g.gain.toFixed(0)+'%</span></div></div>'});
-  if(topG.length===0)h+='<div style="font-size:11px;color:var(--t2)">数据不足</div>';
+  h+='<div class="chart-panel" style="padding:12px;border-left:3px solid var(--accent)"><div style="font-weight:700;font-size:13px;color:var(--accent);margin-bottom:6px">🚀 GMV飙升 Top 3</div>';
+	  topG.forEach(function(g){h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><img src="'+g.img+'" style="width:44px;height:44px;object-fit:contain;border-radius:4px;background:#ffffff" onerror="this.style.display=\'none\'"><div style="font-size:12px;line-height:1.6;color:var(--t2);min-width:0"><b style="color:var(--text)">'+g.title.substring(0,30)+'</b><br><a href="https://www.amazon.com/dp/'+g.asin+'" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none">'+g.asin+'</a> | $'+g.m6.toLocaleString()+' <span style="color:'+(g.gain>0?'var(--accent)':'var(--a3)')+'">'+g.gain.toFixed(0)+'%</span></div></div>'});
+  if(topG.length===0)h+='<div style="font-size:12px;color:var(--t2)">数据不足</div>';
   h+='</div>';
 
   // 2. New entrants: listed 2024+, high BSR rank
@@ -460,9 +490,9 @@ function updateSignals(d){
   });
   newbies.sort(function(a,b){return a[FI.bsr]-b[FI.bsr]});
   var topN=newbies.slice(0,3);
-  h+='<div class="chart-panel" style="padding:12px;border-left:3px solid var(--a2)"><div style="font-weight:700;font-size:12px;color:var(--a2);margin-bottom:6px">🆕 新品入榜 Top 3</div>';
-	  topN.forEach(function(r){var im2=r[FI.image_url]||'';h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><img src="'+im2+'" style="width:44px;height:44px;object-fit:contain;border-radius:4px;background:#1a2634" onerror="this.style.display=\'none\'"><div style="font-size:11px;line-height:1.6;color:var(--t2);min-width:0"><b style="color:var(--text)">'+(r[FI.title]||'').substring(0,30)+'</b><br><a href="https://www.amazon.com/dp/'+(r[FI.asin]||'')+'" target="_blank" style="font-size:10px;color:var(--accent);text-decoration:none">'+(r[FI.asin]||'')+'</a> | BSR #'+r[FI.bsr]+' | $'+r[FI.price]+' | '+r[FI.rating].toFixed(1)+'\u2b50</div></div>'});
-  if(topN.length===0)h+='<div style="font-size:11px;color:var(--t2)">暂无</div>';
+  h+='<div class="chart-panel" style="padding:12px;border-left:3px solid var(--a2)"><div style="font-weight:700;font-size:13px;color:var(--a2);margin-bottom:6px">🆕 新品入榜 Top 3</div>';
+	  topN.forEach(function(r){var im2=r[FI.image_url]||'';h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><img src="'+im2+'" style="width:44px;height:44px;object-fit:contain;border-radius:4px;background:#ffffff" onerror="this.style.display=\'none\'"><div style="font-size:12px;line-height:1.6;color:var(--t2);min-width:0"><b style="color:var(--text)">'+(r[FI.title]||'').substring(0,30)+'</b><br><a href="https://www.amazon.com/dp/'+(r[FI.asin]||'')+'" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none">'+(r[FI.asin]||'')+'</a> | BSR #'+r[FI.bsr]+' | $'+r[FI.price]+' | '+r[FI.rating].toFixed(1)+'\u2b50</div></div>'});
+  if(topN.length===0)h+='<div style="font-size:12px;color:var(--t2)">暂无</div>';
   h+='</div>';
 
   // 3. Value picks: price < avg && rating >= 4.3
@@ -470,23 +500,30 @@ function updateSignals(d){
   var valueP=[];d.forEach(function(r){if(r[FI.price]>0&&r[FI.price]<avgP&&r[FI.rating]>=4.3)valueP.push(r)});
   valueP.sort(function(a,b){return b[FI.rating]-a[FI.rating]||a[FI.price]-b[FI.price]});
   var topV=valueP.slice(0,3);
-  h+='<div class="chart-panel" style="padding:12px;border-left:3px solid var(--a4)"><div style="font-weight:700;font-size:12px;color:var(--a4);margin-bottom:6px">💎 高性价比 Top 3</div>';
-	  topV.forEach(function(r){var im3=r[FI.image_url]||'';h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><img src="'+im3+'" style="width:44px;height:44px;object-fit:contain;border-radius:4px;background:#1a2634" onerror="this.style.display=\'none\'"><div style="font-size:11px;line-height:1.6;color:var(--t2);min-width:0"><b style="color:var(--text)">'+(r[FI.title]||'').substring(0,30)+'</b><br><a href="https://www.amazon.com/dp/'+(r[FI.asin]||'')+'" target="_blank" style="font-size:10px;color:var(--accent);text-decoration:none">'+(r[FI.asin]||'')+'</a> | $'+r[FI.price].toFixed(2)+' | '+r[FI.rating].toFixed(1)+'\u2b50 | '+r[FI.brand]+'</div></div>'});
-  if(topV.length===0)h+='<div style="font-size:11px;color:var(--t2)">暂无</div>';
+  h+='<div class="chart-panel" style="padding:12px;border-left:3px solid var(--a4)"><div style="font-weight:700;font-size:13px;color:var(--a4);margin-bottom:6px">💎 高性价比 Top 3</div>';
+	  topV.forEach(function(r){var im3=r[FI.image_url]||'';h+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><img src="'+im3+'" style="width:44px;height:44px;object-fit:contain;border-radius:4px;background:#ffffff" onerror="this.style.display=\'none\'"><div style="font-size:12px;line-height:1.6;color:var(--t2);min-width:0"><b style="color:var(--text)">'+(r[FI.title]||'').substring(0,30)+'</b><br><a href="https://www.amazon.com/dp/'+(r[FI.asin]||'')+'" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none">'+(r[FI.asin]||'')+'</a> | $'+r[FI.price].toFixed(2)+' | '+r[FI.rating].toFixed(1)+'\u2b50 | '+r[FI.brand]+'</div></div>'});
+  if(topV.length===0)h+='<div style="font-size:12px;color:var(--t2)">暂无</div>';
   h+='</div>';
   document.getElementById('signalsPanel').innerHTML=h;
 }
+var c20Dim='style';
+function switchDimC20(dim,btn){
+  c20Dim=dim;var btns=btn.parentElement.querySelectorAll('.dim-btn');
+  btns.forEach(function(b){b.classList.toggle('active',b.dataset.dim===dim)});
+  updateC20_Trend(getAggregated(getFiltered()));
+}
 function updateC20_Trend(d){
-  var sm={};d.forEach(function(r){var s=r[FI.style];if(!s||s==='Unknown'||s==='0')s='未打标';sm[s]=(sm[s]||0)+r[FI.gmv]});
+  var fi=c20Dim==='style'?FI.style:FI.type;
+  var sm={};d.forEach(function(r){var s=r[fi];if(!s||s==='Unknown'||s==='0')s='未打标';sm[s]=(sm[s]||0)+r[FI.gmv]});
   var styles=Object.entries(sm).sort(function(a,b){return b[1]-a[1]}).map(function(x){return x[0]});
   var months=['3月','4月','5月','6月','7月'];
   var series=styles.map(function(s){
     var data=months.map(function(m){
-      var sum=0;d.forEach(function(r){if(r[FI.style]===s&&(r[FI.data_month]===m||r[FI.data_month]===parseInt(m)))sum+=r[FI.gmv]});return Math.round(sum)
+      var sum=0;d.forEach(function(r){if(r[fi]===s&&(r[FI.data_month]===m||r[FI.data_month]===parseInt(m)))sum+=r[FI.gmv]});return Math.round(sum)
     });
     return {name:s,type:'line',data:data,smooth:true,symbol:'circle',symbolSize:6}
   });
-  var opt={tooltip:{trigger:'axis'},legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},grid:{left:80,right:50,top:30,bottom:75},xAxis:{type:'category',data:months,axisLabel:{color:'#8899aa'}},yAxis:{type:'value',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v}},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},series:series};
+  var opt={tooltip:{trigger:'axis',formatter:function(p){var t=0;p.forEach(function(s){t+=s.value||0});var h='<b>'+p[0].axisValue+'</b>';p.forEach(function(s){var v=s.value||0;h+='<br/>'+s.marker+s.seriesName+': <b>'+v.toLocaleString()+'</b> ('+(t>0?(v/t*100).toFixed(1):'0.0')+'%)'});h+='<br/><b>合计: '+t.toLocaleString()+'</b>';return h}},legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},grid:{left:80,right:50,top:30,bottom:75},xAxis:{type:'category',data:months,axisLabel:{color:'#5a5055'}},yAxis:{type:'value',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v}},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},series:series};
   if(charts.c20){charts.c20.clear();charts.c20.setOption(opt)}
   // Summary: style growth vector analysis
   var totalGMV=0;styles.forEach(function(s){totalGMV+=sm[s]||0});
@@ -495,7 +532,7 @@ function updateC20_Trend(d){
   var top2GMV=(sm[styles[0]]||0)+(sm[styles[1]]||0);
   var top2Pct=totalGMV>0?(top2GMV/totalGMV*100).toFixed(0):'0';
   var allGrowths=[];
-  styles.forEach(function(s){var m3=0,m7=0;d.forEach(function(r){if(r[FI.style]===s&&(r[FI.data_month]==='3月'||r[FI.data_month]===3))m3+=r[FI.gmv];if(r[FI.style]===s&&(r[FI.data_month]==='7月'||r[FI.data_month]===7))m7+=r[FI.gmv]});if(m3>0){allGrowths.push({name:s,g:(m7-m3)/m3*100})}});
+  styles.forEach(function(s){var m3=0,m7=0;d.forEach(function(r){if(r[fi]===s&&(r[FI.data_month]==='3月'||r[FI.data_month]===3))m3+=r[FI.gmv];if(r[fi]===s&&(r[FI.data_month]==='7月'||r[FI.data_month]===7))m7+=r[FI.gmv]});if(m3>0){allGrowths.push({name:s,g:(m7-m3)/m3*100})}});
   allGrowths.sort(function(a,b){return b.g-a.g});
   var growLeader=allGrowths[0]||null;
   // Modern 3→7 growth
@@ -555,26 +592,26 @@ function updateC22_Dims(){
     // Stacked mode: all types, GMV line
     var allTypes={};order.forEach(function(b){for(var t in byBin[b])allTypes[t]=1});
     var tn=Object.keys(allTypes).filter(function(t){if(!showUnlabeled&&(t==='Unknown'||t==='未打标'||t==='0'))return false;return true;}).sort(function(a,b){var ta=0,tb=0;order.forEach(function(x){ta+=byBin[x][a]?byBin[x][a].asin:0;tb+=byBin[x][b]?byBin[x][b].asin:0});return tb-ta});
-    var series=tn.map(function(t,i){return{name:t,type:'bar',stack:'total',data:order.map(function(b){return byBin[b][t]?byBin[b][t].asin:0}),itemStyle:{color:CP[i%CP.length]}}});
+    var series=tn.map(function(t,i){return{name:t,type:'bar',stack:'total',data:order.map(function(b){return byBin[b][t]?byBin[b][t].asin:0}),itemStyle:{color:CP[i%CP.length]},label:{show:true,position:'inside',fontSize:9,color:'rgba(61,54,56,.5)',formatter:function(p){var total=0;tn.forEach(function(tt){total+=byBin[p.name]&&byBin[p.name][tt]?byBin[p.name][tt].asin:0});var pct=total>0?(p.value/total*100).toFixed(1):'0';return p.value>0?pct+'%':''}}}});
     var gmvData=order.map(function(b){var s=0;tn.forEach(function(t){s+=byBin[b][t]?byBin[b][t].gmv:0});return Math.round(s)});
-    series.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#ffb347'},label:{show:true,position:'top',color:'#ffb347',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
-    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var s=p[0].axisValue+'<br/>';var t=0,gTotal=0;p.forEach(function(x){if(!x.value)return;if(x.seriesName!=='GMV'){var bn=p[0].axisValue;var gmv=byBin[bn]&&byBin[bn][x.seriesName]?Math.round(byBin[bn][x.seriesName].gmv):0;s+=x.marker+x.seriesName+': <b>'+x.value+'</b>个 <span style=\"color:#ffb347\">$'+gmv.toLocaleString()+'</span><br/>';t+=x.value;gTotal+=gmv}});s+='<b>ASIN合计: '+t+'个 | GMV合计: $'+gTotal.toLocaleString()+'</b>';return s}},legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series};
+    series.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#d4b8a6'},label:{show:true,position:'top',color:'#d4b8a6',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
+    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var bn=p[0].axisValue;var total=0,gTotal=0;tn.forEach(function(tt){if(byBin[bn]&&byBin[bn][tt]){total+=byBin[bn][tt].asin;gTotal+=byBin[bn][tt].gmv}});var rows=[];p.forEach(function(x){if(!x.value||x.seriesName==='GMV')return;var cell=byBin[bn]&&byBin[bn][x.seriesName]?byBin[bn][x.seriesName]:{asin:0,gmv:0};rows.push({marker:x.marker,name:x.seriesName,asin:x.value,asinPct:total?(x.value/total*100).toFixed(1):'0.0',gmv:cell.gmv,gmvPct:gTotal?(cell.gmv/gTotal*100).toFixed(1):'0.0'})});return tipTable(bn+' 英寸',rows,{asin:total,gmv:gTotal})}},legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#5a5055',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series};
   } else if(st.length===1){
     // Single type mode: bar + line
     var st0=st[0];
     var asinData=order.map(function(b){return byBin[b][st0]?byBin[b][st0].asin:0});
     var gmvData=order.map(function(b){return byBin[b][st0]?Math.round(byBin[b][st0].gmv):0});
     var totalA=0;asinData.forEach(function(v){totalA+=v});
-    var asinPct=order.map(function(b){return totalA>0?(asinData[order.indexOf(b)]/totalA*100).toFixed(1):'0.0'});
-    var opt={tooltip:{trigger:'axis',axisPointer:{type:'cross'},formatter:function(p){var s=p[0].axisValue+'<br/>';p.forEach(function(x){var idx=order.indexOf(x.axisValue);s+=x.marker+x.seriesName+': '+x.value.toLocaleString()+' ('+asinPct[idx]+'％)<br/>'});return s}},legend:{data:['父ASIN数','GMV'],bottom:0,textStyle:{color:'#8899aa',fontSize:11}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:[{name:'父ASIN数',type:'bar',yAxisIndex:0,data:asinData,itemStyle:{color:'#4da6ff'},label:{show:true,position:'top',color:'#8899aa',fontSize:9,formatter:function(p){var idx=order.indexOf(p.name);return p.value+' ('+asinPct[idx]+'％)'}}},{name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#4da6ff'},label:{show:true,position:'top',color:'#4da6ff',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}}]};
+    var asinPct=order.map(function(b){return totalA>0?(asinData[order.indexOf(b)]/totalA*100).toFixed(1):0});
+    var opt={tooltip:{trigger:'axis',axisPointer:{type:'cross'},formatter:function(p){var s=p[0].axisValue+'<br/>';p.forEach(function(x){var idx=order.indexOf(x.axisValue);if(x.seriesName==='GMV'){s+=x.marker+x.seriesName+': $'+x.value.toLocaleString()+'<br/>'}else{s+=x.marker+x.seriesName+': <b>'+x.value.toLocaleString()+'个</b> ('+asinPct[idx]+'%)<br/>'}});return s}},legend:{data:['父ASIN数','GMV'],bottom:0,textStyle:{color:'#5a5055',fontSize:11}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#5a5055',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:[{name:'父ASIN数',type:'bar',yAxisIndex:0,data:asinData,itemStyle:{color:'#d4a5c7'},label:{show:true,position:'top',color:'#5a5055',fontSize:9,formatter:function(p){return p.value}}},{name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#d4a5c7'},label:{show:true,position:'top',color:'#d4a5c7',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}}]};
   } else {
     // Multi-type filtered stacked mode
     var allTypes2={};order.forEach(function(b){for(var t in byBin[b]){if(!st.length||st.includes(t))allTypes2[t]=1}});
     var tn2=Object.keys(allTypes2).filter(function(t){if(!showUnlabeled&&(t==='Unknown'||t==='未打标'||t==='0'))return false;return true;}).sort(function(a,b){var ta=0,tb=0;order.forEach(function(x){ta+=byBin[x][a]?byBin[x][a].asin:0;tb+=byBin[x][b]?byBin[x][b].asin:0});return tb-ta});
-    var series2=tn2.map(function(t,i){return{name:t,type:'bar',stack:'total',data:order.map(function(b){return byBin[b][t]?byBin[b][t].asin:0}),itemStyle:{color:CP[i%CP.length]}}});
+    var series2=tn2.map(function(t,i){return{name:t,type:'bar',stack:'total',data:order.map(function(b){return byBin[b][t]?byBin[b][t].asin:0}),itemStyle:{color:CP[i%CP.length]},label:{show:true,position:'inside',fontSize:9,color:'rgba(61,54,56,.5)',formatter:function(p){var total=0;tn2.forEach(function(tt){total+=byBin[p.name]&&byBin[p.name][tt]?byBin[p.name][tt].asin:0});var pct=total>0?(p.value/total*100).toFixed(1):'0';return p.value>0?pct+'%':''}}}});
     var gmvData2=order.map(function(b){var s=0;tn2.forEach(function(t){s+=byBin[b][t]?byBin[b][t].gmv:0});return Math.round(s)});
-    series2.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData2,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#ffb347'},label:{show:true,position:'top',color:'#ffb347',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
-    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var s=p[0].axisValue+'<br/>';var t=0,gTotal=0;p.forEach(function(x){if(!x.value)return;if(x.seriesName!=='GMV'){var bn=p[0].axisValue;var gmv=byBin[bn]&&byBin[bn][x.seriesName]?Math.round(byBin[bn][x.seriesName].gmv):0;s+=x.marker+x.seriesName+': <b>'+x.value+'</b>个 <span style=\"color:#ffb347\">$'+gmv.toLocaleString()+'</span><br/>';t+=x.value;gTotal+=gmv}});s+='<b>ASIN合计: '+t+'个 | GMV合计: $'+gTotal.toLocaleString()+'</b>';return s}},legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series2};
+    series2.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData2,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#d4b8a6'},label:{show:true,position:'top',color:'#d4b8a6',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
+    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var bn=p[0].axisValue;var total=0,gTotal=0;tn2.forEach(function(tt){if(byBin[bn]&&byBin[bn][tt]){total+=byBin[bn][tt].asin;gTotal+=byBin[bn][tt].gmv}});var rows=[];p.forEach(function(x){if(!x.value||x.seriesName==='GMV')return;var cell=byBin[bn]&&byBin[bn][x.seriesName]?byBin[bn][x.seriesName]:{asin:0,gmv:0};rows.push({marker:x.marker,name:x.seriesName,asin:x.value,asinPct:total?(x.value/total*100).toFixed(1):'0.0',gmv:cell.gmv,gmvPct:gTotal?(cell.gmv/gTotal*100).toFixed(1):'0.0'})});return tipTable(bn+' 英寸',rows,{asin:total,gmv:gTotal})}},legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#5a5055',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series2};
   }
   charts.c22.clear();charts.c22.setOption(opt);
   // Summary: top 5 intervals
@@ -608,6 +645,7 @@ function updateAll(){
   updateC20_Trend(ad);
   updateC22_Dims();
   updateSignals(ad);
+  updateMarketSummary(ad);
   if(_currentTab==='compete'||typeof _currentTab==='undefined'){updateCompanyAnalysis();}
 }
 
@@ -621,7 +659,7 @@ function initAllSelectWidgets(){
   multiIds.forEach(function(id){initSelectWidget(id,true)});
   // Single-select (parameter)
   var singleIds=['coTopN','c28Stack','c28TopN','c24TopN','c25TopN',
-    'coProdTopN','amMetric','amSort'];
+    'coProdTopN'];
   singleIds.forEach(function(id){initSelectWidget(id,false)});
 }
 // ── KPI ──
@@ -675,7 +713,8 @@ function updateKPIs(d){
   var cr5cr10Gap=parseInt(cr10Pct)-parseInt(cr5Pct);
   var tailPct=coCnt>10?(100-parseInt(cr10Pct)):0;
   var tailCnt=coCnt-10;
-  setSummary('kpi-summary','📊 <b>市场概览</b>: Top5掌控<b>'+cr5Pct+'%</b>GMV，第6-10名仅增<b>'+cr5cr10Gap+'pp</b>→头部断崖明显，剩下<b>'+tailCnt+'</b>家公司分食<b>'+tailPct+'%</b> | '+topEff.name+'单品效率<b>$'+topEff.eff+'K</b>是腰部(中位$'+medEff.toFixed(0)+'K)的<b>'+effRatio+'倍</b>→头部公司靠效率而非铺量取胜 | '+bandLabels[topBand]+'价格带贡献<b>'+topBandPct+'%</b>GMV，均价$'+avgP+' | ⭐'+avgR+'（全品类天花板，无法构成差异化）');
+  // kpi-summary removed — replaced by market-overview-summary at top
+  // setSummary('kpi-summary','📊 <b>市场概览</b>: ...');
 
 }
 
@@ -683,7 +722,7 @@ function updateKPIs(d){
 // ── C1: Style Pie ──
 var dimMode='style';
 function switchDim(mode,btn){
-  dimMode=mode;document.querySelectorAll('.dim-btn').forEach(function(b){b.classList.toggle('active',b.dataset.dim===mode)});
+  dimMode=mode;btn.parentElement.querySelectorAll('.dim-btn').forEach(function(b){b.classList.toggle('active',b.dataset.dim===mode)});
   var d=getAggregated(getFiltered());
   var fi=mode==='style'?FI.style:FI.type;
   d=d.map(function(r){var nr=r.slice();if(!nr[fi]||nr[fi]==='Unknown')nr[fi]='未打标';return nr});
@@ -713,18 +752,18 @@ function updateC1_Dim(d, fi){
       var a=p[0].value, g=p[1].value, u=p[2].value;
       return '<b>'+p[0].name+'</b><br/>父ASIN: <b>'+a.toLocaleString()+'</b> ('+(a/totalA*100).toFixed(1)+'%)<br/>GMV: <b>$'+g.toLocaleString()+'</b> ('+(g/totalG*100).toFixed(1)+'%)<br/>销量: <b>'+u.toLocaleString()+'</b> ('+(u/totalU*100).toFixed(1)+'%)';
     }},
-    legend:{data:['父ASIN数','GMV','销量'],textStyle:{color:'#8899aa',fontSize:10},top:0},
+    legend:{data:['父ASIN数','GMV','销量'],textStyle:{color:'#5a5055',fontSize:10},top:0},
     grid:{left:155,right:175,top:55,bottom:85},
     xAxis:[
-      {type:'value',name:'父ASIN数',nameGap:5,nameTextStyle:{color:'#00d4aa',fontSize:11},axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      {type:'value',name:'GMV',nameGap:25,nameTextStyle:{color:'#ff6b8a',fontSize:11},axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}},
-      {type:'value',name:'销量',nameGap:45,nameTextStyle:{color:'#ffb347',fontSize:11},axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
+      {type:'value',name:'父ASIN数',nameGap:5,nameTextStyle:{color:'#b8a6d4',fontSize:11},axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      {type:'value',name:'GMV',nameGap:25,nameTextStyle:{color:'#e8a0b4',fontSize:11},axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}},
+      {type:'value',name:'销量',nameGap:45,nameTextStyle:{color:'#d4b8a6',fontSize:11},axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
     ],
-    yAxis:{type:'category',data:names,axisLabel:{color:'#e0e6ed',fontSize:12,overflow:'truncate'}},
+    yAxis:{type:'category',data:names,axisLabel:{color:'#5a5055',fontSize:12,overflow:'truncate'}},
     series:[
-      {name:'父ASIN数',type:'bar',xAxisIndex:0,data:asins,itemStyle:{color:'rgba(0,212,170,.7)',borderColor:'#00d4aa',borderRadius:[0,4,4,0]}},
-      {name:'GMV',type:'bar',xAxisIndex:1,data:gmvs,itemStyle:{color:'rgba(255,107,138,.7)',borderColor:'#ff6b8a',borderRadius:[0,4,4,0]}},
-      {name:'销量',type:'bar',xAxisIndex:2,data:units,itemStyle:{color:'rgba(255,179,71,.7)',borderColor:'#ffb347',borderRadius:[0,4,4,0]}}
+      {name:'父ASIN数',type:'bar',xAxisIndex:0,data:asins,itemStyle:{color:'rgba(184,166,212,.7)',borderColor:'#b8a6d4',borderRadius:[0,4,4,0]}},
+      {name:'GMV',type:'bar',xAxisIndex:1,data:gmvs,itemStyle:{color:'rgba(232,160,180,.7)',borderColor:'#e8a0b4',borderRadius:[0,4,4,0]}},
+      {name:'销量',type:'bar',xAxisIndex:2,data:units,itemStyle:{color:'rgba(212,184,166,.7)',borderColor:'#d4b8a6',borderRadius:[0,4,4,0]}}
     ]
   });
   var label=fi===FI.style?'风格':'类型';
@@ -741,6 +780,35 @@ function updateC1_Dim(d, fi){
   var crowded2=effList.slice().sort(function(a,b){return a.index-b.index})[0];
   setSummary('c1-summary','📊 <b>格局</b>: Top2('+top5g[0].name+'/'+top5g[1].name+')占<b>'+(top2gmv/totalG*100).toFixed(0)+'%</b>GMV→'+(top2gmv/totalG*100>70?'双头垄断':'多头竞争')+' | <b>效率</b>: '+bestEff.name+'单品月均<b>$'+bestEff.eff+'K</b>最高，'+overIdx.name+' GMV占比('+overIdx.gmvShare.toFixed(1)+'%)远超ASIN占比('+overIdx.asinShare.toFixed(1)+'%)→高溢价能力 | <b>警示</b>: '+crowded2.name+' ASIN占比('+crowded2.asinShare.toFixed(1)+'%)>GMV占比('+crowded2.gmvShare.toFixed(1)+'%)→内卷严重，'+(crowded2.name===top5g[0].name?'头部陷入规模不经济':'需重新评估该品类投入'));
 }
+// ── 表格化 tooltip：Top5 + 进度条 + 合计 ──
+function _fmtM(v){v=Math.round(v||0);return v>=1e6?'$'+(v/1e6).toFixed(1)+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+v.toLocaleString()}
+function tipTable(title,rows,foot){
+  // 按 ASIN 降序排序，显示全部
+  var sorted = rows.slice().sort(function(a,b){return b.asin - a.asin});
+  var maxAsin = sorted.length ? sorted[0].asin : 1;
+
+  var h = '<div style="font-weight:700;margin-bottom:6px;font-size:14px">'+title+'</div>';
+  h += '<table style="border-collapse:collapse;font-size:12px;line-height:1.7">';
+  h += '<tr style="color:#5a5055"><td style="padding:0 10px 2px 0;width:110px">系列</td><td style="text-align:right;padding:0 0 2px 0;width:70px">父ASIN</td><td style="padding:0 0 2px 6px;width:90px">占比</td><td style="text-align:right;padding:0 0 2px 0;width:90px">GMV</td><td style="padding:0 0 2px 0;width:80px">占比</td></tr>';
+  sorted.forEach(function(r){
+    var barW = Math.round(r.asin/maxAsin*40);
+    h += '<tr>'
+      + '<td style="padding:0 10px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px">'+r.marker+' '+r.name+'</td>'
+      + '<td style="text-align:right;white-space:nowrap"><b>'+r.asin+'</b></td>'
+      + '<td style="padding-left:6px"><div style="display:flex;align-items:center;gap:3px"><div style="width:40px;height:4px;background:rgba(184,166,212,.08);border-radius:2px;overflow:hidden"><div style="width:'+barW+'px;height:100%;background:var(--accent);border-radius:2px"></div></div><span style="color:#5a5055;font-size:11px">'+r.asinPct+'%</span></div></td>'
+      + '<td style="text-align:right;white-space:nowrap"><b>'+_fmtM(r.gmv)+'</b></td>'
+      + '<td style="text-align:right;color:#5a5055;font-size:11px">'+r.gmvPct+'%</td>'
+      + '</tr>';
+  });
+  if(foot)h += '<tr style="border-top:1px solid #e8dfe3;margin-top:2px"><td style="padding:4px 10px 0 0;font-weight:700">合计</td><td style="text-align:right;padding-top:4px;font-weight:700">'+foot.asin+'</td><td></td><td style="text-align:right;padding:4px 0 0 0;font-weight:700">'+_fmtM(foot.gmv)+'</td><td></td></tr>';
+  return h+'</table>';
+}
+var c21Stack='style';
+function switchDimC21(dim,btn){
+  c21Stack=dim;var btns=btn.parentElement.querySelectorAll('.dim-btn');
+  btns.forEach(function(b){b.classList.toggle('active',b.dataset.dim===dim)});
+  updateC21_YearDim(getAggregated(getFiltered()));
+}
 function updateC21_YearDim(d){
   if(!charts.c21) return;
   // Bidirectional dropdowns
@@ -756,12 +824,11 @@ function updateC21_YearDim(d){
   });
   var pickStyle=getSelectVal('c21Style');if(typeof pickStyle==='string')pickStyle=pickStyle?[pickStyle]:[];
   var pickType=getSelectVal('c21Type');if(typeof pickType==='string')pickType=pickType?[pickType]:[];
-  // stackBy: whichever dimension is NOT pinned gets stacked
-  // single style selected + no type → stack by type
-  // single type selected + no style → stack by style
-  // both none → stack by style (default)
+  // stackBy: 由切换按钮决定；若某维度被单独锁定且恰好是堆叠维度，则自动换到另一维度
   // both single → single bar+line
-  var stackBy=(pickStyle.length===1&&!pickType.length)?'type':'style';
+  var stackBy=c21Stack;
+  if(pickStyle.length===1&&!pickType.length&&stackBy==='style')stackBy='type';
+  if(pickType.length===1&&!pickStyle.length&&stackBy==='type')stackBy='style';
   var singleMode=pickStyle.length===1&&pickType.length===1;
   var stackFi=stackBy==='type'?FI.type:FI.style;
   // Aggregate: year × stackDim
@@ -797,16 +864,16 @@ function updateC21_YearDim(d){
         var y=p[0].axisValue, a=p[0].value, g=p[1].value;
         return '<b>'+label+' '+y+'</b><br/>父ASIN: <b>'+a.toLocaleString()+'</b> ('+(a/totalA*100).toFixed(1)+'%)<br/>GMV: <b>$'+g.toLocaleString()+'</b> ('+(g/totalG*100).toFixed(1)+'%)';
       }},
-      legend:{data:['父ASIN数','GMV'],textStyle:{color:'#8899aa'},top:0},
+      legend:{data:['父ASIN数','GMV'],textStyle:{color:'#5a5055'},top:0},
       grid:{left:85,right:85,top:45,bottom:60},
-      xAxis:{type:'category',data:yl,axisLabel:{color:'#8899aa'}},
+      xAxis:{type:'category',data:yl,axisLabel:{color:'#5a5055'}},
       yAxis:[
-        {type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-        {type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
+        {type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+        {type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
       ],
       series:[
-        {name:'父ASIN数',type:'bar',data:asinCnt,itemStyle:{color:'rgba(56,189,248,.7)',borderColor:'#38bdf8',borderRadius:[4,4,0,0]},barMaxWidth:32},
-        {name:'GMV',type:'line',yAxisIndex:1,data:gmvVals,smooth:true,lineStyle:{color:'#fbbf24',width:3},itemStyle:{color:'#fbbf24'},symbol:'circle',symbolSize:8}
+        {name:'父ASIN数',type:'bar',data:asinCnt,itemStyle:{color:'rgba(184,166,212,.7)',borderColor:'#d4a5c7',borderRadius:[4,4,0,0]},barMaxWidth:32},
+        {name:'GMV',type:'line',yAxisIndex:1,data:gmvVals,smooth:true,lineStyle:{color:'#d4b8a6',width:3},itemStyle:{color:'#d4b8a6'},symbol:'circle',symbolSize:8}
       ]
     });
   } else {
@@ -815,25 +882,29 @@ function updateC21_YearDim(d){
     var dimTotal={};
     allDims.forEach(function(dv){ dimTotal[dv]=0; yl.forEach(function(y){ if(years[y][dv]) dimTotal[dv]+=Object.keys(years[y][dv].asin).length; }); });
     allDims.sort(function(a,b){return dimTotal[b]-dimTotal[a]});
-    var CP=['#00d4aa','#4da6ff','#ff6b8a','#ffb347','#a78bfa','#ffd700','#44d960','#ff7043','#40c4ff','#ff4081','#69f0ae','#7c4dff','#ffab00','#18ffff','#a1887f','#f06292','#b2ff59','#448aff'];
+    var CP=['#b8a6d4','#d4a5c7','#e8a0b4','#d4b8a6','#a8c7d4','#c7b0e0','#b0d4c0','#d4c0a0','#c0a8d4','#d4b8c0','#a0c0d4','#d4d0b8'];
     var series=allDims.map(function(dv,j){ return { name:dv, type:'bar', stack:'total', data:yl.map(function(y){ return years[y][dv]?Object.keys(years[y][dv].asin).length:0; }), itemStyle:{color:CP[j%CP.length]}, barMaxWidth:36, emphasis:{focus:'series'} }; });
     var gmvTotal=yl.map(function(y){ var sum=0; allDims.forEach(function(dv){ if(years[y][dv]) sum+=years[y][dv].gmv; }); return Math.round(sum); });
     var titleLabel=pickStyle[0]||pickType[0]||'全部';
     charts.c21.setOption({
       tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){
-        var h='<b>'+titleLabel+' '+p[0].axisValue+'</b>';
+        var y=p[0].axisValue, yi=yl.indexOf(y), yearGmv=yi>=0?gmvTotal[yi]:0;
         var total=0; p.forEach(function(s){if(s.seriesName!=='GMV(合计)')total+=s.value;});
-        p.forEach(function(s){ if(!s.value)return; if(s.seriesName==='GMV(合计)') h+='<br/>'+s.marker+' '+s.seriesName+': <b>$'+s.value.toLocaleString()+'</b>'; else h+='<br/>'+s.marker+' '+s.seriesName+': <b>'+s.value+'</b> ('+(total?(s.value/total*100).toFixed(1):0)+'%)'; });
-        return h;
+        var rows=[];
+        p.forEach(function(s){ if(!s.value||s.seriesName==='GMV(合计)')return;
+          var g=(yi>=0&&years[y][s.seriesName])?years[y][s.seriesName].gmv:0;
+          rows.push({marker:s.marker,name:s.seriesName,asin:s.value,asinPct:total?(s.value/total*100).toFixed(1):'0.0',gmv:g,gmvPct:yearGmv?(g/yearGmv*100).toFixed(1):'0.0'});
+        });
+        return tipTable(titleLabel+' '+y,rows,{asin:total,gmv:yearGmv});
       }},
-      legend:{type:'scroll',textStyle:{color:'#8899aa',fontSize:10},top:0},
+      legend:{type:'scroll',textStyle:{color:'#5a5055',fontSize:10},top:0},
       grid:{left:85,right:85,top:60,bottom:55},
-      xAxis:{type:'category',data:yl,axisLabel:{color:'#8899aa'}},
+      xAxis:{type:'category',data:yl,axisLabel:{color:'#5a5055'}},
       yAxis:[
-        {type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-        {type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
+        {type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+        {type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
       ],
-      series:series.concat([{name:'GMV(合计)',type:'line',yAxisIndex:1,data:gmvTotal,smooth:true,lineStyle:{color:'#fbbf24',width:3},itemStyle:{color:'#fbbf24'},symbol:'circle',symbolSize:8}])
+      series:series.concat([{name:'GMV(合计)',type:'line',yAxisIndex:1,data:gmvTotal,smooth:true,lineStyle:{color:'#d4b8a6',width:3},itemStyle:{color:'#d4b8a6'},symbol:'circle',symbolSize:8}])
     });
   }
   // Summary: top 5 years
@@ -867,16 +938,16 @@ function updateC4_PriceRange(d){
       var a=p[0].value, g=p[1].value;
       return '<b>'+p[0].name+'</b><br/>父ASIN: <b>'+a.toLocaleString()+'</b> ('+(a/totalA*100).toFixed(1)+'%)<br/>GMV: <b>$'+g.toLocaleString()+'</b> ('+(g/totalG*100).toFixed(1)+'%)';
     }},
-    legend:{data:['父ASIN数','GMV'],textStyle:{color:'#8899aa'},top:0},
+    legend:{data:['父ASIN数','GMV'],textStyle:{color:'#5a5055'},top:0},
     grid:{left:85,right:85,top:40,bottom:40},
-    xAxis:{type:'category',data:names,axisLabel:{color:'#8899aa',fontSize:10}},
+    xAxis:{type:'category',data:names,axisLabel:{color:'#5a5055',fontSize:10}},
     yAxis:[
-      {type:'value',name:'父ASIN数',nameTextStyle:{color:'#ffb347',fontSize:10},axisLabel:{color:'#8899aa',fontSize:10},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      {type:'value',name:'GMV',nameTextStyle:{color:'#a78bfa',fontSize:10},axisLabel:{color:'#8899aa',fontSize:10,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
+      {type:'value',name:'父ASIN数',nameTextStyle:{color:'#d4b8a6',fontSize:10},axisLabel:{color:'#5a5055',fontSize:10},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      {type:'value',name:'GMV',nameTextStyle:{color:'#c7b0e0',fontSize:10},axisLabel:{color:'#5a5055',fontSize:10,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
     ],
     series:[
-      {name:'父ASIN数',type:'bar',data:asins,itemStyle:{color:'rgba(255,179,71,.7)',borderColor:'#ffb347',borderRadius:[6,6,0,0]},barMaxWidth:32},
-      {name:'GMV',type:'line',yAxisIndex:1,data:gmvs,smooth:true,lineStyle:{color:'#a78bfa',width:3},itemStyle:{color:'#a78bfa'},symbol:'circle',symbolSize:8}
+      {name:'父ASIN数',type:'bar',data:asins,itemStyle:{color:'rgba(212,184,166,.7)',borderColor:'#d4b8a6',borderRadius:[6,6,0,0]},barMaxWidth:32},
+      {name:'GMV',type:'line',yAxisIndex:1,data:gmvs,smooth:true,lineStyle:{color:'#c7b0e0',width:3},itemStyle:{color:'#c7b0e0'},symbol:'circle',symbolSize:8}
     ]
   });
   var bands=names.map(function(n,i){return {name:n,asin:asins[i],gmv:gmvs[i]}});
@@ -915,7 +986,7 @@ function updateC5_StylePie(d){
   charts.c5.setOption({
     color:CP,
     tooltip:{trigger:'item',formatter:function(p){return p.name+': <b>'+p.value.toLocaleString()+'</b> 父ASIN ('+(p.value/total*100).toFixed(1)+'%)'}},
-    legend:{type:'scroll',orient:'vertical',right:10,top:20,bottom:20,textStyle:{color:'#8899aa',fontSize:10},formatter:function(name){return labelMap[name]||name}},
+    legend:{type:'scroll',orient:'vertical',right:10,top:20,bottom:20,textStyle:{color:'#5a5055',fontSize:10},formatter:function(name){return labelMap[name]||name}},
     series:[{
       type:'pie',radius:['45%','80%'],center:['38%','50%'],
       label:{show:false},
@@ -953,7 +1024,7 @@ function updateC6_TypePie(d){
   charts.c6.setOption({
     color:CP,
     tooltip:{trigger:'item',formatter:function(p){return p.name+': <b>'+p.value.toLocaleString()+'</b> 父ASIN ('+(p.value/total*100).toFixed(1)+'%)'}},
-    legend:{type:'scroll',orient:'vertical',right:10,top:20,bottom:20,textStyle:{color:'#8899aa',fontSize:10},formatter:function(name){return labelMap[name]||name}},
+    legend:{type:'scroll',orient:'vertical',right:10,top:20,bottom:20,textStyle:{color:'#5a5055',fontSize:10},formatter:function(name){return labelMap[name]||name}},
     series:[{
       type:'pie',radius:['45%','80%'],center:['38%','50%'],
       label:{show:false},
@@ -989,15 +1060,15 @@ function updateC9_YearNew(d){
       return '<b>'+y+'</b><br/>父ASIN: <b>'+a.toLocaleString()+'</b> ('+(a/totalA*100).toFixed(1)+'%)<br/>GMV: <b>$'+g.toLocaleString()+'</b> ('+(g/totalG*100).toFixed(1)+'%)';
     }},
     grid:{left:95,right:100,top:50,bottom:60},
-    legend:{data:['父ASIN','GMV'],textStyle:{color:'#8899aa'},top:0},
-    xAxis:{type:'category',data:years,axisLabel:{color:'#8899aa'}},
+    legend:{data:['父ASIN','GMV'],textStyle:{color:'#5a5055'},top:0},
+    xAxis:{type:'category',data:years,axisLabel:{color:'#5a5055'}},
     yAxis:[
-      {type:'value',name:'父ASIN',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      {type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
+      {type:'value',name:'父ASIN',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      {type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
     ],
     series:[
-      {name:'父ASIN',type:'bar',data:asinCnt,itemStyle:{color:'rgba(56,189,248,.7)',borderColor:'#38bdf8',borderRadius:[4,4,0,0]},barMaxWidth:32},
-      {name:'GMV',type:'line',yAxisIndex:1,data:gmvVals,smooth:true,lineStyle:{color:'#fbbf24',width:3},itemStyle:{color:'#fbbf24'},symbol:'circle',symbolSize:8}
+      {name:'父ASIN',type:'bar',data:asinCnt,itemStyle:{color:'rgba(184,166,212,.7)',borderColor:'#d4a5c7',borderRadius:[4,4,0,0]},barMaxWidth:32},
+      {name:'GMV',type:'line',yAxisIndex:1,data:gmvVals,smooth:true,lineStyle:{color:'#d4b8a6',width:3},itemStyle:{color:'#d4b8a6'},symbol:'circle',symbolSize:8}
     ]
   });
   var yrData=years.map(function(y,i){return {year:y,asin:asinCnt[i],gmv:gmvVals[i]}});
@@ -1052,9 +1123,9 @@ function updateCoKPIs(cd,coName){
     {l:'产品',v:paCount,c:'var(--accent)'},
     {l:'GMV',v:gm,c:'var(--accent)'},
     {l:'均价',v:'$'+avgP.toFixed(0),c:'var(--a4)'},
-    {l:'评分',v:'⭐'+avgR.toFixed(1),c:'#ffd700'}
+    {l:'评分',v:'⭐'+avgR.toFixed(1),c:'#d4a0c0'}
   ];
-  document.getElementById('coKpiBar').innerHTML='<div style="display:flex;gap:16px;align-items:center">'+cards.map(function(c){return '<div style="text-align:center"><div style="font-size:10px;color:var(--t2);margin-bottom:2px">'+c.l+'</div><div style="font-size:16px;font-weight:700;color:'+c.c+'">'+c.v+'</div></div>'}).join('')+'</div>';
+  document.getElementById('coKpiBar').innerHTML='<div style="display:flex;gap:16px;align-items:center">'+cards.map(function(c){return '<div style="text-align:center"><div style="font-size:11px;color:var(--t2);margin-bottom:2px">'+c.l+'</div><div style="font-size:17px;font-weight:700;color:'+c.c+'">'+c.v+'</div></div>'}).join('')+'</div>';
 }
 function updateC23_CompanyRank(cd){
   var su=document.getElementById('showUnlabeled');var showUL=su&&su.checked;
@@ -1080,21 +1151,21 @@ function updateC23_CompanyRank(cd){
   _setChart('c23',{
     tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){
       var a=p[0].value,g=p[1].value,u=p[2].value;
-      return '<b>'+p[0].name+'</b><br/>父ASIN: <b>'+a.toLocaleString()+'</b> ('+(a/totalA*100).toFixed(1)+'%)<br/>GMV: <b>$'+g.toLocaleString()+'</b> ('+(g/totalG*100).toFixed(1)+'%)<br/>销量: <b>'+u.toLocaleString()+'</b> ('+(u/totalU*100).toFixed(1)+'%)';
+      return '<b>'+p[0].name+'</b><br/>父ASIN数: <b>'+a.toLocaleString()+'</b> ('+(a/totalA*100).toFixed(1)+'%)<br/>GMV: <b>$'+g.toLocaleString()+'</b> ('+(g/totalG*100).toFixed(1)+'%)<br/>销量: <b>'+u.toLocaleString()+'</b> ('+(u/totalU*100).toFixed(1)+'%)';
     }},
-    legend:{data:['父ASIN数','GMV','销量'],textStyle:{color:'#8899aa',fontSize:10},top:0},
-    grid:{left:155,right:85,top:55,bottom:60},
-    dataZoom:[{type:'slider',yAxisIndex:0,startValue:names.length>10?names.length-10:0,endValue:names.length-1,width:20,backgroundColor:'#1a2634',borderColor:'#2a3a4a',fillerColor:'rgba(77,166,255,.2)',handleStyle:{color:'#4da6ff'},textStyle:{color:'#8899aa',fontSize:10}}],
+    legend:{data:['父ASIN数','GMV','销量'],textStyle:{color:'#5a5055',fontSize:13},orient:'vertical',right:10,top:'middle',itemGap:15},
+    grid:{left:200,right:110,top:45,bottom:60},
+    dataZoom:[{type:'slider',yAxisIndex:0,startValue:names.length>10?names.length-10:0,endValue:names.length-1,width:20,backgroundColor:'#ffffff',borderColor:'#e8dfe3',fillerColor:'rgba(184,166,212,.2)',handleStyle:{color:'#d4a5c7'},textStyle:{color:'#5a5055',fontSize:12}}],
     xAxis:[
-      {type:'value',name:'父ASIN数',nameGap:5,nameTextStyle:{color:'#00d4aa',fontSize:10},axisLabel:{color:'#8899aa',fontSize:9},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      {type:'value',name:'GMV',nameGap:25,nameTextStyle:{color:'#ff6b8a',fontSize:10},axisLabel:{color:'#8899aa',fontSize:9,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}},
-      {type:'value',name:'销量',nameGap:45,nameTextStyle:{color:'#ffb347',fontSize:10},axisLabel:{color:'#8899aa',fontSize:9,formatter:function(v){return v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}
+      {type:'value',name:'父ASIN数',nameLocation:'middle',nameGap:40,nameTextStyle:{color:'#b8a6d4',fontSize:12},axisLabel:{color:'#5a5055',fontSize:12},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      {type:'value',name:'',nameTextStyle:{color:'#e8a0b4',fontSize:12},axisLabel:{color:'#e8a0b4',fontSize:12,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false},position:'top',max:'dataMax'},
+      {type:'value',name:'',nameTextStyle:{color:'#d4b8a6',fontSize:12},axisLabel:{show:false},splitLine:{show:false},position:'top',max:'dataMax'}
     ],
-    yAxis:{type:'category',data:names,axisLabel:{color:'#e0e6ed',fontSize:11}},
+    yAxis:{type:'category',data:names,axisLabel:{color:'#5a5055',fontSize:13,interval:0}},
     series:[
-      {name:'父ASIN数',type:'bar',xAxisIndex:0,data:asins,itemStyle:{color:'rgba(0,212,170,.7)',borderColor:'#00d4aa',borderRadius:[0,4,4,0]}},
-      {name:'GMV',type:'bar',xAxisIndex:1,data:gmvs,itemStyle:{color:'rgba(255,107,138,.7)',borderColor:'#ff6b8a',borderRadius:[0,4,4,0]}},
-      {name:'销量',type:'bar',xAxisIndex:2,data:units,itemStyle:{color:'rgba(255,179,71,.7)',borderColor:'#ffb347',borderRadius:[0,4,4,0]}}
+      {name:'父ASIN数',type:'bar',xAxisIndex:0,data:asins,itemStyle:{color:'rgba(184,166,212,.7)',borderColor:'#b8a6d4',borderRadius:[0,4,4,0]}},
+      {name:'GMV',type:'bar',xAxisIndex:1,data:gmvs,itemStyle:{color:'rgba(232,160,180,.7)',borderColor:'#e8a0b4',borderRadius:[0,4,4,0]}},
+      {name:'销量',type:'bar',xAxisIndex:2,data:units,itemStyle:{color:'rgba(212,184,166,.7)',borderColor:'#d4b8a6',borderRadius:[0,4,4,0]}}
     ]
   });
   // Competitive positioning analysis
@@ -1142,14 +1213,14 @@ function updateC24_CompanyTrend(cd,fromFilter){
     refreshSelectUI('c24Company');
   }
   var months=["3月","4月","5月","6月","7月"];
-  // 第一步: parent_asin × month 去重取GMV（全局模式：按showUnlabeled过滤品牌）
+  // 第一步: parent_asin × month 去重取GMV（全局模式：按showUnlabeled过滤公司）
   var parentMonth={};cd.forEach(function(r){
-    var b=r[FI.brand];if(!showUL&&(!b||b==="Unknown"||b==="未打标"||b==="0"))return;
-    if(!b||b==="Unknown"||b==="未打标"||b==="0")b="未打标";
+    var co=r[FI.company];if(!showUL&&(!co||co==="Unknown"||co==="未打标"||co==="无标识"||co==="0"))return;
+    if(!co||co==="Unknown"||co==="未打标"||co==="无标识"||co==="0")co="未打标";
     var m=r[FI.data_month];if(!m)return;
     var mKey=m+"月";
     var pa=r[FI.parent_asin];if(!pa)return;
-    if(!parentMonth[pa])parentMonth[pa]={brand:b,company:r[FI.company]||""};
+    if(!parentMonth[pa])parentMonth[pa]={company:co};
     parentMonth[pa][mKey]=(parentMonth[pa][mKey]||0)+(r[FI.gmv]||0);
   });
   // Top N 公司筛选: 每月父ASIN GMV→跨月累加→公司排名
@@ -1164,45 +1235,45 @@ function updateC24_CompanyTrend(cd,fromFilter){
     var topCos=Object.keys(coGMV).sort(function(a,b){return coGMV[b]-coGMV[a]}).slice(0,topN);
     tSet={};topCos.forEach(function(co){tSet[co]=1});
   }
-  // 第二步: 按brand汇总各月GMV(Top N过滤)
-  var brands={};for(var pa in parentMonth){
-    var pm=parentMonth[pa],b=pm.brand,co=pm.company;
+  // 第二步: 按公司汇总各月GMV(Top N过滤)
+  var comps={};for(var pa in parentMonth){
+    var pm=parentMonth[pa],co=pm.company;
     if(tSet&&!tSet[co])continue;
-    if(!brands[b]){brands[b]={};months.forEach(function(m){brands[b][m]=0})}
-    months.forEach(function(m){brands[b][m]+=pm[m]||0});
+    if(!comps[co]){comps[co]={};months.forEach(function(m){comps[co][m]=0})}
+    months.forEach(function(m){comps[co][m]+=pm[m]||0});
   }
-  // 第三步: 全部品牌按GMV总额降序排列
-  var bEntries=[];for(var b in brands){var t=0;months.forEach(function(m){t+=brands[b][m]||0});bEntries.push({name:b,total:t})}
+  // 第三步: 全部公司按GMV总额降序排列
+  var bEntries=[];for(var co in comps){var t=0;months.forEach(function(m){t+=comps[co][m]||0});bEntries.push({name:co,total:t})}
   bEntries.sort(function(a,b){return b.total-a.total});var allB=bEntries.map(function(e){return e.name});
-  var series=allB.map(function(b,i){
-    return {name:b,type:"line",data:months.map(function(m){return Math.round(brands[b][m]||0)}),smooth:true,symbol:"none",lineStyle:{width:1.5},itemStyle:{color:CP[i%CP.length]}}
+  var series=allB.map(function(co,i){
+    return {name:co,type:"line",data:months.map(function(m){return Math.round(comps[co][m]||0)}),smooth:true,symbol:"none",lineStyle:{width:1.5},itemStyle:{color:CP[i%CP.length]}}
   });
   if(!charts.c24)return;
-  var coLabel=coVal.length?coVal.join(', '):"全部公司";
+  var coLabel=coVal.length?coVal.join(', '):"";
   var topNLabel=tSet?" [Top"+topNVal2+"]":"";
   _setChart("c24",{
-    title:{text:coLabel+topNLabel+" 品牌月度GMV",left:"center",top:2,textStyle:{color:"#8899aa",fontSize:11,fontWeight:"normal"}},
-    tooltip:{trigger:"axis",formatter:function(p){var h="<b>"+p[0].axisValue+"</b>";p.forEach(function(s){if(!s.value)return;h+="<br/>"+s.marker+s.seriesName+": <b>$"+s.value.toLocaleString()+"</b>"});return h}},
-    legend:{type:"scroll",bottom:0,height:52,textStyle:{color:"#8899aa",fontSize:10},pageTextStyle:{color:"#8899aa"},pageIconColor:"#4da6ff"},
+    title:{text:(coLabel?coLabel+" ":"")+"公司月度GMV"+topNLabel,left:"center",top:2,textStyle:{color:"#8a7e83",fontSize:11,fontWeight:"normal"}},
+    tooltip:{trigger:"axis",formatter:function(p){var t=0;p.forEach(function(s){t+=s.value||0});var h="<b>"+p[0].axisValue+"</b>";p.forEach(function(s){if(!s.value)return;h+="<br/>"+s.marker+s.seriesName+": <b>$"+s.value.toLocaleString()+"</b> ("+(t>0?(s.value/t*100).toFixed(1):"0.0")+"%)"});h+="<br/><b>合计: $"+t.toLocaleString()+"</b>";return h}},
+    legend:{type:"scroll",bottom:0,height:52,textStyle:{color:"#8a7e83",fontSize:10},pageTextStyle:{color:"#8a7e83"},pageIconColor:"#d4a5c7"},
     grid:{left:85,right:55,top:35,bottom:75},
-    xAxis:{type:"category",data:months,axisLabel:{color:"#8899aa"}},
-    yAxis:{type:"value",name:"GMV",axisLabel:{color:"#8899aa",formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":v}},splitLine:{lineStyle:{color:"#2a3a4a",type:"dashed"}}},
+    xAxis:{type:"category",data:months,axisLabel:{color:"#8a7e83"}},
+    yAxis:{type:"value",name:"GMV",axisLabel:{color:"#8a7e83",formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":v}},splitLine:{lineStyle:{color:"#e8dfe3",type:"dashed"}}},
     series:series
   });
-  // Brand momentum analysis — compute absolute growth, not just percentages
+  // Company momentum analysis — compute absolute growth, not just percentages
   var top5b=bEntries.slice(0,5),fastB='',fastR=-999,fastAbs=0,fastM3=0,fastM7=0;
-  bEntries.forEach(function(e){var m3=brands[e.name]['3月']||0,m7=brands[e.name]['7月']||0;if(m3>5000){var r=(m7-m3)/m3*100;if((m7-m3)>fastAbs){fastAbs=m7-m3;fastR=r;fastB=e.name;fastM3=m3;fastM7=m7}}});
+  bEntries.forEach(function(e){var m3=comps[e.name]['3月']||0,m7=comps[e.name]['7月']||0;if(m3>5000){var r=(m7-m3)/m3*100;if((m7-m3)>fastAbs){fastAbs=m7-m3;fastR=r;fastB=e.name;fastM3=m3;fastM7=m7}}});
   var totalBGMV=0;bEntries.forEach(function(e){totalBGMV+=e.total});
   var cr3B=top5b.slice(0,3).reduce(function(s,e){return s+e.total},0);
   var cr3BPct=totalBGMV>0?(cr3B/totalBGMV*100).toFixed(0):'0';
-  // Top brand stability: absolute and relative
-  var top1m3=0,top1m7=0;bEntries.forEach(function(e){if(e.name===top5b[0].name){top1m3=brands[e.name]['3月']||0;top1m7=brands[e.name]['7月']||0}});
+  // Top company stability: absolute and relative
+  var top1m3=0,top1m7=0;bEntries.forEach(function(e){if(e.name===top5b[0].name){top1m3=comps[e.name]['3月']||0;top1m7=comps[e.name]['7月']||0}});
   var top1AbsGrowth=top1m7-top1m3;
   var top1PctGrowth=top1m3>0?((top1m7-top1m3)/top1m3*100).toFixed(0):'0';
   // Qualify fast grower: is the absolute growth meaningful?
   var fastAbsText=fastAbs>100000?'净增<b>$'+Math.round(fastAbs/1000)+'K</b>':fastAbs>10000?'净增$'+Math.round(fastAbs/1000)+'K':'基数仅$'+Math.round(fastM3/1000)+'K';
   var fastIsReal=fastAbs>50000;
-  setSummary('c24-summary','📊 <b>品牌格局</b>: 头名'+top5b[0].name+' 3→7月净增<b>$'+Math.round(top1AbsGrowth/1000)+'K</b>('+(parseInt(top1PctGrowth)>=0?'+':'')+top1PctGrowth+'%)，'+(top1AbsGrowth>0?'仍在扩张':'出现收缩')+' | <b>增幅最大</b>: '+(fastB&&fastB!==top5b[0].name?fastB+' +'+fastR.toFixed(0)+'%('+fastAbsText+')→'+(fastIsReal?'值得关注':'基数太小，%无意义'):fastB===top5b[0].name?'头部自身增长最快，马太效应明显':'')+' | <b>关键判断</b>: Top3品牌合计占<b>'+cr3BPct+'%</b>GMV，'+(parseInt(cr3BPct)<40?'品牌端比公司端更分散→品牌是更关键的竞争单元':'品牌集中度与公司端一致→品牌=公司，私标主导'));
+  setSummary('c24-summary','📊 <b>公司格局</b>: 头名'+top5b[0].name+' 3→7月净增<b>$'+Math.round(top1AbsGrowth/1000)+'K</b>('+(parseInt(top1PctGrowth)>=0?'+':'')+top1PctGrowth+'%)，'+(top1AbsGrowth>0?'仍在扩张':'出现收缩')+' | <b>增幅最大</b>: '+(fastB&&fastB!==top5b[0].name?fastB+' +'+fastR.toFixed(0)+'%('+fastAbsText+')→'+(fastIsReal?'值得关注':'基数太小，%无意义'):fastB===top5b[0].name?'头部自身增长最快，马太效应明显':'')+' | <b>关键判断</b>: Top3公司合计占<b>'+cr3BPct+'%</b>GMV，'+(parseInt(cr3BPct)<40?'公司端分散，竞争格局未定':'公司端集中，头部效应明显'));
 
 }
 
@@ -1224,16 +1295,16 @@ function updateC26_PriceBand(cd){
     return {name:b,type:'bar',stack:'total',data:order.map(function(pr){return brands[b][pr]?Object.keys(brands[b][pr].asin).length:0}),itemStyle:{color:CP[i%CP.length]}}
   });
   var gmvByPrice=order.map(function(pr){var t=0;for(var b in brands){if(brands[b][pr])t+=brands[b][pr].gmv}return Math.round(t)});
-  series.push({name:'累计GMV',type:'line',yAxisIndex:1,data:gmvByPrice,smooth:true,lineStyle:{color:'#ffb347',width:2.5},itemStyle:{color:'#ffb347'},symbol:'diamond',symbolSize:10,z:10});
+  series.push({name:'累计GMV',type:'line',yAxisIndex:1,data:gmvByPrice,smooth:true,lineStyle:{color:'#d4b8a6',width:2.5},itemStyle:{color:'#d4b8a6'},symbol:'diamond',symbolSize:10,z:10});
   if(!charts.c26)return;
   _setChart('c26',{
-    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var h='<b>'+p[0].axisValue+'</b>';var t=0;p.forEach(function(s){if(!s.value)return;if(s.seriesName==='累计GMV'){h+='<br/>'+s.marker+s.seriesName+': <b>$'+s.value.toLocaleString()+'</b>'}else{h+='<br/>'+s.marker+s.seriesName+': <b>'+s.value+'</b>';t+=s.value}});h+='<br/><b>ASIN合计: '+t+'</b>';return h}},
-    legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:9}},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var h='<b>'+p[0].axisValue+'</b>';var t=0;p.forEach(function(s){if(s.value&&s.seriesName!=='累计GMV')t+=s.value});p.forEach(function(s){if(!s.value)return;if(s.seriesName==='累计GMV'){h+='<br/>'+s.marker+s.seriesName+': <b>$'+s.value.toLocaleString()+'</b>'}else{h+='<br/>'+s.marker+s.seriesName+': <b>'+s.value+'</b> ('+(t>0?(s.value/t*100).toFixed(1):'0.0')+'%)'}});h+='<br/><b>ASIN合计: '+t+'</b>';return h}},
+    legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:9}},
     grid:{left:80,right:55,top:30,bottom:75},
-    xAxis:{type:'category',data:order,axisLabel:{color:'#8899aa',fontSize:10}},
+    xAxis:{type:'category',data:order,axisLabel:{color:'#5a5055',fontSize:10}},
     yAxis:[
-      {type:'value',name:'父ASIN数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      {type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}
+      {type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      {type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}
     ],
     series:series
   });
@@ -1284,16 +1355,16 @@ function updateC27_RatingBSR(cd){
   if(!charts.c27)return;
   _setChart('c27',{
     tooltip:{trigger:'axis',axisPointer:{type:'cross'},formatter:function(p){var r=p[0],b=p[1];return '<b>'+r.axisValue+'</b><br/>'+r.marker+'评分: <b>'+r.value.toFixed(1)+'</b><br/>'+b.marker+'中位BSR: <b>#'+b.value.toLocaleString()+'</b>'}},
-    legend:{data:['平均评分','中位BSR'],textStyle:{color:'#8899aa'},top:0},
+    legend:{data:['平均评分','中位BSR'],textStyle:{color:'#5a5055'},top:0},
     grid:{left:85,right:85,top:45,bottom:60},
-    xAxis:{type:'category',data:names,axisLabel:{color:'#8899aa',fontSize:10,rotate:30}},
+    xAxis:{type:'category',data:names,axisLabel:{color:'#5a5055',fontSize:10,rotate:30}},
     yAxis:[
-      {type:'value',name:'评分',min:3.5,max:5,axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      {type:'value',name:'BSR',axisLabel:{color:'#8899aa'},splitLine:{show:false}}
+      {type:'value',name:'评分',min:3.5,max:5,axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      {type:'value',name:'BSR',axisLabel:{color:'#5a5055'},splitLine:{show:false}}
     ],
     series:[
-      {name:'平均评分',type:'bar',data:ratings,itemStyle:{color:'rgba(255,215,0,.7)',borderColor:'#ffd700',borderRadius:[4,4,0,0]},barMaxWidth:28},
-      {name:'中位BSR',type:'line',yAxisIndex:1,data:bsrs,smooth:true,lineStyle:{color:'#ff6b8a',width:3},itemStyle:{color:'#ff6b8a'},symbol:'circle',symbolSize:8}
+      {name:'平均评分',type:'bar',data:ratings,itemStyle:{color:'rgba(212,160,192,.7)',borderColor:'#d4a0c0',borderRadius:[4,4,0,0]},barMaxWidth:28},
+      {name:'中位BSR',type:'line',yAxisIndex:1,data:bsrs,smooth:true,lineStyle:{color:'#e8a0b4',width:3},itemStyle:{color:'#e8a0b4'},symbol:'circle',symbolSize:8}
     ]
   });
   // Performance benchmarking
@@ -1378,16 +1449,16 @@ function updateC28_Layout(cd,fromFilter){
     return {name:s,type:'bar',stack:'total',data:xList.map(function(x){return grid[x][s]?grid[x][s].count:0}),itemStyle:{color:CP[i%CP.length]}}
   });
   var gmvByX=xList.map(function(x){var t=0;for(var s in grid[x]){t+=grid[x][s].gmv||0}return Math.round(t)});
-  series.push({name:'累计GMV',type:'line',yAxisIndex:1,data:gmvByX,smooth:true,lineStyle:{color:'#ffb347',width:2.5},itemStyle:{color:'#ffb347'},symbol:'diamond',symbolSize:10,z:10});
+  series.push({name:'累计GMV',type:'line',yAxisIndex:1,data:gmvByX,smooth:true,lineStyle:{color:'#d4b8a6',width:2.5},itemStyle:{color:'#d4b8a6'},symbol:'diamond',symbolSize:10,z:10});
   if(!charts.c28)return;
   _setChart('c28',{
-    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var h='<b>'+p[0].axisValue+'</b>';var t=0;p.forEach(function(s){if(!s.value)return;if(s.seriesName==='累计GMV'){h+='<br/>'+s.marker+s.seriesName+': <b>$'+s.value.toLocaleString()+'</b>'}else{h+='<br/>'+s.marker+s.seriesName+': <b>'+s.value+' 产品</b>';t+=s.value}});h+='<br/><b>产品合计: '+t+'</b>';return h}},
-    legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var idx=p[0].dataIndex;var xName=p[0].axisValue;var xGmv=gmvByX[idx]||0;var grandT=0,grandG=0;xList.forEach(function(x){for(var s in grid[x]){grandT+=grid[x][s].count;grandG+=grid[x][s].gmv}});var h='<b>'+xName+'</b>';var t=0;p.forEach(function(s){if(s.value&&s.seriesName!=='累计GMV')t+=s.value});p.forEach(function(s){if(!s.value||s.seriesName==='累计GMV')return;var sg=grid[xName]&&grid[xName][s.seriesName]?grid[xName][s.seriesName].gmv:0;var gmvPct=xGmv>0?(sg/xGmv*100).toFixed(1):'0.0';h+='<br/>'+s.marker+s.seriesName+': <b>'+s.value+' 产品</b> ('+(t>0?(s.value/t*100).toFixed(1):'0.0')+'%) | GMV: $'+sg.toLocaleString()+' (<b>'+gmvPct+'%</b>)'});h+='<br/><b>产品合计: '+t+' ('+(grandT>0?(t/grandT*100).toFixed(1):'0.0')+'%) | 累计GMV: $'+xGmv.toLocaleString()+' ('+(grandG>0?(xGmv/grandG*100).toFixed(1):'0.0')+'%)</b>';return h}},
+    legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},
     grid:{left:80,right:55,top:30,bottom:75},
-    xAxis:{type:'category',data:xList,axisLabel:{color:'#8899aa',fontSize:10,rotate:30}},
+    xAxis:{type:'category',data:xList,axisLabel:{color:'#5a5055',fontSize:10,rotate:30}},
     yAxis:[
-      {type:'value',name:'产品数',axisLabel:{color:'#8899aa'},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      {type:'value',name:'GMV',axisLabel:{color:'#8899aa',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}
+      {type:'value',name:'产品数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      {type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}
     ],
     series:series
   });
@@ -1503,6 +1574,7 @@ function updateC25_Scatter(cd,fromFilter){
   var allP=filteredProds.concat(otherProds);
   var gmvs=allP.map(function(p){return p.gmv}).sort(function(a,b){return a-b});
   var gMin=gmvs[0]||0,gMax=gmvs[gmvs.length-1]||1;
+  var totG25=0;allP.forEach(function(p){totG25+=p.gmv||0});
   function gS(g){return gMax>gMin?14+Math.round((g-gMin)/(gMax-gMin)*28):22}
   if(!charts.c25)return;
   var yearActive=yVals.length===1?yVals[0]:'';
@@ -1518,31 +1590,31 @@ function updateC25_Scatter(cd,fromFilter){
     });
     if(otherProds.length>0){
       var opt=otherProds.map(function(p){return {value:[typeIdx[p.type]||0,p.gmv,p.asin,p.title,p.img,p.gmv,p.price,p.rating,p.company,p.type,p.style,p.listing_date],symbol:'circle',symbolSize:gS(p.gmv)}});
-      series.push({name:'其他',type:'scatter',data:opt,itemStyle:{color:'#556677'}});
+      series.push({name:'其他',type:'scatter',data:opt,itemStyle:{color:'#c5b8c0'}});
     }
     _setChart('c25',{
-      tooltip:{trigger:'item',backgroundColor:'#1a2634',borderColor:'#2a3a4a',textStyle:{color:'#ddd',fontSize:11},
+      tooltip:{trigger:'item',backgroundColor:'#ffffff',borderColor:'#e8dfe3',textStyle:{color:'#1a1517',fontSize:11},
         formatter:function(p){
           var d=p.value||[];var yy=d[0],gg=d[1],as=d[2],ti=d[3],im=d[4],gmv=d[5],pr=d[6],rt=d[7],cmp=d[8],tp=d[9],st=d[10],ld=d[11];
           var typeName=typeList[yy]||'';
           var h='<div style="display:flex;gap:8px;max-width:340px">';
-          if(im)h+='<div style="width:70px;height:70px;display:flex;align-items:center;justify-content:center;background:#111;border-radius:5px;flex-shrink:0"><img src="'+im+'" style="max-width:100%;max-height:100%;object-fit:contain" onerror="this.style.display=\'none\'"></div>';
+          if(im)h+='<div style="width:70px;height:70px;display:flex;align-items:center;justify-content:center;background:#f0ebec;border-radius:5px;flex-shrink:0"><img src="'+im+'" style="max-width:100%;max-height:100%;object-fit:contain" onerror="this.style.display=\'none\'"></div>';
           h+='<div style="flex:1;min-width:0">';
-          h+='<div style="font-weight:700;color:#e0e6ed;margin-bottom:3px">'+p.seriesName+'</div>';
-          if(cmp)h+='<div style="font-size:10px;color:var(--t2);margin-bottom:2px">'+cmp+'</div>';
-          h+='<div style="font-size:10px;margin-bottom:2px"><a href="https://www.amazon.com/dp/'+as+'" target=_blank style="color:var(--a2);font-weight:600">父ASIN: '+as+'</a></div>';
-          h+='<div style="font-size:10px;color:var(--t2);line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:4px">'+(ti||'N/A')+'</div>';
-          h+='<div style="font-size:10px"><span style="color:#ffb347;font-weight:600">类型: '+typeName+'</span> | <span style="color:var(--a3);font-weight:600">'+cmp+'</span></div>';
-          h+='<div style="font-size:10px"><span style="color:var(--accent);font-weight:600">GMV: $'+Math.round(gmv).toLocaleString()+'</span></div>';
-          h+='<div style="font-size:10px;color:var(--t2)">'+(st||'')+' | $'+(pr||0).toFixed(2)+' | ⭐'+(rt||0).toFixed(1)+'</div>';
-          if(ld)h+='<div style="font-size:10px;color:var(--t2)">📅 上市: '+ld+'</div>';
+          h+='<div style="font-weight:700;color:#1a1517;margin-bottom:3px">'+p.seriesName+'</div>';
+          if(cmp)h+='<div style="font-size:11px;color:var(--t2);margin-bottom:2px">'+cmp+'</div>';
+          h+='<div style="font-size:11px;margin-bottom:2px"><a href="https://www.amazon.com/dp/'+as+'" target=_blank style="color:var(--a2);font-weight:600">父ASIN: '+as+'</a></div>';
+          h+='<div style="font-size:11px;color:var(--t2);line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:4px">'+(ti||'N/A')+'</div>';
+          h+='<div style="font-size:11px"><span style="color:#d4b8a6;font-weight:600">类型: '+typeName+'</span> | <span style="color:var(--a3);font-weight:600">'+cmp+'</span></div>';
+          h+='<div style="font-size:11px"><span style="color:var(--accent);font-weight:600">GMV: $'+Math.round(gmv).toLocaleString()+'</span> <span style="color:var(--t2)">(占'+(totG25>0?(gmv/totG25*100).toFixed(2):'0')+'%)</span></div>';
+          h+='<div style="font-size:11px;color:var(--t2)">'+(st||'')+' | $'+(pr||0).toFixed(2)+' | ⭐'+(rt||0).toFixed(1)+'</div>';
+          if(ld)h+='<div style="font-size:11px;color:var(--t2)">📅 上市: '+ld+'</div>';
           h+='</div></div>';return h;
         }
       },
-      legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},
+      legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},
       grid:{left:100,right:70,top:30,bottom:85},
-      xAxis:{type:'category',data:typeList,axisLabel:{color:'#8899aa',fontSize:10,rotate:30,interval:0},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      yAxis:{type:'value',name:'GMV',axisLabel:{color:'#8899aa',fontSize:10,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
+      xAxis:{type:'category',data:typeList,axisLabel:{color:'#5a5055',fontSize:10,rotate:30,interval:0},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      yAxis:{type:'value',name:'GMV',axisLabel:{color:'#5a5055',fontSize:10,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
       series:series
     });
   } else {
@@ -1554,29 +1626,29 @@ function updateC25_Scatter(cd,fromFilter){
     });
     if(otherProds.length>0){
       var opt=otherProds.map(function(p){return {value:[p.year,p.gmv,p.asin,p.title,p.img,p.gmv,p.price,p.rating,p.company,p.type,p.style,p.listing_date],symbol:'circle',symbolSize:gS(p.gmv)}});
-      series.push({name:'其他',type:'scatter',data:opt,itemStyle:{color:'#556677'}});
+      series.push({name:'其他',type:'scatter',data:opt,itemStyle:{color:'#c5b8c0'}});
     }
     _setChart('c25',{
-      tooltip:{trigger:'item',backgroundColor:'#1a2634',borderColor:'#2a3a4a',textStyle:{color:'#ddd',fontSize:11},
+      tooltip:{trigger:'item',backgroundColor:'#ffffff',borderColor:'#e8dfe3',textStyle:{color:'#1a1517',fontSize:11},
         formatter:function(p){
           var d=p.value||[];var yy=d[0],gg=d[1],as=d[2],ti=d[3],im=d[4],gmv=d[5],pr=d[6],rt=d[7],cmp=d[8],tp=d[9],st=d[10],ld=d[11];
           var h='<div style="display:flex;gap:8px;max-width:340px">';
-          if(im)h+='<div style="width:70px;height:70px;display:flex;align-items:center;justify-content:center;background:#111;border-radius:5px;flex-shrink:0"><img src="'+im+'" style="max-width:100%;max-height:100%;object-fit:contain" onerror="this.style.display=\'none\'"></div>';
+          if(im)h+='<div style="width:70px;height:70px;display:flex;align-items:center;justify-content:center;background:#f0ebec;border-radius:5px;flex-shrink:0"><img src="'+im+'" style="max-width:100%;max-height:100%;object-fit:contain" onerror="this.style.display=\'none\'"></div>';
           h+='<div style="flex:1;min-width:0">';
-          h+='<div style="font-weight:700;color:#e0e6ed;margin-bottom:3px">'+p.seriesName+'</div>';
-          if(cmp)h+='<div style="font-size:10px;color:var(--t2);margin-bottom:2px">'+cmp+'</div>';
-          h+='<div style="font-size:10px;margin-bottom:2px"><a href="https://www.amazon.com/dp/'+as+'" target=_blank style="color:var(--a2);font-weight:600">父ASIN: '+as+'</a></div>';
-          h+='<div style="font-size:10px;color:var(--t2);line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:4px">'+(ti||'N/A')+'</div>';
-          if(ld)h+='<div style="font-size:10px;color:var(--a2);margin-bottom:2px">📅 上市: '+ld+'</div>';
-          h+='<div style="font-size:10px"><span style="color:#ffb347;font-weight:600">上架: '+yy+'</span> | <span style="color:var(--accent);font-weight:600">GMV: $'+Math.round(gmv).toLocaleString()+'</span></div>';
-          h+='<div style="font-size:10px;color:var(--t2)">'+(tp||'')+' | '+(st||'')+' | $'+(pr||0).toFixed(2)+' | ⭐'+(rt||0).toFixed(1)+'</div>';
+          h+='<div style="font-weight:700;color:#1a1517;margin-bottom:3px">'+p.seriesName+'</div>';
+          if(cmp)h+='<div style="font-size:11px;color:var(--t2);margin-bottom:2px">'+cmp+'</div>';
+          h+='<div style="font-size:11px;margin-bottom:2px"><a href="https://www.amazon.com/dp/'+as+'" target=_blank style="color:var(--a2);font-weight:600">父ASIN: '+as+'</a></div>';
+          h+='<div style="font-size:11px;color:var(--t2);line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:4px">'+(ti||'N/A')+'</div>';
+          if(ld)h+='<div style="font-size:11px;color:var(--a2);margin-bottom:2px">📅 上市: '+ld+'</div>';
+          h+='<div style="font-size:11px"><span style="color:#d4b8a6;font-weight:600">上架: '+yy+'</span> | <span style="color:var(--accent);font-weight:600">GMV: $'+Math.round(gmv).toLocaleString()+'</span> <span style="color:var(--t2)">(占'+(totG25>0?(gmv/totG25*100).toFixed(2):'0')+'%)</span></div>';
+          h+='<div style="font-size:11px;color:var(--t2)">'+(tp||'')+' | '+(st||'')+' | $'+(pr||0).toFixed(2)+' | ⭐'+(rt||0).toFixed(1)+'</div>';
           h+='</div></div>';return h;
         }
       },
-      legend:{type:'scroll',bottom:0,textStyle:{color:'#8899aa',fontSize:10}},
+      legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},
       grid:{left:100,right:70,top:30,bottom:80},
-      xAxis:{type:'value',name:'上架年份',min:2014.5,max:2026.5,interval:1,axisLabel:{color:'#8899aa',fontSize:10,formatter:function(v){return Math.round(v)+'年'}},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
-      yAxis:{type:'value',name:'GMV',axisLabel:{color:'#8899aa',fontSize:10,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{lineStyle:{color:'#2a3a4a',type:'dashed'}}},
+      xAxis:{type:'value',name:'上架年份',min:2014.5,max:2026.5,interval:1,axisLabel:{color:'#5a5055',fontSize:10,formatter:function(v){return Math.round(v)+'年'}},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      yAxis:{type:'value',name:'GMV',axisLabel:{color:'#5a5055',fontSize:10,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
       series:series
     });
   }
@@ -1628,11 +1700,15 @@ function updateCoProducts(cd,fromFilter){
   if(stVals2.length)cd=cd.filter(function(r){return stVals2.includes(r[FI.style])});
   if(tpVals2.length)cd=cd.filter(function(r){return tpVals2.includes(r[FI.type])});
   if(yrVals2.length)cd=cd.filter(function(r){return yrVals2.includes(String(r[FI.listing_year]))});
-  var companies={};cd.forEach(function(r){
+  var companies={};var asinSeen={};cd.forEach(function(r){
     var c=r[FI.company];if(!showUL&&(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0'))return;
     if(!c||c==='Unknown'||c==='未打标'||c==='无标识'||c==='0')c='未打标';
     var pa=r[FI.parent_asin];if(!pa)return;
-    if(!companies[c])companies[c]={};
+    if(!companies[c]){companies[c]={};asinSeen[c]={}}
+    // 同一子ASIN被归到多个父ASIN时，合并到首个父组，避免同一产品重复展示
+    var childAsin=r[FI.asin];
+    if(childAsin&&asinSeen[c][childAsin])pa=asinSeen[c][childAsin];
+    else if(childAsin)asinSeen[c][childAsin]=pa;
     if(!companies[c][pa])companies[c][pa]={title:r[FI.title]||'',asin:r[FI.asin],brand:r[FI.brand]||'',gmv:0,price:r[FI.price]||0,rating:r[FI.rating]||0,reviews:r[FI.reviews]||0,img:r[FI.image_url]||'',listing_date:LISTING_DATE[pa]||LISTING_DATE[r[FI.asin]]||''};
     companies[c][pa].gmv+=r[FI.gmv]||0;
   });
@@ -1646,24 +1722,24 @@ function updateCoProducts(cd,fromFilter){
   var html='';
   cEntries.forEach(function(ce,i){
     html+='<div style="margin-bottom:14px">';
-    html+='<div style="font-weight:700;color:var(--accent);font-size:13px;margin-bottom:8px;padding:4px 0;border-bottom:1px solid var(--border)">#'+(i+1)+' '+ce.name+' <span style="color:var(--t2);font-size:10px;font-weight:400">TOP'+topN+'产品 | GMV $'+Math.round(ce.totalGmv).toLocaleString()+'</span></div>';
-    html+='<div style="display:flex;flex-direction:row;gap:10px;flex-wrap:wrap">';
+    html+='<div style="font-weight:700;color:var(--accent);font-size:14px;margin-bottom:8px;padding:4px 0;border-bottom:1px solid var(--border)">#'+(i+1)+' '+ce.name+' <span style="color:var(--t2);font-size:11px;font-weight:400">TOP'+topN+'产品 | GMV $'+Math.round(ce.totalGmv).toLocaleString()+'</span></div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:10px">';
     ce.prods.forEach(function(p){
-      html+='<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;width:220px;flex-shrink:0">';
+      html+='<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:5px;min-width:0">';
       html+='<div style="aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:6px;overflow:hidden">';
-      if(p.img)html+='<img src="'+p.img+'" style="width:100%;height:100%;object-fit:contain" onerror="this.parentElement.innerHTML=\'<span style=color:var(--t2);font-size:11px>无图片</span>\'" loading="lazy">';
-      else html+='<span style="color:var(--t2);font-size:11px">无图片</span>';
+      if(p.img)html+='<img src="'+p.img+'" style="width:100%;height:100%;object-fit:contain;cursor:pointer" title="点击放大" onclick="zoomImage(this)" onerror="this.parentElement.innerHTML=\'<span style=color:var(--t2);font-size:12px>无图片</span>\'" loading="lazy">';
+      else html+='<span style="color:var(--t2);font-size:12px">无图片</span>';
       html+='</div>';
-      html+='<div style="font-size:9px;color:var(--t2)"><a href="https://www.amazon.com/dp/'+p.asin+'" target=_blank style="color:var(--a2);text-decoration:none;font-size:10px;font-weight:600">'+p.asin+'</a></div>';
-      html+='<div style="font-size:10px;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+(p.title||'N/A')+'</div>';
-      html+='<div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--a4);font-weight:600">$'+(p.price||0).toFixed(2)+'</span><span style="color:var(--accent)">$'+Math.round(p.gmv).toLocaleString()+'</span></div>';
-      html+='<div style="font-size:9px;color:var(--a2)">📅 '+(p.listing_date||'—')+'</div>';
-      html+='<div style="font-size:9px;color:var(--t2)">⭐ '+(p.rating||0).toFixed(1)+' ('+(p.reviews||0)+') | '+(p.brand||'')+'</div>';
+      html+='<div style="font-size:10px;color:var(--t2)"><a href="https://www.amazon.com/dp/'+p.asin+'" target=_blank style="color:var(--a2);text-decoration:none;font-size:11px;font-weight:600">'+p.asin+'</a></div>';
+      html+='<div style="font-size:11px;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+(p.title||'N/A')+'</div>';
+      html+='<div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:var(--a4);font-weight:600">$'+(p.price||0).toFixed(2)+'</span><span style="color:var(--accent)">$'+Math.round(p.gmv).toLocaleString()+'</span></div>';
+      html+='<div style="font-size:10px;color:var(--a2)">📅 '+(p.listing_date||'—')+'</div>';
+      html+='<div style="font-size:10px;color:var(--t2)">⭐ '+(p.rating||0).toFixed(1)+' ('+(p.reviews||0)+') | '+(p.brand||'')+'</div>';
       html+='</div>';
     });
     html+='</div></div>';
   });
-  document.getElementById('coProductGrid').innerHTML=html||'<div style="color:var(--t2);font-size:12px;text-align:center;padding:20px">暂无产品数据</div>';
+  document.getElementById('coProductGrid').innerHTML=html||'<div style="color:var(--t2);font-size:13px;text-align:center;padding:20px">暂无产品数据</div>';
 }
 
 function _setChart(id,opt){
@@ -1674,13 +1750,120 @@ function setSummary(id,text){var el=document.getElementById(id);if(el)el.innerHT
 function fmt(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}
 function fmt$(v){return v>=1e6?'$'+(v/1e6).toFixed(1)+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+Math.round(v).toLocaleString()}
 
+// ── 市场综合总结 ─
+function updateMarketSummary(d){
+  var el=document.getElementById('market-overview-summary');if(!el)return;
+  // 基本规模
+  var totalGmv=0, totalUnits=0, paSet={}, coSet={}, brandSet={}, priceList=[], ratingList=[];
+  d.forEach(function(r){
+    totalGmv+=r[FI.gmv]||0; totalUnits+=r[FI.monthly_units]||0;
+    var pa=r[FI.parent_asin]; if(pa)paSet[pa]=1;
+    var co=r[FI.company]; if(co&&co!=='Unknown'&&co!=='0')coSet[co]=1;
+    var br=r[FI.brand]; if(br&&br!=='Unknown'&&br!=='0')brandSet[br]=1;
+    var p=r[FI.price]; if(p>0)priceList.push(p);
+    var rt=r[FI.rating]; if(rt>0)ratingList.push(rt);
+  });
+  var paCnt=Object.keys(paSet).length;
+  var coCnt=Object.keys(coSet).length;
+  var brandCnt=Object.keys(brandSet).length;
+  var avgPrice=priceList.length?(priceList.reduce(function(a,b){return a+b},0)/priceList.length).toFixed(0):'-';
+  var avgRating=ratingList.length?(ratingList.reduce(function(a,b){return a+b},0)/ratingList.length).toFixed(1):'-';
+
+  // 风格集中度
+  var styleGMV={}; d.forEach(function(r){var s=r[FI.style];if(s&&s!=='Unknown'&&s!=='未打标'&&s!=='0')styleGMV[s]=(styleGMV[s]||0)+(r[FI.gmv]||0)});
+  var styleList=[]; for(var s in styleGMV)styleList.push({name:s,gmv:styleGMV[s]}); styleList.sort(function(a,b){return b.gmv-a.gmv});
+  var top2StylePct=totalGmv>0?((styleList[0]?styleList[0].gmv:0)+(styleList[1]?styleList[1].gmv:0))/totalGmv*100:0;
+
+  // 类型集中度
+  var typeGMV={}; d.forEach(function(r){var t=r[FI.type];if(t&&t!=='Unknown'&&t!=='未打标'&&t!=='0')typeGMV[t]=(typeGMV[t]||0)+(r[FI.gmv]||0)});
+  var typeList=[]; for(var t in typeGMV)typeList.push({name:t,gmv:typeGMV[t]}); typeList.sort(function(a,b){return b.gmv-a.gmv});
+  var top3TypePct=totalGmv>0?((typeList[0]?typeList[0].gmv:0)+(typeList[1]?typeList[1].gmv:0)+(typeList[2]?typeList[2].gmv:0))/totalGmv*100:0;
+
+  // 公司集中度 (CR5)
+  var coGMV={}; d.forEach(function(r){var c=r[FI.company];if(c&&c!=='Unknown'&&c!=='0')coGMV[c]=(coGMV[c]||0)+(r[FI.gmv]||0)});
+  var coList=[]; for(var c in coGMV)coList.push({name:c,gmv:coGMV[c]}); coList.sort(function(a,b){return b.gmv-a.gmv});
+  var cr5=0; for(var i=0;i<Math.min(5,coList.length);i++)cr5+=coList[i].gmv;
+  var cr5Pct=totalGmv>0?(cr5/totalGmv*100).toFixed(0):'0';
+
+  // 价格带分布
+  var bands={'<$75':[0,75],'$75-150':[75,150],'$150-250':[150,250],'$250+':[250,9999]}, bandGmv={}, bandAsin={};
+  for(var b in bands){bandGmv[b]=0;bandAsin[b]={}}
+  d.forEach(function(r){var p=r[FI.price]||0;var g=r[FI.gmv]||0;var pa=r[FI.parent_asin];for(var b in bands){if(p>=bands[b][0]&&p<bands[b][1]){bandGmv[b]+=g;if(pa)bandAsin[b][pa]=1;break}}});
+  var topBand='', topBandGmv=0; for(var b in bandGmv){if(bandGmv[b]>topBandGmv){topBandGmv=bandGmv[b];topBand=b}}
+  var topBandPct=totalGmv>0?(bandGmv[topBand]/totalGmv*100).toFixed(0):'0';
+  var topBandAsin=Object.keys(bandAsin[topBand]||{}).length;
+
+  // 年份趋势 (最近3年)
+  var yearGMV={}; d.forEach(function(r){var y=r[FI.listing_year];if(y){var yn=parseInt(y);if(yn>=2020)yearGMV[yn]=(yearGMV[yn]||0)+(r[FI.gmv]||0)}});
+  var years=Object.keys(yearGMV).map(Number).sort();
+  var recentGrowth='';
+  if(years.length>=2){
+    var last2=years[years.length-1], prev=years[years.length-2];
+    var growth=yearGMV[prev]>0?((yearGMV[last2]-yearGMV[prev])/yearGMV[prev]*100).toFixed(0):'0';
+    recentGrowth=last2+'年GMV '+fmt$(yearGMV[last2])+(parseInt(growth)>=0?' ↑'+growth+'%':' ↓'+Math.abs(growth)+'%');
+  }
+  var peakYear='', peakGmv=0; for(var y in yearGMV){if(yearGMV[y]>peakGmv){peakGmv=yearGMV[y];peakYear=y}}
+
+  // 评分分布
+  var ratingAbove4=0; d.forEach(function(r){if(r[FI.rating]>=4)ratingAbove4++});
+  var ratingAbove4Pct=d.length>0?(ratingAbove4/d.length*100).toFixed(0):'0';
+
+  // 生成总结HTML
+  var html='';
+  // 第一行：市场规模
+  html+='<div style="margin-bottom:8px">';
+  html+='<span style="color:var(--a2);font-weight:700"> 市场规模</span>：当前筛选 <b class="hi">'+paCnt+'</b> 个父ASIN · <b>'+coCnt+'</b> 家公司 · <b>'+brandCnt+'</b> 个品牌';
+  html+=' · 7月GMV合计 <b class="hi">'+fmt$(totalGmv)+'</b> · 均价 <b>$'+avgPrice+'</b> · 平均评分 <b>⭐'+avgRating+'</b>';
+  html+='</div>';
+
+  // 第二行：竞争格局
+  html+='<div style="margin-bottom:8px">';
+  html+='<span style="color:var(--a4);font-weight:700">🏆 竞争格局</span>：';
+  html+='Top5公司掌控 <b>'+cr5Pct+'%</b> GMV';
+  if(styleList.length>=2) html+=' · 风格 <b>'+styleList[0].name+'/'+styleList[1].name+'</b> 双雄占 <b>'+top2StylePct.toFixed(0)+'%</b>';
+  if(typeList.length>=3) html+=' · 类型 Top3(<b>'+typeList[0].name+'/'+typeList[1].name+'/'+typeList[2].name+'</b>) 占 <b>'+top3TypePct.toFixed(0)+'%</b>';
+  html+='</div>';
+
+  // 第三行：价格策略
+  html+='<div style="margin-bottom:8px">';
+  html+='<span style="color:var(--a3);font-weight:700"> 价格策略</span>：<b>'+topBand+'</b> 价格带贡献 <b>'+topBandPct+'%</b> GMV（'+topBandAsin+'个ASIN）';
+  html+=' · 单品效率 <b>$'+(topBandAsin>0?Math.round(bandGmv[topBand]/topBandAsin/1000):'0')+'K</b>/ASIN';
+  html+='</div>';
+
+  // 第四行：趋势
+  html+='<div style="margin-bottom:8px">';
+  html+='<span style="color:var(--accent);font-weight:700">📈 趋势信号</span>：';
+  if(peakYear) html+='峰值年份 <b>'+peakYear+'年</b>（GMV '+fmt$(peakGmv)+'）';
+  if(recentGrowth) html+=' · '+recentGrowth;
+  html+=' · <b>'+ratingAbove4Pct+'%</b> 产品评分≥4星 → 品质门槛高';
+  html+='</div>';
+
+  // 第五行：策略建议
+  html+='<div>';
+  html+='<span style="color:#c7b0e0;font-weight:700"> 策略建议</span>：';
+  var suggestions=[];
+  if(parseInt(cr5Pct)>70) suggestions.push('头部垄断明显，避开正面竞争');
+  else if(parseInt(cr5Pct)<40) suggestions.push('格局分散，存在切入窗口');
+  if(topBand==='$75-150'||topBand==='$150-250') suggestions.push('中端价位是主战场，拼效率与差异化');
+  else if(topBand==='$250+') suggestions.push('高端市场主导，品质与设计是关键');
+  else suggestions.push('低端走量，注意成本控制');
+  if(parseInt(ratingAbove4Pct)>80) suggestions.push('评分门槛极高，品质是入场券');
+  if(styleList.length>=2&&top2StylePct>70) suggestions.push(styleList[0].name+'风格主导，考虑'+(styleList.length>2?styleList[2].name:'细分')+'风格差异化');
+  html+=suggestions.join(' | ');
+  html+='</div>';
+
+  el.innerHTML=html;
+}
+
+
 // ── Universal Select Widget ──
 var _selWidgets={};
 function initSelectWidget(id,multi){
   var sel=document.getElementById(id);if(!sel||_selWidgets[id])return;
   var wrap=document.createElement('span');wrap.className='sel-wrap';
-  // Inherit inline styles from original select for width/min-width
+  // Inherit inline styles from original select for sizing/flex
   if(sel.style.minWidth)wrap.style.minWidth=sel.style.minWidth;
+  if(sel.style.flex)wrap.style.flex=sel.style.flex;
   var btn=document.createElement('div');btn.className='sel-btn';btn.innerHTML='<span class=sel-txt>—</span><span class=sel-arrow>▼</span>';
   var dd=document.createElement('div');dd.className='sel-dd';
   dd.innerHTML='<input class=filter-dd-search placeholder="搜索..." oninput="selDDSearch(this)">'+(multi?'<div class=filter-dd-actions><button onclick="selDDAll(this,\'all\')">全选</button><button onclick="selDDAll(this,\'none\')">取消</button></div>':'')+'<div class=filter-dd-list></div>';
@@ -1704,7 +1887,26 @@ function selToggle(id){
   var w=_selWidgets[id];if(!w)return;
   var isOpen=w.dd.classList.contains('show');
   for(var k in _selWidgets){if(k!==id){_selWidgets[k].dd.classList.remove('show');_selWidgets[k].btn.classList.remove('open')}}
-  if(!isOpen){w.dd.classList.add('show');w.btn.classList.add('open');var si=w.dd.querySelector('.filter-dd-search');if(si)si.value='';var lbs=w.list.querySelectorAll('label');lbs.forEach(function(l){l.classList.remove('hidden')})}
+  if(isOpen){w.dd.classList.remove('show');w.btn.classList.remove('open');w.dd.style.maxHeight=''}
+  else{
+    w.dd.classList.add('show');w.btn.classList.add('open');
+    // Smart vertical: pick direction with more space, cap height to fit viewport
+    var btnRect=w.btn.getBoundingClientRect();
+    var spaceBelow=window.innerHeight-btnRect.bottom-8;
+    var spaceAbove=btnRect.top-8;
+    if(spaceBelow<280&&spaceAbove>spaceBelow){
+      w.dd.style.top='auto';w.dd.style.bottom='100%';w.dd.style.marginTop='0';w.dd.style.marginBottom='4px';
+      w.dd.style.maxHeight=Math.min(360,spaceAbove)+'px';
+    }else{
+      w.dd.style.top='';w.dd.style.bottom='';w.dd.style.marginTop='';w.dd.style.marginBottom='';
+      w.dd.style.maxHeight=Math.min(360,spaceBelow)+'px';
+    }
+    // Smart horizontal: flip to left-align if right-align pushes dropdown off-screen left
+    var ddRect=w.dd.getBoundingClientRect();
+    if(ddRect.left<0){w.dd.style.left='0';w.dd.style.right='auto'}
+    var si=w.dd.querySelector('.filter-dd-search');if(si)si.value='';
+    var lbs=w.list.querySelectorAll('label');lbs.forEach(function(l){l.classList.remove('hidden')})
+  }
 }
 function selClose(id){var w=_selWidgets[id];if(w){w.dd.classList.remove('show');w.btn.classList.remove('open')}}
 function selDDSearch(input){var dd=input.closest('.sel-dd');var q=input.value.toLowerCase();var lbs=dd.querySelectorAll('label');lbs.forEach(function(l){l.classList.toggle('hidden',q&&l.textContent.toLowerCase().indexOf(q)<0)})}
@@ -1717,7 +1919,15 @@ function selRebuildUI(id){
   var w=_selWidgets[id];if(!w)return;
   var opts=Array.from(w.sel.options);
   if(w.multi){
-    w.list.innerHTML=opts.map(function(o){var c=w._selected.indexOf(o.value)>=0?' checked':'';return '<label><input type=checkbox value="'+o.value.replace(/"/g,'&quot;')+'"'+c+'>'+o.textContent+'</label>'}).join('');
+    // Exclude empty-value placeholder option (e.g. "全部品牌")
+    var realOpts=opts.filter(function(o){return o.value!==''});
+    // Hide search+actions when few options
+    var fewOpts=realOpts.length<=20;
+    var searchEl=w.dd.querySelector('.filter-dd-search');
+    var actionsEl=w.dd.querySelector('.filter-dd-actions');
+    if(searchEl)searchEl.style.display=fewOpts?'none':'';
+    if(actionsEl)actionsEl.style.display=fewOpts?'none':'';
+    w.list.innerHTML=realOpts.map(function(o){var c=w._selected.indexOf(o.value)>=0?' checked':'';return '<label><input type=checkbox value="'+o.value.replace(/"/g,'&quot;')+'"'+c+'>'+o.textContent+'</label>'}).join('');
   }else{
     w.list.innerHTML=opts.map(function(o){var cls=o.value===w._selected?' class=sel-active':'';return '<label data-value="'+o.value.replace(/"/g,'&quot;')+'"'+cls+'>'+o.textContent+'</label>'}).join('');
   }
@@ -1739,7 +1949,10 @@ function updateSelTrigger(id){
   var w=_selWidgets[id];if(!w)return;
   var txt=w.btn.querySelector('.sel-txt');
   if(w.multi){
-    if(!w._selected.length)txt.textContent='全部';
+    if(!w._selected.length){
+      var ph=w.sel.querySelector('option[value=""]');
+      txt.textContent=ph?ph.textContent:'全部';
+    }
     else if(w._selected.length<=2)txt.textContent=w._selected.join(', ');
     else txt.textContent=w._selected.length+'项';
   }else{
@@ -1780,7 +1993,7 @@ function buildFilterBar(){
     opts.forEach(function(o){ html+='<label><input type=checkbox value="'+o.replace(/"/g,'&quot;')+'" onchange="onFilterChange(\''+k+'\')">'+o+'</label>'; });
     html+='</div></div></div>';
   });
-  html+='<label style=\"font-size:12px;color:var(--t2);cursor:pointer;user-select:none;margin-right:8px\"><input type=\"checkbox\" id=\"showUnlabeled\" onchange=\"updateAll()\"> 含未打标</label>';
+  html+='<label style=\"font-size:13px;color:var(--t2);cursor:pointer;user-select:none;margin-right:8px\"><input type=\"checkbox\" id=\"showUnlabeled\" onchange=\"updateAll()\"> 含未打标</label>';
   html+='<div class=filter-actions><span class=filter-stats id="filterStats">全部</span><button class=btn-reset onclick="resetFilters()">✕ 重置筛选</button></div>';
   document.getElementById('filterBar').innerHTML=html;
 }
@@ -1888,7 +2101,7 @@ function toggleCollapse(hd){hd.classList.toggle("open");hd.nextElementSibling.cl
   var resizing=null,guide=null;
   // Create drag guide line
   guide=document.createElement('div');
-  guide.style.cssText='position:fixed;top:0;width:2px;background:#4da6ff;z-index:9999;pointer-events:none;display:none';
+  guide.style.cssText='position:fixed;top:0;width:2px;background:#d4a5c7;z-index:9999;pointer-events:none;display:none';
   document.body.appendChild(guide);
   function nearEdge(e,th){var r=th.getBoundingClientRect();return e.clientX>r.right-12&&e.clientX<r.right+2}
   function onDown(e){
@@ -1948,9 +2161,9 @@ fetch("bookcase_data_v2.json").then(function(r){return r.json()}).then(function(
   // Init all chart select widgets
   try{initAllSelectWidgets()}catch(e){console.error('initSelectWidgets:',e)}
   // Hide loading overlay
-  var lo=document.getElementById('loadingOverlay');if(lo)lo.classList.add('hidden');
+  document.querySelectorAll('#loadingOverlay').forEach(function(lo){lo.classList.add('hidden')});
   }).catch(function(e){console.error('parent_map:',e)});
-}).catch(function(e){var lo=document.getElementById('loadingOverlay');if(lo){lo.innerHTML='<div style="color:#ff6b8a;text-align:center"><h1>数据加载失败</h1><p>'+e.message+'</p><p style="color:var(--t2);margin-top:12px">请确认已通过 <code>http://localhost:8080/</code> 访问，而非 file:// 协议</p></div>';}});
+}).catch(function(e){document.querySelectorAll('#loadingOverlay').forEach(function(lo){lo.innerHTML='<div style="color:#e8a0b4;text-align:center"><h1>数据加载失败</h1><p>'+e.message+'</p><p style="color:var(--t2);margin-top:12px">请确认已通过 <code>http://localhost:8080/</code> 访问，而非 file:// 协议</p></div>';})});
 </script>
 
 </body>

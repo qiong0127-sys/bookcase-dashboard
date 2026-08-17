@@ -1,6 +1,7 @@
 /* 大牌数据看板 */
 var bigBrandData = null, bbActiveBrand = null, bbActiveCat = '', bbSortBy = 'default', bbLoading = false, bbCallbacks = [], bbFromGoPage = false;
 var bbPage = 1, bbPageSize = 50;
+var _bbWidgetsInit = false;
 
 function bbOnLoad(cb) {
   if (bigBrandData) { cb(); return; }
@@ -20,19 +21,29 @@ function bbCat(name) {
   if (!name) return 'Other';
   var n = name.toLowerCase();
   // Order matters: more specific first
-  if (/\bbookcase\b|\bbookshelf\b|\bbook shelf\b|\bshelving\b|\bshelf\b|\bétagère\b|\betagere\b/.test(n)) return 'Bookshelf';
-  if (/\bdesk\b|\bwriting desk\b|\bcomputer desk\b|\bstanding desk\b/.test(n)) return 'Desk';
-  if (/\bcabinet\b|\bstorage\b|\bdresser\b|\bchest\b|\bsideboard\b|\bhutch\b|\bcredenza\b|\bbuffet\b|\barmoire\b|\bwardrobe\b|\bfiling\b|\bdrawer\b/.test(n)) return 'Storage';
-  if (/\btable\b|\bconsole\b|\bvanity\b|\bnightstand\b/.test(n)) return 'Table';
-  if (/\bchair\b|\bstool\b|\bbench\b|\bottoman\b|\bseat\b|\bseating\b/.test(n)) return 'Seating';
-  if (/\bsofa\b|\bloveseat\b|\bsectional\b|\bcouch\b/.test(n)) return 'Sofa';
-  if (/\bbed\b|\bheadboard\b/.test(n)) return 'Bed';
-  if (/\bmirror\b/.test(n)) return 'Mirror';
-  if (/\blamp\b|\blighting\b|\bchandelier\b|\bsconce\b/.test(n)) return 'Lighting';
-  if (/\brug\b|\bcarpet\b/.test(n)) return 'Rug';
-  if (/\bmodular\b/.test(n)) return 'Modular';
-  if (/\bcart\b|\btrolley\b|\bbar cart\b/.test(n)) return 'Cart';
-  if (/\bdivider\b|\bscreen\b|\bpartition\b/.test(n)) return 'Room Divider';
+  if (/\bwall units?\b/.test(n)) return 'Bookshelf';
+  if (/\bdesks?\b|\bworkstations?\b|\bworktables?\b|\bsecretary\b|\breturns?\b/.test(n)) return 'Desk';
+  if (/\bbookcases?\b|\bbookshel(?:f|ves)\b|\bbook shel(?:f|ves)\b|\bshelving\b|\bshel(?:f|ves)\b|\bétagères?\b|\betageres?\b|\bledges?\b|\btowers?\b|\bback panels?\b/.test(n)) return 'Bookshelf';
+  if (/\bsideboards?\b|\bbuffets?\b|\bcredenzas?\b/.test(n)) return 'Sideboard';
+  if (/\bfiling\b|\bfiles?\b|\bpedestals?\b/.test(n)) return 'File Cabinet';
+  if (/\bhutch(?:es)?\b/.test(n)) return 'Hutch';
+  if (/\bdressers?\b|\bdrawer chests?\b|\btall chests?\b|\blow chests?\b|\bdresser\b/.test(n)) return 'Dresser';
+  if (/\bchest(?:s)? of drawers\b|\bchests?\b/.test(n)) return 'Chest';
+  if (/\bcabinets?\b|\bstorage\b|\barmoires?\b|\bwardrobes?\b|\blockers?\b|\bentertainment (?:centers?|piers?)\b/.test(n)) return 'Cabinet';
+  if (/\blamps?\b|\blighting\b|\bchandeliers?\b|\bsconces?\b/.test(n)) return 'Lamp';
+  if (/\bconsoles?\b/.test(n)) return 'Console Table';
+  if (/\bside tables?\b|\bc-tables?\b|\bc-shaped\b|\bnest(?:ing)? tables?\b|\bend tables?\b|\bpersonal tables?\b/.test(n)) return 'Side Table';
+  if (/\bdining tables?\b/.test(n)) return 'Dining Table';
+  if (/\bconference tables?\b|\bmeeting tables?\b|\bcommunal tables?\b/.test(n)) return 'Conference Table';
+  if (/\btables?\b|\bvanit(?:y|ies)\b|\bnightstands?\b/.test(n)) return 'Table';
+  if (/\bchairs?\b|\bstools?\b|\bbench(?:es)?\b|\bottomans?\b|\bseats?\b|\bseating\b/.test(n)) return 'Chair';
+  if (/\bsofas?\b|\bloveseats?\b|\bsectionals?\b|\bcouch(?:es)?\b/.test(n)) return 'Sofa';
+  if (/\bbeds?\b|\bheadboards?\b/.test(n)) return 'Bed';
+  if (/\bmirrors?\b/.test(n)) return 'Mirror';
+  if (/\brugs?\b|\bcarpets?\b/.test(n)) return 'Rug';
+  if (/\bmodular\b|\bsuites?\b|\bsystems?\b/.test(n)) return 'Modular';
+  if (/\bcarts?\b|\btrolley\b|\btrolleys?\b|\bbar carts?\b/.test(n)) return 'Cart';
+  if (/\bdividers?\b|\bscreens?\b|\bpartitions?\b/.test(n)) return 'Room Divider';
   return 'Other';
 }
 
@@ -89,6 +100,45 @@ function bbGoPage(n) {
   renderBigBrand();
 }
 
+// Populate brand & category select options
+function bbPopulateFilters() {
+  var A = bigBrandData;
+  if (!A || !A.length) return;
+
+  // Brand options
+  var brandSel = document.getElementById('bbBrand');
+  if (brandSel) {
+    var brands = [], seenB = {};
+    A.forEach(function(p) { if (!seenB[p.brand]) { seenB[p.brand] = true; brands.push(p.brand); } });
+    brands.sort();
+    brandSel.innerHTML = brands.map(function(b) { var n = 0; A.forEach(function(p) { if (p.brand === b) n++; }); return '<option value="' + b.replace(/"/g, '&quot;') + '">' + b + ' (' + n + ')</option>'; }).join('');
+  }
+
+  // Category options
+  var catSel = document.getElementById('bbCat');
+  if (catSel) {
+    var catOrder = ['Desk','Bookshelf','Dresser','Chest','Cabinet','File Cabinet','Sideboard','Hutch','Console Table','Table','Side Table','Dining Table','Conference Table','Chair','Sofa','Bed','Lamp','Modular','Mirror','Rug','Cart','Room Divider','Other'];
+    var cats = {};
+    catOrder.forEach(function(c) { cats[c] = 0; });
+    A.forEach(function(p) { var c = bbCat(p.name); cats[c] = (cats[c] || 0) + 1; });
+    catSel.innerHTML = catOrder.map(function(c) { if (cats[c] > 0) return '<option value="' + c + '">' + c + ' (' + cats[c] + ')</option>'; return ''; }).join('');
+  }
+
+  // Init widgets once
+  if (!_bbWidgetsInit) {
+    _bbWidgetsInit = true;
+    if (typeof initSelectWidget === 'function') {
+      initSelectWidget('bbBrand', true);
+      initSelectWidget('bbCat', true);
+    }
+  } else {
+    if (typeof refreshSelectUI === 'function') {
+      refreshSelectUI('bbBrand');
+      refreshSelectUI('bbCat');
+    }
+  }
+}
+
 function renderBigBrand() {
   bbOnLoad(function() {
     var A = bigBrandData;
@@ -98,13 +148,20 @@ function renderBigBrand() {
       return;
     }
 
+    // Populate / refresh select widgets
+    bbPopulateFilters();
+
     var search = (document.getElementById('bb-search') ? document.getElementById('bb-search').value : '').toLowerCase();
     var bandEl = document.getElementById('bb-band'), band = bandEl ? bandEl.value : '';
 
+    // Read multi-select filter values
+    var selBrands = typeof getSelectVal === 'function' ? getSelectVal('bbBrand') : [];
+    var selCats = typeof getSelectVal === 'function' ? getSelectVal('bbCat') : [];
+
     // Filter
     var D = A.slice();
-    if (bbActiveBrand) D = D.filter(function(p) { return p.brand === bbActiveBrand; });
-    if (bbActiveCat) D = D.filter(function(p) { return bbCat(p.name) === bbActiveCat; });
+    if (selBrands && selBrands.length) D = D.filter(function(p) { return selBrands.includes(p.brand); });
+    if (selCats && selCats.length) D = D.filter(function(p) { return selCats.includes(bbCat(p.name)); });
     // Reset page only when not navigating pages
     var wasPageNav = bbFromGoPage;
     if (!bbFromGoPage) { bbPage = 1; }
@@ -128,33 +185,6 @@ function renderBigBrand() {
     else if (bbSortBy === 'cat_asc') D.sort(function(a, b) { return bbCat(a.name).localeCompare(bbCat(b.name)); });
     else if (bbSortBy === 'cat_desc') D.sort(function(a, b) { return bbCat(b.name).localeCompare(bbCat(a.name)); });
 
-    // Brand chips
-    var brands = [], seen = {};
-    A.forEach(function(p) { if (!seen[p.brand]) { seen[p.brand] = true; brands.push(p.brand); } });
-    brands.sort();
-    var fhtml = '<span class="bb-chip' + (bbActiveBrand ? '' : ' active') + '" data-bb="">全部品牌 (' + A.length + ')</span>';
-    brands.forEach(function(b) {
-      var n = 0; A.forEach(function(p) { if (p.brand === b) n++; });
-      fhtml += '<span class="bb-chip' + (bbActiveBrand === b ? ' active' : '') + '" data-bb="' + b.replace(/&/g, '&amp;').replace(/"/g, '&quot;') + '">' + b + '</span>';
-    });
-    // Category chips
-    fhtml += '<span style="margin-left:12px"></span>';
-    var cats = {}, catOrder = ['Desk','Bookshelf','Storage','Table','Seating','Sofa','Bed','Modular','Mirror','Lighting','Rug','Cart','Room Divider','Other'];
-    var allFiltered = A.slice();
-    if (bbActiveBrand) allFiltered = allFiltered.filter(function(p) { return p.brand === bbActiveBrand; });
-    if (band) {
-      allFiltered = allFiltered.filter(function(p) { return p.upload_time === band; });
-    }
-    catOrder.forEach(function(c) { cats[c] = 0; });
-    allFiltered.forEach(function(p) { var c = bbCat(p.name); cats[c] = (cats[c] || 0) + 1; });
-    fhtml += '<span class="bb-chip cat-chip' + (bbActiveCat === '' ? ' active' : '') + '" data-cat="">全部品类 (' + allFiltered.length + ')</span>';
-    catOrder.forEach(function(c) {
-      if (cats[c] > 0) {
-        fhtml += '<span class="bb-chip cat-chip' + (bbActiveCat === c ? ' active' : '') + '" data-cat="' + c + '">' + c + ' (' + cats[c] + ')</span>';
-      }
-    });
-
-    var fel = document.getElementById('bb-filters'); if (fel) fel.innerHTML = fhtml;
     document.getElementById('bb-total').textContent = D.length + ' / ' + A.length + ' 件';
 
     // Pagination
@@ -212,11 +242,7 @@ function renderBigBrand() {
 
 // Event delegation
 document.addEventListener('click', function(e) {
-  var el = e.target.closest('[data-bb]');
-  if (el) { bbActiveBrand = el.getAttribute('data-bb') || null; renderBigBrand(); return; }
-  el = e.target.closest('[data-cat]');
-  if (el) { bbActiveCat = el.getAttribute('data-cat') || ''; renderBigBrand(); return; }
-  el = e.target.closest('[data-band]');
+  var el = e.target.closest('[data-band]');
   if (el) { var bv = el.getAttribute('data-band'); var sel = document.getElementById('bb-band'); if (sel) sel.value = bv; renderBigBrand(); return; }
   el = e.target.closest('[data-sort]');
   if (el) { bbSort(el.getAttribute('data-sort')); return; }
