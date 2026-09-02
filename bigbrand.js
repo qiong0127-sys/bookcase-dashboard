@@ -101,26 +101,38 @@ function bbGoPage(n) {
 }
 
 // Populate brand & category select options
-function bbPopulateFilters() {
+function bbPopulateFilters(selectedBrand, selectedCat) {
   var A = bigBrandData;
   if (!A || !A.length) return;
 
-  // Brand options
+  // Brand options - filter by selected category if provided
   var brandSel = document.getElementById('bbBrand');
   if (brandSel) {
-    var brands = [], seenB = {};
-    A.forEach(function(p) { if (!seenB[p.brand]) { seenB[p.brand] = true; brands.push(p.brand); } });
-    brands.sort();
-    brandSel.innerHTML = brands.map(function(b) { var n = 0; A.forEach(function(p) { if (p.brand === b) n++; }); return '<option value="' + b.replace(/"/g, '&quot;') + '">' + b + ' (' + n + ')</option>'; }).join('');
+    var brands = {}, seenB = {};
+
+    // Filter data by selected category
+    var filterData = selectedCat && selectedCat.length ? A.filter(function(p) { return selectedCat.includes(bbCat(p.name)); }) : A;
+
+    filterData.forEach(function(p) {
+      if (!seenB[p.brand]) { seenB[p.brand] = true; brands[p.brand] = 0; }
+      brands[p.brand]++;
+    });
+
+    var brandList = Object.keys(brands).sort();
+    brandSel.innerHTML = brandList.map(function(b) { return '<option value="' + b.replace(/"/g, '&quot;') + '">' + b + ' (' + brands[b] + ')</option>'; }).join('');
   }
 
-  // Category options
+  // Category options - filter by selected brand if provided
   var catSel = document.getElementById('bbCat');
   if (catSel) {
     var catOrder = ['Desk','Bookshelf','Dresser','Chest','Cabinet','File Cabinet','Sideboard','Hutch','Console Table','Table','Side Table','Dining Table','Conference Table','Chair','Sofa','Bed','Lamp','Modular','Mirror','Rug','Cart','Room Divider','Other'];
     var cats = {};
     catOrder.forEach(function(c) { cats[c] = 0; });
-    A.forEach(function(p) { var c = bbCat(p.name); cats[c] = (cats[c] || 0) + 1; });
+
+    // Filter data by selected brand
+    var filterData2 = selectedBrand && selectedBrand.length ? A.filter(function(p) { return selectedBrand.includes(p.brand); }) : A;
+
+    filterData2.forEach(function(p) { var c = bbCat(p.name); cats[c] = (cats[c] || 0) + 1; });
     catSel.innerHTML = catOrder.map(function(c) { if (cats[c] > 0) return '<option value="' + c + '">' + c + ' (' + cats[c] + ')</option>'; return ''; }).join('');
   }
 
@@ -148,14 +160,17 @@ function renderBigBrand() {
       return;
     }
 
-    // Populate / refresh select widgets
-    bbPopulateFilters();
+    // Read multi-select filter values first
+    var selBrands = typeof getSelectVal === 'function' ? getSelectVal('bbBrand') : [];
+    var selCats = typeof getSelectVal === 'function' ? getSelectVal('bbCat') : [];
+
+    // Populate / refresh select widgets with bidirectional filtering
+    bbPopulateFilters(selBrands, selCats);
 
     var search = (document.getElementById('bb-search') ? document.getElementById('bb-search').value : '').toLowerCase();
     var bandEl = document.getElementById('bb-band'), band = bandEl ? bandEl.value : '';
 
-    // Read multi-select filter values
-    var selBrands = typeof getSelectVal === 'function' ? getSelectVal('bbBrand') : [];
+    // Read category filter value
     var selCats = typeof getSelectVal === 'function' ? getSelectVal('bbCat') : [];
 
     // Filter
@@ -199,8 +214,13 @@ function renderBigBrand() {
     tbody.innerHTML = pageItems.map(function(p) {
       var dp = p.sale_price || 0, rp = p.price || 0;
       var priceHtml = dp > 0 ? '<span class="bb-sale">$' + dp.toLocaleString() + '</span>' + (rp > dp ? ' <span class="bb-orig">$' + rp.toLocaleString() + '</span>' : '') : (rp > 0 ? '$' + rp.toLocaleString() : '');
+      var imgSrc = p.image || '';
+      if (imgSrc && imgSrc.indexOf('http') === 0) imgSrc = '/api/img-proxy?url=' + encodeURIComponent(imgSrc);
+      var imgHtml = imgSrc
+        ? '<img src="' + imgSrc + '" loading="lazy" onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Crect width=%22180%22 height=%22180%22 fill=%22%23f0f0f0%22/%3E%3Ctext x=%2290%22 y=%2295%22 text-anchor=%22middle%22 font-size=%2216%22 fill=%22%23999%22%3E无图片%3C/text%3E%3C/svg%3E\'" onclick="event.stopPropagation();showModal(this.src)" style="cursor:pointer;max-width:180px;max-height:180px" title="点击放大">'
+        : '<div style="width:180px;height:180px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#999;font-size:16px">无图片</div>';
       return '<tr>' +
-        '<td class="bb-td-img"><img src="' + (p.image || '') + '" loading="lazy" onerror="this.style.display=\'none\'" onclick="event.stopPropagation();showModal(this.src)" style="cursor:pointer" title="点击放大"></td>' +
+        '<td class="bb-td-img">' + imgHtml + '</td>' +
         '<td>' + p.brand + '</td>' +
         '<td class="bb-td-name"><a href="' + (p.link || '#') + '" target="_blank" title="' + p.name.replace(/"/g, '&quot;') + '">' + p.name + '</a></td>' +
         '<td>' + bbCat(p.name) + '</td>' +

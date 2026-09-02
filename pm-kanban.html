@@ -231,7 +231,7 @@ td.c-link:focus{background:#fdf6ee;border-radius:2px;box-shadow:inset 0 0 0 1px 
 .bb-info-tag{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--bg);color:var(--t2)}
 /* Table styles for bigbrand */
 .bb-td-img{padding:4px 8px !important;text-align:center}
-.bb-td-img img{width:100%;max-width:140px;min-width:80px;height:auto;aspect-ratio:1;object-fit:contain;border-radius:4px}
+.bb-td-img img{width:100%;max-width:180px;min-width:120px;height:auto;aspect-ratio:1;object-fit:contain;border-radius:4px}
 .bb-td-name{max-width:300px}
 .bb-td-name a{color:var(--text);text-decoration:none}
 .bb-td-name a:hover{color:var(--blue)}
@@ -263,6 +263,10 @@ td.c-link:focus{background:#fdf6ee;border-radius:2px;box-shadow:inset 0 0 0 1px 
 .sel-dd label.hidden{display:none}
 .sel-dd input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px;cursor:pointer;flex-shrink:0}
 .sel-dd label.sel-active{background:rgba(123,158,199,.12);color:var(--blue);font-weight:600}
+
+/* Toast动画 */
+@keyframes fadeIn{from{opacity:0;transform:translate(-50%,-20px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes fadeOut{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-20px)}}
 </style>
 </head>
 <body>
@@ -350,6 +354,7 @@ td.c-link:focus{background:#fdf6ee;border-radius:2px;box-shadow:inset 0 0 0 1px 
     <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center" id="bb-filters">
     <select id="bbBrand" multiple data-ph="全部品牌" style="min-width:140px" onchange="renderBigBrand()"></select>
     <select id="bbCat" multiple data-ph="全部品类" style="min-width:140px" onchange="renderBigBrand()"></select>
+    <button onclick="resetBigBrandFilters()" style="padding:6px 16px;background:linear-gradient(135deg,#e8a0b4,#d4a5c7);color:#fff;border:none;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(232,160,180,.3);transition:all .2s;font-family:inherit" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(232,160,180,.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(232,160,180,.3)'">🗑️ 一键清除筛选</button>
   </div>
     <div style="flex:1;min-height:0;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:8px">
     <table id="bb-table" style="width:100%;border-collapse:collapse;font-size:13px">
@@ -443,18 +448,42 @@ function defaults(){return[
 ];}
 
 // --- API-based persistence (shared across all users) ---
-var PM_API='/api/pm-data',_saveTimer=null,_dirty=false;
-function load(){return fetch(PM_API).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(d){if(Array.isArray(d)&&d.length)return d;
+var PM_API='/api/pm-data',_saveTimer=null,_dirty=false,_conflictShown=false,_lastGoodData=null;
+function load(){return fetch(PM_API).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(d){if(Array.isArray(d)&&d.length){_lastGoodData=d;return d}
   // Migration: API empty but localStorage has data → upload it
-  try{var ls=localStorage.getItem('pm-v9');if(ls){var p=JSON.parse(ls);if(Array.isArray(p)&&p.length){fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});localStorage.removeItem('pm-v9');return p}}}catch(e){}
-  return defaults()}).catch(function(){return defaults()})}
-function save(){_dirty=true;document.getElementById('save-status').textContent='保存中...';clearTimeout(_saveTimer);_saveTimer=setTimeout(function(){if(!_dirty)return;_dirty=false;fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(projs)}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(){document.getElementById('save-status').textContent='已保存 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}).catch(function(e){document.getElementById('save-status').textContent='保存失败: '+e.message})},300)}
+  try{var ls=localStorage.getItem('pm-v9');if(ls){var p=JSON.parse(ls);if(Array.isArray(p)&&p.length){fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});localStorage.removeItem('pm-v9');_lastGoodData=p;return p}}}catch(e){}
+  return defaults()}).catch(function(){
+  // 网络错误时，优先使用上次成功加载的数据，避免用空defaults覆盖
+  if(_lastGoodData&&_lastGoodData.length)return _lastGoodData;
+  // 其次检查localStorage
+  try{var ls=localStorage.getItem('pm-v9');if(ls){var p=JSON.parse(ls);if(Array.isArray(p)&&p.length)return p}}catch(e){}
+  return defaults()})}
+function save(){_dirty=true;var statusEl=document.getElementById('save-status');statusEl.textContent='保存中...';statusEl.style.color='#ff9800';clearTimeout(_saveTimer);_saveTimer=setTimeout(function(){if(!_dirty)return;_dirty=false;fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(projs)}).then(function(r){
+  if(r.status===409){return r.json().then(function(j){throw new Error(j.error||'数据冲突')})}
+  if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(){
+    _lastGoodData=projs;
+    statusEl.textContent='✅ 已保存 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+    statusEl.style.color='#4caf50';
+    setTimeout(function(){statusEl.style.color=''},2000)
+  }).catch(function(e){var msg=e.message||'';if(msg.indexOf('数据保护')>=0||msg.indexOf('冲突')>=0){
+    statusEl.style.color='#f44336';
+    if(!_conflictShown){_conflictShown=true;alert('⚠️ '+msg+'\n\n请点击确定后刷新页面获取最新数据。');_conflictShown=false}
+    fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)&&d.length){projs=d;_lastGoodData=d;render();statusEl.textContent='已刷新为最新数据';statusEl.style.color='#4caf50'}}).catch(function(){})
+  }else{
+    statusEl.textContent='❌ 保存失败: '+msg;
+    statusEl.style.color='#f44336';
+    console.error('保存失败:',msg)
+  }
+})},300)}
 
 var projs=[],undoStack=[],imgTarget=null;
-load().then(function(data){projs=data;migrateData();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()}).catch(function(){projs=defaults();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()});
+load().then(function(data){projs=data;_lastGoodData=data;migrateData();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()}).catch(function(){projs=defaults();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()});
 
-// Periodic sync — pull remote changes from other users
-setInterval(function(){fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(!Array.isArray(d))return;if(JSON.stringify(projs)!==JSON.stringify(d)&&!_dirty){projs=d;render();document.getElementById('save-status').textContent='已同步 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}}).catch(function(){})},10000);
+// Periodic sync — pull remote changes from other users (仅当服务器数据更多时同步)
+setInterval(function(){fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(!Array.isArray(d)||!d.length)return;
+  // 数据保护：服务器数据比本地少很多时不同步（可能是服务器问题）
+  if(projs.length>0&&d.length<projs.length*0.7){console.warn('同步跳过: 服务器数据('+d.length+')少于本地('+projs.length+')，可能有异常');return}
+  if(JSON.stringify(projs)!==JSON.stringify(d)&&!_dirty){projs=d;_lastGoodData=d;render();document.getElementById('save-status').textContent='已同步 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}}).catch(function(){})},10000);
 
 // Save on page close
 window.addEventListener('beforeunload',function(){if(_dirty&&navigator.sendBeacon)navigator.sendBeacon(PM_API,JSON.stringify(projs))});
@@ -479,20 +508,29 @@ function getFiltered(){
 function render(){
   var filtered=getFiltered(),html='';
   filtered.forEach(function(p){
-    var pi=projs.indexOf(p),n=p.items.length;
-    p.items.forEach(function(item,i){
+    var pi=projs.indexOf(p);
+    // 日期筛选：只显示匹配日期的进度条目
+    var items = p.items;
+    if(colFilters['日期'] && colFilters['日期'].size){
+      items = p.items.filter(function(it){ return it.date && colFilters['日期'].has(it.date); });
+      if(!items.length) return; // 该项目没有匹配日期的条目，跳过
+    }
+    var n=items.length;
+    items.forEach(function(item,i){
+      // 有日期筛选时，i是过滤后的索引，需要找到原始索引
+      var origIdx = (colFilters['日期'] && colFilters['日期'].size) ? p.items.indexOf(item) : i;
       var isF=i===0;
-      html+='<tr class="'+(isF?'proj-start':'')+'" data-pi="'+pi+'" data-ii="'+i+'">';
-      html+='<td class="c-chk frz1"><input type="checkbox" class="row-check" data-pi="'+pi+'" data-ii="'+i+'"></td>';
+      html+='<tr class="'+(isF?'proj-start':'')+'" data-pi="'+pi+'" data-ii="'+origIdx+'">';
+      html+='<td class="c-chk frz1"><input type="checkbox" class="row-check" data-pi="'+pi+'" data-ii="'+origIdx+'"></td>';
       if(isF)html+='<td class="c-no frz2" rowspan="'+n+'"><input value="'+p.序号+'" data-pi="'+pi+'" data-f="序号" onchange="updF(this)"></td>';
             if(isF){html+='<td rowspan="'+n+'" style="position:relative;padding:2px 4px"><div class="fbtn" data-pi="'+pi+'" style="font-size:12px;cursor:pointer;padding:3px 8px;border:1px solid var(--border);border-radius:4px;background:var(--surface);min-width:80px">'+(p.工厂||'选择工厂')+' ▼</div></td>'}
       if(isF){html+='<td class="c-img frz3" rowspan="'+n+'"><div class="img-wrap'+(p.图片?' has-img':'')+'" onclick="'+(p.图片?'showModal(\''+p.图片+'\')':'triggerImg('+pi+')')+'">';html+=p.图片?'<img src="'+p.图片+'" onclick="event.stopPropagation();showModal(\''+p.图片+'\')"><span class="img-rm" onclick="event.stopPropagation();rmImg('+pi+')">×</span>':'<div class="img-add" onclick="event.stopPropagation();triggerImg('+pi+')">+</div>';html+='</div></td>'}
       if(isF)html+='<td class="c-name c-edit" rowspan="'+n+'" contenteditable data-pi="'+pi+'" data-f="名称" onblur="updF(this)">'+p.名称+'</td>';
       if(isF){html+='<td rowspan="'+n+'"><select data-pi="'+pi+'" data-f="项目阶段" onchange="updF(this)" class="g-'+p.项目阶段+'">';PSTAGES.forEach(function(v){html+='<option value="'+v+'"'+(p.项目阶段===v?' selected':'')+'>'+(v||'—')+'</option>'});html+='</select></td>'}
       if(isF){html+='<td rowspan="'+n+'"><select data-pi="'+pi+'" data-f="状态" onchange="updF(this)" class="s-'+p.状态+'">';STATUSES.forEach(function(v){html+='<option value="'+v+'"'+(p.状态===v?' selected':'')+'>'+(v||'—')+'</option>'});html+='</select></td>'}
-      html+='<td class="c-progress c-edit" contenteditable data-pi="'+pi+'" data-ii="'+i+'" data-f="text" onblur="updI(this)">'+item.text+'</td>';
-      html+='<td class="c-date"><input type="date" value="'+item.date+'" data-pi="'+pi+'" data-ii="'+i+'" data-f="date" onchange="updI(this)"></td>';
-      html+='<td class="c-act"><span class="del-item" onclick="delItem('+pi+','+i+')">×</span></td>';
+      html+='<td class="c-progress c-edit" contenteditable data-pi="'+pi+'" data-ii="'+origIdx+'" data-f="text" onblur="updI(this)">'+item.text+'</td>';
+      html+='<td class="c-date"><input type="date" value="'+item.date+'" data-pi="'+pi+'" data-ii="'+origIdx+'" data-f="date" onchange="updI(this)"></td>';
+      html+='<td class="c-act"><span class="del-item" onclick="delItem('+pi+','+origIdx+')">×</span></td>';
       if(isF)html+='<td class="c-coop c-edit" rowspan="'+n+'" contenteditable data-pi="'+pi+'" data-f="工厂配合" onblur="updF(this)">'+(p.工厂配合||'')+'</td>';
       if(isF){var lt=(p.关联||'');html+='<td class="c-link c-edit" rowspan="'+n+'" contenteditable data-pi="'+pi+'" data-f="关联" onblur="updF(this)">'+renderLinkRefs(lt)+'</td>';}
       if(isF)html+='<td class="c-note c-edit" rowspan="'+n+'" contenteditable data-pi="'+pi+'" data-f="备注" onblur="updF(this)">'+(p.备注||'')+'</td>';
@@ -1141,6 +1179,30 @@ document.addEventListener('click',function(e){
 </script>
 <script src="bigbrand.js?v=9"></script>
 <script>
+// 一键清除品牌筛选
+function resetBigBrandFilters(){
+  // 清除品牌筛选
+  resetSelectWidget('bbBrand');
+  // 清除品类筛选
+  resetSelectWidget('bbCat');
+  // 清除搜索
+  document.getElementById('bb-search').value = '';
+  // 清除时间筛选
+  document.getElementById('bb-band').value = '';
+  // 重新渲染
+  renderBigBrand();
+
+  // 显示提示
+  var toast = document.createElement('div');
+  toast.textContent = '✅ 已清除所有筛选';
+  toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#4caf50;color:#fff;padding:12px 24px;border-radius:25px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:fadeIn .3s';
+  document.body.appendChild(toast);
+  setTimeout(function(){
+    toast.style.animation = 'fadeOut .3s';
+    setTimeout(function(){ document.body.removeChild(toast); }, 300);
+  }, 2000);
+}
+
 // 支持 URL hash 直达指定标签页，如 pm-kanban.html#bigbrand
 (function(){
   function openFromHash(){

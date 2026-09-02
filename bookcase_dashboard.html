@@ -17,7 +17,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC
 .header p{color:var(--t2);font-size:14px}
 
 /* Filter Bar */
-.filter-bar{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.filter-bar{position:relative;z-index:1000;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:20px;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .filter-bar .filter-label{color:var(--t2);font-size:13px;margin-right:4px;white-space:nowrap}
 .filter-group{position:relative}
 .filter-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap;transition:border-color .2s}
@@ -41,6 +41,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC
 .btn-reset{padding:6px 14px;background:transparent;border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:13px;cursor:pointer;transition:all .2s}
 .btn-reset:hover{background:rgba(232,160,180,.1)}
 .filter-stats{font-size:13px;color:var(--t2);padding:4px 8px;background:var(--bg);border-radius:6px}
+
+/* Toast动画 */
+@keyframes fadeIn{from{opacity:0;transform:translate(-50%,-20px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes fadeOut{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-20px)}}
 
 /* Chart Select Widget */
 .sel-wrap{position:relative;display:inline-block;vertical-align:middle}
@@ -82,7 +86,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'PingFang SC
 /* Table */
 .section-title{font-size:18px;font-weight:600;color:var(--text);margin:24px 0 10px 0;padding-left:12px;border-left:3px solid var(--accent)}
 .table-panel{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
-.table-controls{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;position:relative;z-index:10;overflow:visible}
+.table-controls{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;position:relative;z-index:1000;overflow:visible}
 .table-controls input[type=text]{flex:1;min-width:180px;padding:7px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none}
 .table-controls input[type=text]:focus{border-color:var(--accent)}
 .table-controls .sel-dd input[type=checkbox]{width:14px;min-width:14px;flex:0 0 auto}
@@ -104,8 +108,8 @@ td.asin a:hover{text-decoration:underline}
 .footer{text-align:center;color:var(--t2);font-size:12px;margin-top:36px;padding:16px}
 
 /* Image lightbox */
-.img-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;cursor:pointer;align-items:center;justify-content:center}
-.img-modal.show{display:flex}
+.img-modal{display:none !important;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;cursor:pointer;align-items:center;justify-content:center}
+.img-modal.show{display:flex !important}
 .img-modal img{max-width:92vw;max-height:92vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 48px rgba(0,0,0,.6)}
 .img-modal-close{position:absolute;top:20px;right:28px;color:#fff;font-size:32px;cursor:pointer;z-index:1;opacity:.5;transition:opacity .2s}
 .img-modal-close:hover{opacity:1}
@@ -188,6 +192,12 @@ td.asin a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
+
+<!-- Image Lightbox Modal (must be outside sub-content to avoid display:none conflict) -->
+<div class="img-modal" id="img-modal" onclick="this.classList.remove('show')">
+  <span class="img-modal-close">&times;</span>
+  <img id="modal-img" src="" alt="Product">
+</div>
 
 <div id="loadingOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#faf6f8;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:inherit">
 <div style="width:48px;height:48px;border:4px solid rgba(184,166,212,.1);border-top:4px solid #d4a5c7;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px"></div>
@@ -323,6 +333,7 @@ td.asin a:hover{text-decoration:underline}
     <select id="amType" multiple style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;flex:1;min-width:100px"><option value="">📂 全部类型</option></select>
     <select id="amStyle" multiple style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;flex:1;min-width:100px"><option value="">🎨 全部风格</option></select>
     <select id="amYear" multiple style="padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit;flex:1;min-width:100px"><option value="">📅 全部上市年</option></select>
+    <button onclick="amResetAll()" style="padding:7px 14px;background:var(--bg);border:1px solid var(--a3);border-radius:8px;color:var(--a3);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s;margin-left:auto" onmouseover="this.style.background='rgba(232,160,180,.1)'" onmouseout="this.style.background='var(--bg)'">🗑 一键清除</button>
   </div>
   <span id="am-summary" style="font-size:13px;color:var(--t2);white-space:nowrap"></span>
 </div>
@@ -595,7 +606,7 @@ function updateC22_Dims(){
     var series=tn.map(function(t,i){return{name:t,type:'bar',stack:'total',data:order.map(function(b){return byBin[b][t]?byBin[b][t].asin:0}),itemStyle:{color:CP[i%CP.length]},label:{show:true,position:'inside',fontSize:9,color:'rgba(61,54,56,.5)',formatter:function(p){var total=0;tn.forEach(function(tt){total+=byBin[p.name]&&byBin[p.name][tt]?byBin[p.name][tt].asin:0});var pct=total>0?(p.value/total*100).toFixed(1):'0';return p.value>0?pct+'%':''}}}});
     var gmvData=order.map(function(b){var s=0;tn.forEach(function(t){s+=byBin[b][t]?byBin[b][t].gmv:0});return Math.round(s)});
     series.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#d4b8a6'},label:{show:true,position:'top',color:'#d4b8a6',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
-    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var bn=p[0].axisValue;var total=0,gTotal=0;tn.forEach(function(tt){if(byBin[bn]&&byBin[bn][tt]){total+=byBin[bn][tt].asin;gTotal+=byBin[bn][tt].gmv}});var rows=[];p.forEach(function(x){if(!x.value||x.seriesName==='GMV')return;var cell=byBin[bn]&&byBin[bn][x.seriesName]?byBin[bn][x.seriesName]:{asin:0,gmv:0};rows.push({marker:x.marker,name:x.seriesName,asin:x.value,asinPct:total?(x.value/total*100).toFixed(1):'0.0',gmv:cell.gmv,gmvPct:gTotal?(cell.gmv/gTotal*100).toFixed(1):'0.0'})});return tipTable(bn+' 英寸',rows,{asin:total,gmv:gTotal})}},legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#5a5055',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series};
+    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var bn=p[0].axisValue;var total=0,gTotal=0;tn.forEach(function(tt){if(byBin[bn]&&byBin[bn][tt]){total+=byBin[bn][tt].asin;gTotal+=byBin[bn][tt].gmv}});var globalAsin=0,globalGmv=0;order.forEach(function(b){tn.forEach(function(tt){if(byBin[b]&&byBin[b][tt]){globalAsin+=byBin[b][tt].asin;globalGmv+=byBin[b][tt].gmv}})});var rows=[];p.forEach(function(x){if(!x.value||x.seriesName==='GMV')return;var cell=byBin[bn]&&byBin[bn][x.seriesName]?byBin[bn][x.seriesName]:{asin:0,gmv:0};rows.push({marker:x.marker,name:x.seriesName,asin:x.value,asinPct:total?(x.value/total*100).toFixed(1):'0.0',gmv:cell.gmv,gmvPct:gTotal?(cell.gmv/gTotal*100).toFixed(1):'0.0'})});return tipTable(bn+' 英寸',rows,{asin:total,gmv:gTotal,globalAsin:globalAsin,globalGmv:globalGmv})}},legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#5a5055',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series};
   } else if(st.length===1){
     // Single type mode: bar + line
     var st0=st[0];
@@ -611,7 +622,7 @@ function updateC22_Dims(){
     var series2=tn2.map(function(t,i){return{name:t,type:'bar',stack:'total',data:order.map(function(b){return byBin[b][t]?byBin[b][t].asin:0}),itemStyle:{color:CP[i%CP.length]},label:{show:true,position:'inside',fontSize:9,color:'rgba(61,54,56,.5)',formatter:function(p){var total=0;tn2.forEach(function(tt){total+=byBin[p.name]&&byBin[p.name][tt]?byBin[p.name][tt].asin:0});var pct=total>0?(p.value/total*100).toFixed(1):'0';return p.value>0?pct+'%':''}}}});
     var gmvData2=order.map(function(b){var s=0;tn2.forEach(function(t){s+=byBin[b][t]?byBin[b][t].gmv:0});return Math.round(s)});
     series2.push({name:'GMV',type:'line',yAxisIndex:1,data:gmvData2,smooth:true,symbol:'circle',symbolSize:8,itemStyle:{color:'#d4b8a6'},label:{show:true,position:'top',color:'#d4b8a6',fontSize:9,formatter:function(p){return p.value>=1e6?(p.value/1e6).toFixed(1)+'M':p.value>=1e3?(p.value/1e3).toFixed(0)+'K':p.value}}});
-    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var bn=p[0].axisValue;var total=0,gTotal=0;tn2.forEach(function(tt){if(byBin[bn]&&byBin[bn][tt]){total+=byBin[bn][tt].asin;gTotal+=byBin[bn][tt].gmv}});var rows=[];p.forEach(function(x){if(!x.value||x.seriesName==='GMV')return;var cell=byBin[bn]&&byBin[bn][x.seriesName]?byBin[bn][x.seriesName]:{asin:0,gmv:0};rows.push({marker:x.marker,name:x.seriesName,asin:x.value,asinPct:total?(x.value/total*100).toFixed(1):'0.0',gmv:cell.gmv,gmvPct:gTotal?(cell.gmv/gTotal*100).toFixed(1):'0.0'})});return tipTable(bn+' 英寸',rows,{asin:total,gmv:gTotal})}},legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#5a5055',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series2};
+    var opt={tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){var bn=p[0].axisValue;var total=0,gTotal=0;tn2.forEach(function(tt){if(byBin[bn]&&byBin[bn][tt]){total+=byBin[bn][tt].asin;gTotal+=byBin[bn][tt].gmv}});var globalAsin=0,globalGmv=0;order.forEach(function(b){tn2.forEach(function(tt){if(byBin[b]&&byBin[b][tt]){globalAsin+=byBin[b][tt].asin;globalGmv+=byBin[b][tt].gmv}})});var rows=[];p.forEach(function(x){if(!x.value||x.seriesName==='GMV')return;var cell=byBin[bn]&&byBin[bn][x.seriesName]?byBin[bn][x.seriesName]:{asin:0,gmv:0};rows.push({marker:x.marker,name:x.seriesName,asin:x.value,asinPct:total?(x.value/total*100).toFixed(1):'0.0',gmv:cell.gmv,gmvPct:gTotal?(cell.gmv/gTotal*100).toFixed(1):'0.0'})});return tipTable(bn+' 英寸',rows,{asin:total,gmv:gTotal,globalAsin:globalAsin,globalGmv:globalGmv})}},legend:{type:'scroll',bottom:0,textStyle:{color:'#5a5055',fontSize:10}},grid:{left:75,right:90,top:50,bottom:85},xAxis:{type:'category',data:order,axisLabel:{color:'#5a5055',fontSize:11}},yAxis:[{type:'value',name:'父ASIN数',axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},{type:'value',name:'GMV',axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false}}],series:series2};
   }
   charts.c22.clear();charts.c22.setOption(opt);
   // Summary: top 5 intervals
@@ -752,12 +763,12 @@ function updateC1_Dim(d, fi){
       var a=p[0].value, g=p[1].value, u=p[2].value;
       return '<b>'+p[0].name+'</b><br/>父ASIN: <b>'+a.toLocaleString()+'</b> ('+(a/totalA*100).toFixed(1)+'%)<br/>GMV: <b>$'+g.toLocaleString()+'</b> ('+(g/totalG*100).toFixed(1)+'%)<br/>销量: <b>'+u.toLocaleString()+'</b> ('+(u/totalU*100).toFixed(1)+'%)';
     }},
-    legend:{data:['父ASIN数','GMV','销量'],textStyle:{color:'#5a5055',fontSize:10},top:0},
-    grid:{left:155,right:175,top:55,bottom:85},
+    legend:{data:['父ASIN数','GMV','销量'],textStyle:{color:'#5a5055',fontSize:13},orient:'vertical',right:10,top:'middle',itemGap:15},
+    grid:{left:155,right:120,top:45,bottom:85},
     xAxis:[
-      {type:'value',name:'父ASIN数',nameGap:5,nameTextStyle:{color:'#b8a6d4',fontSize:11},axisLabel:{color:'#5a5055'},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
-      {type:'value',name:'GMV',nameGap:25,nameTextStyle:{color:'#e8a0b4',fontSize:11},axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}},
-      {type:'value',name:'销量',nameGap:45,nameTextStyle:{color:'#d4b8a6',fontSize:11},axisLabel:{color:'#5a5055',formatter:function(v){return v>=1e3?(v/1e3).toFixed(0)+'K':v;}},splitLine:{show:false}}
+      {type:'value',name:'父ASIN数',nameLocation:'middle',nameGap:40,nameTextStyle:{color:'#b8a6d4',fontSize:12},axisLabel:{color:'#5a5055',fontSize:12},splitLine:{lineStyle:{color:'#e8dfe3',type:'dashed'}}},
+      {type:'value',name:'',nameTextStyle:{color:'#e8a0b4',fontSize:12},axisLabel:{color:'#e8a0b4',fontSize:12,formatter:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v}},splitLine:{show:false},position:'top',max:'dataMax'},
+      {type:'value',name:'',nameTextStyle:{color:'#d4b8a6',fontSize:12},axisLabel:{show:false},splitLine:{show:false},position:'top',max:'dataMax'}
     ],
     yAxis:{type:'category',data:names,axisLabel:{color:'#5a5055',fontSize:12,overflow:'truncate'}},
     series:[
@@ -800,7 +811,11 @@ function tipTable(title,rows,foot){
       + '<td style="text-align:right;color:#5a5055;font-size:11px">'+r.gmvPct+'%</td>'
       + '</tr>';
   });
-  if(foot)h += '<tr style="border-top:1px solid #e8dfe3;margin-top:2px"><td style="padding:4px 10px 0 0;font-weight:700">合计</td><td style="text-align:right;padding-top:4px;font-weight:700">'+foot.asin+'</td><td></td><td style="text-align:right;padding:4px 0 0 0;font-weight:700">'+_fmtM(foot.gmv)+'</td><td></td></tr>';
+  if(foot){
+    var asinGlobalPct=foot.globalAsin>0?(foot.asin/foot.globalAsin*100).toFixed(1):'0.0';
+    var gmvGlobalPct=foot.globalGmv>0?(foot.gmv/foot.globalGmv*100).toFixed(1):'0.0';
+    h += '<tr style="border-top:1px solid #e8dfe3;margin-top:2px"><td style="padding:4px 10px 0 0;font-weight:700">合计</td><td style="text-align:right;padding-top:4px;font-weight:700">'+foot.asin+'</td><td style="padding-left:6px"><span style="color:#5a5055;font-size:11px">'+asinGlobalPct+'%</span></td><td style="text-align:right;padding:4px 0 0 0;font-weight:700">'+_fmtM(foot.gmv)+'</td><td style="text-align:right;color:#5a5055;font-size:11px;padding-top:4px">'+gmvGlobalPct+'%</td></tr>';
+  }
   return h+'</table>';
 }
 var c21Stack='style';
@@ -890,12 +905,15 @@ function updateC21_YearDim(d){
       tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:function(p){
         var y=p[0].axisValue, yi=yl.indexOf(y), yearGmv=yi>=0?gmvTotal[yi]:0;
         var total=0; p.forEach(function(s){if(s.seriesName!=='GMV(合计)')total+=s.value;});
+        // 全局总计（用于合计行占比）
+        var globalAsin=Object.values(dimTotal).reduce(function(a,b){return a+b},0)||1;
+        var globalGmv=gmvTotal.reduce(function(a,b){return a+b},0)||1;
         var rows=[];
         p.forEach(function(s){ if(!s.value||s.seriesName==='GMV(合计)')return;
           var g=(yi>=0&&years[y][s.seriesName])?years[y][s.seriesName].gmv:0;
           rows.push({marker:s.marker,name:s.seriesName,asin:s.value,asinPct:total?(s.value/total*100).toFixed(1):'0.0',gmv:g,gmvPct:yearGmv?(g/yearGmv*100).toFixed(1):'0.0'});
         });
-        return tipTable(titleLabel+' '+y,rows,{asin:total,gmv:yearGmv});
+        return tipTable(titleLabel+' '+y,rows,{asin:total,gmv:yearGmv,globalAsin:globalAsin,globalGmv:globalGmv});
       }},
       legend:{type:'scroll',textStyle:{color:'#5a5055',fontSize:10},top:0},
       grid:{left:85,right:85,top:60,bottom:55},
@@ -1253,7 +1271,7 @@ function updateC24_CompanyTrend(cd,fromFilter){
   var topNLabel=tSet?" [Top"+topNVal2+"]":"";
   _setChart("c24",{
     title:{text:(coLabel?coLabel+" ":"")+"公司月度GMV"+topNLabel,left:"center",top:2,textStyle:{color:"#8a7e83",fontSize:11,fontWeight:"normal"}},
-    tooltip:{trigger:"axis",formatter:function(p){var t=0;p.forEach(function(s){t+=s.value||0});var h="<b>"+p[0].axisValue+"</b>";p.forEach(function(s){if(!s.value)return;h+="<br/>"+s.marker+s.seriesName+": <b>$"+s.value.toLocaleString()+"</b> ("+(t>0?(s.value/t*100).toFixed(1):"0.0")+"%)"});h+="<br/><b>合计: $"+t.toLocaleString()+"</b>";return h}},
+    tooltip:{trigger:"axis",formatter:function(p){var t=0;p.forEach(function(s){t+=s.value||0});var totalBGMV=0;bEntries.forEach(function(e){totalBGMV+=e.total});var h="<b>"+p[0].axisValue+"</b>";p.forEach(function(s){if(!s.value)return;h+="<br/>"+s.marker+s.seriesName+": <b>$"+s.value.toLocaleString()+"</b> ("+(t>0?(s.value/t*100).toFixed(1):"0.0")+"%)"});h+="<br/><b>合计: $"+t.toLocaleString()+" ("+(totalBGMV>0?(t/totalBGMV*100).toFixed(1):"0.0")+"%)</b>";return h}},
     legend:{type:"scroll",bottom:0,height:52,textStyle:{color:"#8a7e83",fontSize:10},pageTextStyle:{color:"#8a7e83"},pageIconColor:"#d4a5c7"},
     grid:{left:85,right:55,top:35,bottom:75},
     xAxis:{type:"category",data:months,axisLabel:{color:"#8a7e83"}},
@@ -1994,7 +2012,7 @@ function buildFilterBar(){
     html+='</div></div></div>';
   });
   html+='<label style=\"font-size:13px;color:var(--t2);cursor:pointer;user-select:none;margin-right:8px\"><input type=\"checkbox\" id=\"showUnlabeled\" onchange=\"updateAll()\"> 含未打标</label>';
-  html+='<div class=filter-actions><span class=filter-stats id="filterStats">全部</span><button class=btn-reset onclick="resetFilters()">✕ 重置筛选</button></div>';
+  html+='<div class=filter-actions><span class=filter-stats id="filterStats">全部</span><button class=btn-reset onclick="resetAllFilters()">🗑️ 一键清除</button></div>';
   document.getElementById('filterBar').innerHTML=html;
 }
 function toggleDD(k){
@@ -2040,6 +2058,54 @@ function resetFilters(){
   updateAll();
   updateFilterStats();
 }
+function resetAllFilters(){
+  // 1. 重置主筛选栏
+  resetFilters();
+
+  // 2. 取消"含未打标"复选框
+  var unlabeledCb = document.getElementById('showUnlabeled');
+  if(unlabeledCb && unlabeledCb.checked){
+    unlabeledCb.checked = false;
+    updateAll();
+  }
+
+  // 3. 重置月份选择
+  var monthSelect = document.getElementById('monthSelect');
+  if(monthSelect){
+    monthSelect.value = '';
+    updateAll();
+  }
+
+  // 4. 重置竞品观测筛选
+  ['coSelect','coBrand','coTopN','c28Type','c28Style','c28Year','c28Stack','c28TopN','c24Company','c24TopN','coTopStyle','coTopType','coTopYear'].forEach(function(id){
+    resetSelectWidget(id);
+  });
+  updateCompanyAnalysis();
+  updateC28_Layout(null,true);
+  updateC24_CompanyTrend(null,true);
+  updateCoProducts(null,true);
+
+  // 5. 重置C25散点图筛选
+  ['c25Company','c25Brand','c25Type','c25Style','c25Year','c25TopN'].forEach(function(id){
+    resetSelectWidget(id);
+  });
+  updateC25_Scatter(null,true);
+
+  // 6. 重置ASIN追踪筛选
+  if(typeof amResetAll === 'function'){
+    amResetAll();
+  }
+
+  // 7. 显示提示
+  var toast = document.createElement('div');
+  toast.textContent = '✅ 已清除所有筛选';
+  toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#4caf50;color:#fff;padding:12px 24px;border-radius:25px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:fadeIn .3s';
+  document.body.appendChild(toast);
+  setTimeout(function(){
+    toast.style.animation = 'fadeOut .3s';
+    setTimeout(function(){ document.body.removeChild(toast); }, 300);
+  }, 2000);
+}
 function updateFilterStats(){
   var d=getFiltered();
   var anyActive=Object.values(ACTIVE).some(function(a){return a.length>0;});
@@ -2064,10 +2130,6 @@ window.addEventListener('resize',function(){
   Object.values(charts).forEach(function(c){ try{c.resize();}catch(e){} });
 });
 </script>
-<div class="img-modal" id="img-modal" onclick="this.classList.remove('show')">
-  <span class="img-modal-close">&times;</span>
-  <img id="modal-img" src="" alt="Product">
-</div>
 <script src="bookcase_asin.js?v=9"></script>
 <script>
 function switchSubTab(t){

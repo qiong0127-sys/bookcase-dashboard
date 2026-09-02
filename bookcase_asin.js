@@ -392,6 +392,41 @@ function renderAsinMonthly() {
       }
     });
   }
+
+  // 一键清除所有筛选条件
+  window.amResetAll = function(){
+    // 清空搜索框
+    var searchEl = document.getElementById('amSearch');
+    if (searchEl) searchEl.value = '';
+
+    // 重置所有筛选下拉框
+    ['amBrand','amCompany','amType','amStyle','amYear'].forEach(function(id){
+      resetSelectWidget(id);
+    });
+
+    // 重置指标为 GMV
+    var metricEl = document.getElementById('amMetric');
+    if (metricEl) {
+      metricEl.value = 'gmv';
+      if (typeof refreshSelectUI === 'function') refreshSelectUI('amMetric');
+    }
+
+    // 重置排序为 GMV 汇总
+    var sortEl = document.getElementById('amSort');
+    if (sortEl) {
+      sortEl.value = 'gmv_total';
+      if (typeof refreshSelectUI === 'function') refreshSelectUI('amSort');
+    }
+
+    // 取消去重勾选
+    var dedupEl = document.getElementById('amDedup');
+    if (dedupEl) dedupEl.checked = false;
+
+    // 重置页码并重新渲染
+    amPage = 1;
+    renderAsinMonthly();
+  };
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bindSearch);
     document.addEventListener('DOMContentLoaded', bindImageZoom);
