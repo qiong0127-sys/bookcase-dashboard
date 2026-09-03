@@ -229,7 +229,8 @@ class PMHandler(http.server.SimpleHTTPRequestHandler):
 
             with open(DATA_FILE, 'w', encoding='utf-8') as f:
                 json.dump(new_data, f, ensure_ascii=False, indent=2)
-            log(f'✅ 数据已保存: {len(new_data)}个项目, {_count_items(new_data)}条总计')
+            item_count = _count_items(new_data)
+            log(f'✅ 数据已保存: {len(new_data)}个项目, {item_count}条总计, 数据大小: {len(body)}字节')
 
             # 自动提交到git
             _auto_git_commit(f'数据更新: {len(new_data)}个项目, {_count_items(new_data)}条进度')

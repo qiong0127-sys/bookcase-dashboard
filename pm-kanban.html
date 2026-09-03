@@ -448,42 +448,51 @@ function defaults(){return[
 ];}
 
 // --- API-based persistence (shared across all users) ---
-var PM_API='/api/pm-data',_saveTimer=null,_dirty=false,_conflictShown=false,_lastGoodData=null;
-function load(){return fetch(PM_API).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(d){if(Array.isArray(d)&&d.length){_lastGoodData=d;return d}
+var PM_API='/api/pm-data',_saveTimer=null,_dirty=false,_conflictShown=false,_lastGoodData=null,_retryCount=0;
+function load(){return fetch(PM_API).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(d){if(Array.isArray(d)&&d.length){_lastGoodData=d;try{localStorage.setItem('pm-v9',JSON.stringify(d))}catch(e){}return d}
   // Migration: API empty but localStorage has data → upload it
-  try{var ls=localStorage.getItem('pm-v9');if(ls){var p=JSON.parse(ls);if(Array.isArray(p)&&p.length){fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});localStorage.removeItem('pm-v9');_lastGoodData=p;return p}}}catch(e){}
+  try{var ls=localStorage.getItem('pm-v9');if(ls){var p=JSON.parse(ls);if(Array.isArray(p)&&p.length){fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});_lastGoodData=p;return p}}}catch(e){}
   return defaults()}).catch(function(){
   // 网络错误时，优先使用上次成功加载的数据，避免用空defaults覆盖
   if(_lastGoodData&&_lastGoodData.length)return _lastGoodData;
   // 其次检查localStorage
   try{var ls=localStorage.getItem('pm-v9');if(ls){var p=JSON.parse(ls);if(Array.isArray(p)&&p.length)return p}}catch(e){}
   return defaults()})}
-function save(){_dirty=true;var statusEl=document.getElementById('save-status');statusEl.textContent='保存中...';statusEl.style.color='#ff9800';clearTimeout(_saveTimer);_saveTimer=setTimeout(function(){if(!_dirty)return;_dirty=false;fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(projs)}).then(function(r){
+function save(){_dirty=true;var statusEl=document.getElementById('save-status');if(statusEl.textContent.indexOf('✅')>-1||statusEl.textContent.indexOf('已保存')>-1||!statusEl.textContent){statusEl.textContent='保存中...';statusEl.style.color='#ff9800'}clearTimeout(_saveTimer);_saveTimer=setTimeout(function(){if(!_dirty)return;var payload=JSON.stringify(projs);fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:payload}).then(function(r){
   if(r.status===409){return r.json().then(function(j){throw new Error(j.error||'数据冲突')})}
   if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(){
+    _dirty=false;_retryCount=0;
     _lastGoodData=projs;
+    try{localStorage.setItem('pm-v9',payload)}catch(e){}
     statusEl.textContent='✅ 已保存 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
     statusEl.style.color='#4caf50';
-    setTimeout(function(){statusEl.style.color=''},2000)
-  }).catch(function(e){var msg=e.message||'';if(msg.indexOf('数据保护')>=0||msg.indexOf('冲突')>=0){
-    statusEl.style.color='#f44336';
-    if(!_conflictShown){_conflictShown=true;alert('⚠️ '+msg+'\n\n请点击确定后刷新页面获取最新数据。');_conflictShown=false}
-    fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)&&d.length){projs=d;_lastGoodData=d;render();statusEl.textContent='已刷新为最新数据';statusEl.style.color='#4caf50'}}).catch(function(){})
-  }else{
-    statusEl.textContent='❌ 保存失败: '+msg;
-    statusEl.style.color='#f44336';
-    console.error('保存失败:',msg)
-  }
-})},300)}
+    setTimeout(function(){if(statusEl.textContent.indexOf('✅')>=0)statusEl.textContent=''},5000)
+  }).catch(function(e){var msg=e.message||'';
+    if(msg.indexOf('数据保护')>=0||msg.indexOf('冲突')>=0){
+      _dirty=false;_retryCount=0;
+      statusEl.style.color='#f44336';
+      if(!_conflictShown){_conflictShown=true;alert('⚠️ '+msg+'\n\n请点击确定后刷新页面获取最新数据。');_conflictShown=false}
+      fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)&&d.length){projs=d;_lastGoodData=d;try{localStorage.setItem('pm-v9',JSON.stringify(d))}catch(e){}}render();statusEl.textContent='已刷新为最新数据';statusEl.style.color='#4caf50'}}).catch(function(){})
+    }else{
+      _retryCount=(_retryCount||0)+1;
+      statusEl.textContent='❌ 保存失败('+_retryCount+'次)，5秒后重试...';
+      statusEl.style.color='#f44336';
+      console.error('保存失败，将重试:',msg);
+      setTimeout(function(){if(_dirty)save()},5000)
+    }
+  })},300)}
 
 var projs=[],undoStack=[],imgTarget=null;
 load().then(function(data){projs=data;_lastGoodData=data;migrateData();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()}).catch(function(){projs=defaults();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()});
 
-// Periodic sync — pull remote changes from other users (仅当服务器数据更多时同步)
-setInterval(function(){fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(!Array.isArray(d)||!d.length)return;
+// Periodic sync — pull remote changes from other users (仅当服务器数据更多或相当时同步)
+setInterval(function(){if(_dirty)return;fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(!Array.isArray(d)||!d.length)return;
   // 数据保护：服务器数据比本地少很多时不同步（可能是服务器问题）
   if(projs.length>0&&d.length<projs.length*0.7){console.warn('同步跳过: 服务器数据('+d.length+')少于本地('+projs.length+')，可能有异常');return}
-  if(JSON.stringify(projs)!==JSON.stringify(d)&&!_dirty){projs=d;_lastGoodData=d;render();document.getElementById('save-status').textContent='已同步 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}}).catch(function(){})},10000);
+  // 比较条目总数（项目数+进度条目数）
+  var lc=0,rc=0;projs.forEach(function(p){lc+=1+(p.items?p.items.length:0)});d.forEach(function(p){rc+=1+(p.items?p.items.length:0)});
+  if(rc<lc*0.8){console.warn('同步跳过: 服务器条目('+rc+')少于本地('+lc+')的80%，可能有异常');return}
+  if(JSON.stringify(projs)!==JSON.stringify(d)){projs=d;_lastGoodData=d;try{localStorage.setItem('pm-v9',JSON.stringify(d))}catch(e){}render();document.getElementById('save-status').textContent='已同步 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}}).catch(function(){})},10000);
 
 // Save on page close
 window.addEventListener('beforeunload',function(){if(_dirty&&navigator.sendBeacon)navigator.sendBeacon(PM_API,JSON.stringify(projs))});
