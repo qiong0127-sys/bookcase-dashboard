@@ -480,7 +480,7 @@ function save(){_dirty=true;var statusEl=document.getElementById('save-status');
       console.error('保存失败，将重试:',msg);
       setTimeout(function(){if(_dirty)save()},5000)
     }
-  })},300)}
+  })},300)
 
 var projs=[],undoStack=[],imgTarget=null;
 load().then(function(data){projs=data;_lastGoodData=data;migrateData();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()}).catch(function(){projs=defaults();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()});
