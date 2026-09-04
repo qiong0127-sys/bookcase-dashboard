@@ -1,6 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
-<head><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>工作看板</title>
@@ -458,12 +458,11 @@ function load(){return fetch(PM_API).then(function(r){if(!r.ok)throw new Error('
   // 其次检查localStorage
   try{var ls=localStorage.getItem('pm-v9');if(ls){var p=JSON.parse(ls);if(Array.isArray(p)&&p.length)return p}}catch(e){}
   return defaults()})}
-function save(){_dirty=true;var statusEl=document.getElementById('save-status');if(statusEl.textContent.indexOf('✅')>-1||statusEl.textContent.indexOf('已保存')>-1||!statusEl.textContent){statusEl.textContent='保存中...';statusEl.style.color='#ff9800'}clearTimeout(_saveTimer);_saveTimer=setTimeout(function(){if(!_dirty)return;var payload=JSON.stringify(projs);fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:payload}).then(function(r){
+function save(){_dirty=true;var statusEl=document.getElementById('save-status');if(statusEl.textContent.indexOf('✅')>-1||statusEl.textContent.indexOf('已保存')>-1||!statusEl.textContent){statusEl.textContent='保存中...';statusEl.style.color='#ff9800'}clearTimeout(_saveTimer);_saveTimer=setTimeout(function(){if(!_dirty)return;var payload=JSON.stringify(projs);try{localStorage.setItem('pm-v9',payload)}catch(e){}fetch(PM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:payload}).then(function(r){
   if(r.status===409){return r.json().then(function(j){throw new Error(j.error||'数据冲突')})}
   if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(){
     _dirty=false;_retryCount=0;
     _lastGoodData=projs;
-    try{localStorage.setItem('pm-v9',payload)}catch(e){}
     statusEl.textContent='✅ 已保存 '+new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
     statusEl.style.color='#4caf50';
     setTimeout(function(){if(statusEl.textContent.indexOf('✅')>=0)statusEl.textContent=''},5000)
@@ -472,17 +471,17 @@ function save(){_dirty=true;var statusEl=document.getElementById('save-status');
       _dirty=false;_retryCount=0;
       statusEl.style.color='#f44336';
       if(!_conflictShown){_conflictShown=true;alert('⚠️ '+msg+'\n\n请点击确定后刷新页面获取最新数据。');_conflictShown=false}
-      fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)&&d.length){projs=d;_lastGoodData=d;try{localStorage.setItem('pm-v9',JSON.stringify(d))}catch(e){}}render();statusEl.textContent='已刷新为最新数据';statusEl.style.color='#4caf50'}}).catch(function(){})
+      fetch(PM_API).then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)&&d.length){projs=d;_lastGoodData=d;render();statusEl.textContent='已刷新为最新数据';statusEl.style.color='#4caf50'}}).catch(function(){})
     }else{
       _retryCount=(_retryCount||0)+1;
-      statusEl.textContent='❌ 保存失败('+_retryCount+'次)，5秒后重试...';
+      statusEl.textContent=' 保存失败('+_retryCount+'次)，5秒后重试...';
       statusEl.style.color='#f44336';
       console.error('保存失败，将重试:',msg);
       setTimeout(function(){if(_dirty)save()},5000)
     }
-  })},300)
+  })},300)}
 
-var projs=[],undoStack=[],imgTarget=null;
+var projs=[],undoStack=[],imgTarget=null,colFilters={};
 load().then(function(data){projs=data;_lastGoodData=data;migrateData();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()}).catch(function(){projs=defaults();FACTORIES=loadFactories();if(!FACTORIES.length)FACTORIES=['马来嘉樾','常州宏达','常州潮客','同芯','超能','佳誉铂','瀚海'];render()});
 
 // Periodic sync — pull remote changes from other users (仅当服务器数据更多或相当时同步)
@@ -496,7 +495,6 @@ setInterval(function(){if(_dirty)return;fetch(PM_API).then(function(r){return r.
 
 // Save on page close
 window.addEventListener('beforeunload',function(){if(_dirty&&navigator.sendBeacon)navigator.sendBeacon(PM_API,JSON.stringify(projs))});
-var colFilters={};
 
 function getFiltered(){
   var s=(document.getElementById('filter-search')?.value||'').toLowerCase();
@@ -1186,7 +1184,7 @@ document.addEventListener('click',function(e){
   }
 });
 </script>
-<script src="bigbrand.js?v=10"></script>
+<script src="bigbrand.js?v=9"></script>
 <script>
 // 一键清除品牌筛选
 function resetBigBrandFilters(){
