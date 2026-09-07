@@ -161,20 +161,20 @@ td.asin a:hover{text-decoration:underline}
 #amTbody td:nth-child(2){position:sticky;left:var(--fz-l-col1,0);z-index:5;background:#fff}
 #amTbody td:nth-child(3){position:sticky;left:var(--fz-l-col2,0);z-index:5;background:#fff;border-right:2px solid #d4a5c7}
 #amTbody tr.dup-row td:nth-child(-n+3){background:rgba(255,180,80,.22) !important}
-/* 单双月列颜色区分 — 单月(3,5,7)浅底，双月(4,6)稍深底 (col 9=3月GMV) */
+/* 单双月列颜色区分 — 单月(3,5,7)浅底，双月(4,6,8)稍深底 (col 9=3月GMV) */
 #amTbody td:nth-child(9),#amTbody td:nth-child(11),#amTbody td:nth-child(13),
-#amTbody td:nth-child(14),#amTbody td:nth-child(16),#amTbody td:nth-child(18),
-#amTbody td:nth-child(19),#amTbody td:nth-child(21),#amTbody td:nth-child(23),
+#amTbody td:nth-child(15),#amTbody td:nth-child(17),#amTbody td:nth-child(19),
+#amTbody td:nth-child(21),#amTbody td:nth-child(23),#amTbody td:nth-child(25),
 #amTable thead th:nth-child(9),#amTable thead th:nth-child(11),#amTable thead th:nth-child(13),
-#amTable thead th:nth-child(14),#amTable thead th:nth-child(16),#amTable thead th:nth-child(18),
-#amTable thead th:nth-child(19),#amTable thead th:nth-child(21),#amTable thead th:nth-child(23)
+#amTable thead th:nth-child(15),#amTable thead th:nth-child(17),#amTable thead th:nth-child(19),
+#amTable thead th:nth-child(21),#amTable thead th:nth-child(23),#amTable thead th:nth-child(25)
 {background:rgba(184,166,212,.15);color:#5a5055;font-weight:500}
-#amTbody td:nth-child(10),#amTbody td:nth-child(12),
-#amTbody td:nth-child(15),#amTbody td:nth-child(17),
-#amTbody td:nth-child(20),#amTbody td:nth-child(22),
-#amTable thead th:nth-child(10),#amTable thead th:nth-child(12),
-#amTable thead th:nth-child(15),#amTable thead th:nth-child(17),
-#amTable thead th:nth-child(20),#amTable thead th:nth-child(22)
+#amTbody td:nth-child(10),#amTbody td:nth-child(12),#amTbody td:nth-child(14),
+#amTbody td:nth-child(16),#amTbody td:nth-child(18),#amTbody td:nth-child(20),
+#amTbody td:nth-child(22),#amTbody td:nth-child(24),#amTbody td:nth-child(26),
+#amTable thead th:nth-child(10),#amTable thead th:nth-child(12),#amTable thead th:nth-child(14),
+#amTable thead th:nth-child(16),#amTable thead th:nth-child(18),#amTable thead th:nth-child(20),
+#amTable thead th:nth-child(22),#amTable thead th:nth-child(24),#amTable thead th:nth-child(26)
 {background:rgba(212,165,199,.28);color:#3d3638;font-weight:600}
 /* 平均单价列专属颜色 */
 #amTbody td:nth-child(8){color:#b8a6d4;font-weight:600}
@@ -214,7 +214,7 @@ td.asin a:hover{text-decoration:underline}
 
 <div class="header">
 <h1>Amazon Bookcase 品类市场数据看板</h1>
-<p style="color:#e8a0b4;font-weight:600">⚡ v20260814-sticky-v3 | Bookcase Category Market Intelligence · 含竞品观测 · 3-7月完整数据 · 左侧3列冻结（随整行滚动）</p>
+<p style="color:#e8a0b4;font-weight:600">⚡ v20260814-sticky-v3 | Bookcase Category Market Intelligence · 含竞品观测 · 3-8月完整数据 · 左侧3列冻结（随整行滚动）</p>
 </div>
 
 <!-- Filter Bar -->
@@ -322,7 +322,7 @@ td.asin a:hover{text-decoration:underline}
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
     <input type="text" id="amSearch" placeholder="🔍 搜索 ASIN / 品牌 / 公司 / 标题..." style="flex:1;min-width:280px;padding:8px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;font-family:inherit">
     <select id="amMetric" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="gmv" selected>📊 GMV</option><option value="units">📦 销量</option><option value="price">💰 单价</option></select>
-    <select id="amSort" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="gmv_total">GMV汇总↓</option><option value="gmv_m7">7月GMV↓</option><option value="gmv_m6">6月GMV↓</option><option value="gmv_m5">5月GMV↓</option><option value="gmv_m4">4月GMV↓</option><option value="gmv_m3">3月GMV↓</option></select>
+    <select id="amSort" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;outline:none;font-family:inherit"><option value="gmv_total">GMV汇总↓</option><option value="gmv_m8">8月GMV↓</option><option value="gmv_m7">7月GMV↓</option><option value="gmv_m6">6月GMV↓</option><option value="gmv_m5">5月GMV↓</option><option value="gmv_m4">4月GMV↓</option><option value="gmv_m3">3月GMV↓</option></select>
     <label style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;user-select:none"><input type="checkbox" id="amDedup" style="cursor:pointer;accent-color:var(--accent)"> 🔗 去重父ASIN</label>
   </div>
   <!-- Row 2: 维度筛选 + 统计 -->
@@ -337,7 +337,7 @@ td.asin a:hover{text-decoration:underline}
   </div>
   <span id="am-summary" style="font-size:13px;color:var(--t2);white-space:nowrap"></span>
 </div>
-<div class="table-wrapper" style="overflow:auto;max-height:80vh;position:relative"><table id="amTable"><thead><tr><th data-metric="all" style="width:32px">#</th><th data-metric="all" style="width:90px">图片</th><th data-metric="all" style="width:100px">ASIN</th><th data-metric="all" style="width:90px">父ASIN</th><th data-metric="all" style="width:70px">品牌</th><th data-metric="all" style="width:85px">公司</th><th data-metric="all" style="width:65px">上市</th><th data-metric="all" style="width:70px">平均单价</th><th data-metric="gmv">3月GMV</th><th data-metric="gmv">4月GMV</th><th data-metric="gmv">5月GMV</th><th data-metric="gmv">6月GMV</th><th data-metric="gmv">7月GMV</th><th data-metric="units">3月销量</th><th data-metric="units">4月销量</th><th data-metric="units">5月销量</th><th data-metric="units">6月销量</th><th data-metric="units">7月销量</th><th data-metric="price">3月单价</th><th data-metric="price">4月单价</th><th data-metric="price">5月单价</th><th data-metric="price">6月单价</th><th data-metric="price">7月单价</th><th data-metric="all">GMV汇总</th><th data-metric="all">趋势</th></tr><tr id="amSummaryRow" style="background:#f5f0f3;font-weight:700;border-bottom:2px solid var(--accent);font-size:16px"></tr></thead><tbody id="amTbody"></tbody></table>
+<div class="table-wrapper" style="overflow:auto;max-height:80vh;position:relative"><table id="amTable"><thead><tr><th data-metric="all" style="width:32px">#</th><th data-metric="all" style="width:90px">图片</th><th data-metric="all" style="width:100px">ASIN</th><th data-metric="all" style="width:90px">父ASIN</th><th data-metric="all" style="width:70px">品牌</th><th data-metric="all" style="width:85px">公司</th><th data-metric="all" style="width:65px">上市</th><th data-metric="all" style="width:70px">平均单价</th><th data-metric="gmv">3月GMV</th><th data-metric="gmv">4月GMV</th><th data-metric="gmv">5月GMV</th><th data-metric="gmv">6月GMV</th><th data-metric="gmv">7月GMV</th><th data-metric="gmv">8月GMV</th><th data-metric="units">3月销量</th><th data-metric="units">4月销量</th><th data-metric="units">5月销量</th><th data-metric="units">6月销量</th><th data-metric="units">7月销量</th><th data-metric="units">8月销量</th><th data-metric="price">3月单价</th><th data-metric="price">4月单价</th><th data-metric="price">5月单价</th><th data-metric="price">6月单价</th><th data-metric="price">7月单价</th><th data-metric="price">8月单价</th><th data-metric="all">GMV汇总</th><th data-metric="all">趋势</th></tr><tr id="amSummaryRow" style="background:#f5f0f3;font-weight:700;border-bottom:2px solid var(--accent);font-size:16px"></tr></thead><tbody id="amTbody"></tbody></table>
 </div>
 <div id="amPager" style="display:flex;justify-content:center;align-items:center;gap:6px;padding:12px 0;border-top:1px solid var(--border);margin-top:4px"></div></div>
 <div class="sub-content active" id="sc-overview">
@@ -527,7 +527,7 @@ function updateC20_Trend(d){
   var fi=c20Dim==='style'?FI.style:FI.type;
   var sm={};d.forEach(function(r){var s=r[fi];if(!s||s==='Unknown'||s==='0')s='未打标';sm[s]=(sm[s]||0)+r[FI.gmv]});
   var styles=Object.entries(sm).sort(function(a,b){return b[1]-a[1]}).map(function(x){return x[0]});
-  var months=['3月','4月','5月','6月','7月'];
+  var months=['3月','4月','5月','6月','7月','8月'];
   var series=styles.map(function(s){
     var data=months.map(function(m){
       var sum=0;d.forEach(function(r){if(r[fi]===s&&(r[FI.data_month]===m||r[FI.data_month]===parseInt(m)))sum+=r[FI.gmv]});return Math.round(sum)
@@ -543,7 +543,7 @@ function updateC20_Trend(d){
   var top2GMV=(sm[styles[0]]||0)+(sm[styles[1]]||0);
   var top2Pct=totalGMV>0?(top2GMV/totalGMV*100).toFixed(0):'0';
   var allGrowths=[];
-  styles.forEach(function(s){var m3=0,m7=0;d.forEach(function(r){if(r[fi]===s&&(r[FI.data_month]==='3月'||r[FI.data_month]===3))m3+=r[FI.gmv];if(r[fi]===s&&(r[FI.data_month]==='7月'||r[FI.data_month]===7))m7+=r[FI.gmv]});if(m3>0){allGrowths.push({name:s,g:(m7-m3)/m3*100})}});
+  styles.forEach(function(s){var m3=0,m8=0;d.forEach(function(r){if(r[fi]===s&&(r[FI.data_month]==='3月'||r[FI.data_month]===3))m3+=r[FI.gmv];if(r[fi]===s&&(r[FI.data_month]==='8月'||r[FI.data_month]===8))m8+=r[FI.gmv]});if(m3>0){allGrowths.push({name:s,g:(m8-m3)/m3*100})}});
   allGrowths.sort(function(a,b){return b.g-a.g});
   var growLeader=allGrowths[0]||null;
   // Modern 3→7 growth
@@ -1230,7 +1230,7 @@ function updateC24_CompanyTrend(cd,fromFilter){
     selC.innerHTML='<option value="">全部公司</option>'+Object.keys(cs).sort().map(function(c){return '<option value="'+c+'">'+c+'</option>'}).join('');
     refreshSelectUI('c24Company');
   }
-  var months=["3月","4月","5月","6月","7月"];
+  var months=["3月","4月","5月","6月","7月","8月"];
   // 第一步: parent_asin × month 去重取GMV（全局模式：按showUnlabeled过滤公司）
   var parentMonth={};cd.forEach(function(r){
     var co=r[FI.company];if(!showUL&&(!co||co==="Unknown"||co==="未打标"||co==="无标识"||co==="0"))return;
@@ -1280,18 +1280,18 @@ function updateC24_CompanyTrend(cd,fromFilter){
   });
   // Company momentum analysis — compute absolute growth, not just percentages
   var top5b=bEntries.slice(0,5),fastB='',fastR=-999,fastAbs=0,fastM3=0,fastM7=0;
-  bEntries.forEach(function(e){var m3=comps[e.name]['3月']||0,m7=comps[e.name]['7月']||0;if(m3>5000){var r=(m7-m3)/m3*100;if((m7-m3)>fastAbs){fastAbs=m7-m3;fastR=r;fastB=e.name;fastM3=m3;fastM7=m7}}});
+  bEntries.forEach(function(e){var m3=comps[e.name]['3月']||0,m8=comps[e.name]['8月']||0;if(m3>5000){var r=(m8-m3)/m3*100;if((m8-m3)>fastAbs){fastAbs=m8-m3;fastR=r;fastB=e.name;fastM3=m3;fastM7=m8}}});
   var totalBGMV=0;bEntries.forEach(function(e){totalBGMV+=e.total});
   var cr3B=top5b.slice(0,3).reduce(function(s,e){return s+e.total},0);
   var cr3BPct=totalBGMV>0?(cr3B/totalBGMV*100).toFixed(0):'0';
   // Top company stability: absolute and relative
-  var top1m3=0,top1m7=0;bEntries.forEach(function(e){if(e.name===top5b[0].name){top1m3=comps[e.name]['3月']||0;top1m7=comps[e.name]['7月']||0}});
-  var top1AbsGrowth=top1m7-top1m3;
-  var top1PctGrowth=top1m3>0?((top1m7-top1m3)/top1m3*100).toFixed(0):'0';
+  var top1m3=0,top1m8=0;bEntries.forEach(function(e){if(e.name===top5b[0].name){top1m3=comps[e.name]['3月']||0;top1m8=comps[e.name]['8月']||0}});
+  var top1AbsGrowth=top1m8-top1m3;
+  var top1PctGrowth=top1m3>0?((top1m8-top1m3)/top1m3*100).toFixed(0):'0';
   // Qualify fast grower: is the absolute growth meaningful?
   var fastAbsText=fastAbs>100000?'净增<b>$'+Math.round(fastAbs/1000)+'K</b>':fastAbs>10000?'净增$'+Math.round(fastAbs/1000)+'K':'基数仅$'+Math.round(fastM3/1000)+'K';
   var fastIsReal=fastAbs>50000;
-  setSummary('c24-summary','📊 <b>公司格局</b>: 头名'+top5b[0].name+' 3→7月净增<b>$'+Math.round(top1AbsGrowth/1000)+'K</b>('+(parseInt(top1PctGrowth)>=0?'+':'')+top1PctGrowth+'%)，'+(top1AbsGrowth>0?'仍在扩张':'出现收缩')+' | <b>增幅最大</b>: '+(fastB&&fastB!==top5b[0].name?fastB+' +'+fastR.toFixed(0)+'%('+fastAbsText+')→'+(fastIsReal?'值得关注':'基数太小，%无意义'):fastB===top5b[0].name?'头部自身增长最快，马太效应明显':'')+' | <b>关键判断</b>: Top3公司合计占<b>'+cr3BPct+'%</b>GMV，'+(parseInt(cr3BPct)<40?'公司端分散，竞争格局未定':'公司端集中，头部效应明显'));
+  setSummary('c24-summary','📊 <b>公司格局</b>: 头名'+top5b[0].name+' 3→8月净增<b>$'+Math.round(top1AbsGrowth/1000)+'K</b>('+(parseInt(top1PctGrowth)>=0?'+':'')+top1PctGrowth+'%)，'+(top1AbsGrowth>0?'仍在扩张':'出现收缩')+' | <b>增幅最大</b>: '+(fastB&&fastB!==top5b[0].name?fastB+' +'+fastR.toFixed(0)+'%('+fastAbsText+')→'+(fastIsReal?'值得关注':'基数太小，%无意义'):fastB===top5b[0].name?'头部自身增长最快，马太效应明显':'')+' | <b>关键判断</b>: Top3公司合计占<b>'+cr3BPct+'%</b>GMV，'+(parseInt(cr3BPct)<40?'公司端分散，竞争格局未定':'公司端集中，头部效应明显'));
 
 }
 
@@ -1831,7 +1831,7 @@ function updateMarketSummary(d){
   // 第一行：市场规模
   html+='<div style="margin-bottom:8px">';
   html+='<span style="color:var(--a2);font-weight:700"> 市场规模</span>：当前筛选 <b class="hi">'+paCnt+'</b> 个父ASIN · <b>'+coCnt+'</b> 家公司 · <b>'+brandCnt+'</b> 个品牌';
-  html+=' · 7月GMV合计 <b class="hi">'+fmt$(totalGmv)+'</b> · 均价 <b>$'+avgPrice+'</b> · 平均评分 <b>⭐'+avgRating+'</b>';
+  html+=' · 3-8月GMV合计 <b class="hi">'+fmt$(totalGmv)+'</b> · 均价 <b>$'+avgPrice+'</b> · 平均评分 <b>⭐'+avgRating+'</b>';
   html+='</div>';
 
   // 第二行：竞争格局

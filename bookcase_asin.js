@@ -19,6 +19,7 @@ function renderAsinPivot() {
           || (r.company || "").toLowerCase().indexOf(search) >= 0;
     });
     if (sort === "gmv_total") D.sort(function(a, b) { return b.gmv_total - a.gmv_total; });
+    else if (sort === "gmv_m8") D.sort(function(a, b) { return b.gmv_m8 - a.gmv_m8; });
     else if (sort === "gmv_m7") D.sort(function(a, b) { return b.gmv_m7 - a.gmv_m7; });
     else if (sort === "gmv_m6") D.sort(function(a, b) { return b.gmv_m6 - a.gmv_m6; });
     else if (sort === "child_count") D.sort(function(a, b) { return b.child_count - a.child_count; });
@@ -40,11 +41,13 @@ function renderAsinPivot() {
       rows += "<td class=price>$" + (r.gmv_m5 || 0).toLocaleString() + "</td>";
       rows += "<td class=price>$" + (r.gmv_m6 || 0).toLocaleString() + "</td>";
       rows += "<td class=price>$" + (r.gmv_m7 || 0).toLocaleString() + "</td>";
+      rows += "<td class=price>$" + (r.gmv_m8 || 0).toLocaleString() + "</td>";
       rows += "<td>" + (r.units_m3 || 0).toLocaleString() + "</td>";
       rows += "<td>" + (r.units_m4 || 0).toLocaleString() + "</td>";
       rows += "<td>" + (r.units_m5 || 0).toLocaleString() + "</td>";
       rows += "<td>" + (r.units_m6 || 0).toLocaleString() + "</td>";
       rows += "<td>" + (r.units_m7 || 0).toLocaleString() + "</td>";
+      rows += "<td>" + (r.units_m8 || 0).toLocaleString() + "</td>";
       rows += "<td class=gmv>$" + r.gmv_total.toLocaleString() + "</td>";
       rows += "<td>" + r.child_count + "</td></tr>";
       if (hasKids) {
@@ -58,11 +61,13 @@ function renderAsinPivot() {
           rows += "<td class=price>$" + (c2.gmv_m5 || 0).toLocaleString() + "</td>";
           rows += "<td class=price>$" + (c2.gmv_m6 || 0).toLocaleString() + "</td>";
           rows += "<td class=price>$" + (c2.gmv_m7 || 0).toLocaleString() + "</td>";
+          rows += "<td class=price>$" + (c2.gmv_m8 || 0).toLocaleString() + "</td>";
           rows += "<td>" + (c2.units_m3 || 0).toLocaleString() + "</td>";
           rows += "<td>" + (c2.units_m4 || 0).toLocaleString() + "</td>";
           rows += "<td>" + (c2.units_m5 || 0).toLocaleString() + "</td>";
           rows += "<td>" + (c2.units_m6 || 0).toLocaleString() + "</td>";
           rows += "<td>" + (c2.units_m7 || 0).toLocaleString() + "</td>";
+          rows += "<td>" + (c2.units_m8 || 0).toLocaleString() + "</td>";
           rows += "<td class=gmv>$" + c2.gmv_total.toLocaleString() + "</td>";
           rows += "<td></td></tr>";
         });
@@ -123,12 +128,12 @@ function amPopulateFilters() {
   if(typeof refreshSelectUI === 'function'){['amBrand','amCompany','amType','amStyle','amYear'].forEach(function(id){refreshSelectUI(id)});}
 }
 
-function amSparkline(m3,m4,m5,m6,m7){var v=[m3||0,m4||0,m5||0,m6||0,m7||0];var max=Math.max.apply(null,v),min=Math.min.apply(null,v);if(max===0)return'<span style="color:var(--t2);font-size:13px">—</span>';var r=max-min||1,W=80,H=28,pad=4,iw=W-2*pad,ih=H-2*pad;var pts=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;return x.toFixed(1)+','+y.toFixed(1)}).join(' ');var dots=v.map(function(v2,i){var x=pad+(i/4)*iw;var y=H-pad-((v2-min)/r)*ih;var color=i===0?'#4da6ff':v2>v[i-1]?'#22c55e':v2<v[i-1]?'#ef4444':'#4da6ff';var rad=i===4?3:2;return'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad+'" fill="'+color+'"/>';}).join('');return'<svg width="'+W+'" height="'+H+'" style="vertical-align:middle;display:block"><polyline points="'+pts+'" fill="none" stroke="#4da6ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';}
+function amSparkline(m3,m4,m5,m6,m7,m8){var v=[m3||0,m4||0,m5||0,m6||0,m7||0,m8||0];var max=Math.max.apply(null,v),min=Math.min.apply(null,v);if(max===0)return'<span style="color:var(--t2);font-size:13px">—</span>';var r=max-min||1,W=80,H=28,pad=4,iw=W-2*pad,ih=H-2*pad;var pts=v.map(function(v2,i){var x=pad+(i/5)*iw;var y=H-pad-((v2-min)/r)*ih;return x.toFixed(1)+','+y.toFixed(1)}).join(' ');var dots=v.map(function(v2,i){var x=pad+(i/5)*iw;var y=H-pad-((v2-min)/r)*ih;var color=i===0?'#4da6ff':v2>v[i-1]?'#22c55e':v2<v[i-1]?'#ef4444':'#4da6ff';var rad=i===5?3:2;return'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+rad+'" fill="'+color+'"/>';}).join('');return'<svg width="'+W+'" height="'+H+'" style="vertical-align:middle;display:block"><polyline points="'+pts+'" fill="none" stroke="#4da6ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';}
 
 function renderAsinMonthly() {
   loadAmData(function() {
     var tb = document.getElementById("amTbody");
-    if (tb) tb.innerHTML = '<tr><td colspan="24" style="text-align:center;color:var(--t2);padding:40px">加载中...</td></tr>';
+    if (tb) tb.innerHTML = '<tr><td colspan="28" style="text-align:center;color:var(--t2);padding:40px">加载中...</td></tr>';
 
     var D = amData.slice();
     var sEl = document.getElementById("amSearch"), sortEl = document.getElementById("amSort");
@@ -181,21 +186,21 @@ function renderAsinMonthly() {
             asin: p, parent_asin: p, brand: r.brand, company: r.company,
             image_url: r.image_url || '', listing_date: r.listing_date,
             type: r.type, style: r.style,
-            gmv_m3:0,gmv_m4:0,gmv_m5:0,gmv_m6:0,gmv_m7:0,gmv_total:0,
-            units_m3:0,units_m4:0,units_m5:0,units_m6:0,units_m7:0,units_total:0,
-            price_m3:0,price_m4:0,price_m5:0,price_m6:0,price_m7:0,price_avg:0,
+            gmv_m3:0,gmv_m4:0,gmv_m5:0,gmv_m6:0,gmv_m7:0,gmv_m8:0,gmv_total:0,
+            units_m3:0,units_m4:0,units_m5:0,units_m6:0,units_m7:0,units_m8:0,units_total:0,
+            price_m3:0,price_m4:0,price_m5:0,price_m6:0,price_m7:0,price_m8:0,price_avg:0,
             trend:'', child_count:0,
-            _b:{m3:{g:0,p:0},m4:{g:0,p:0},m5:{g:0,p:0},m6:{g:0,p:0},m7:{g:0,p:0}},
+            _b:{m3:{g:0,p:0},m4:{g:0,p:0},m5:{g:0,p:0},m6:{g:0,p:0},m7:{g:0,p:0},m8:{g:0,p:0}},
             _maxG:0
           };
         }
         var a = paMap[p]; a.child_count++;
         if ((r.gmv_total||0) > a._maxG) { a._maxG = r.gmv_total||0; a.image_url = r.image_url||''; a.title = r.title; }
-        a.gmv_m3+=r.gmv_m3||0; a.gmv_m4+=r.gmv_m4||0; a.gmv_m5+=r.gmv_m5||0; a.gmv_m6+=r.gmv_m6||0; a.gmv_m7+=r.gmv_m7||0;
+        a.gmv_m3+=r.gmv_m3||0; a.gmv_m4+=r.gmv_m4||0; a.gmv_m5+=r.gmv_m5||0; a.gmv_m6+=r.gmv_m6||0; a.gmv_m7+=r.gmv_m7||0; a.gmv_m8+=r.gmv_m8||0;
         a.gmv_total+=r.gmv_total||0;
-        a.units_m3+=r.units_m3||0; a.units_m4+=r.units_m4||0; a.units_m5+=r.units_m5||0; a.units_m6+=r.units_m6||0; a.units_m7+=r.units_m7||0;
+        a.units_m3+=r.units_m3||0; a.units_m4+=r.units_m4||0; a.units_m5+=r.units_m5||0; a.units_m6+=r.units_m6||0; a.units_m7+=r.units_m7||0; a.units_m8+=r.units_m8||0;
         a.units_total+=r.units_total||0;
-        ['m3','m4','m5','m6','m7'].forEach(function(m){
+        ['m3','m4','m5','m6','m7','m8'].forEach(function(m){
           var g = r['gmv_'+m]||0;
           if (g > a._b[m].g) { a._b[m].g = g; a._b[m].p = r['price_'+m]||0; }
         });
@@ -204,8 +209,8 @@ function renderAsinMonthly() {
       var result = [];
       Object.keys(paMap).forEach(function(p){
         var r = paMap[p];
-        r.price_m3=r._b.m3.p; r.price_m4=r._b.m4.p; r.price_m5=r._b.m5.p; r.price_m6=r._b.m6.p; r.price_m7=r._b.m7.p;
-        r.trend = amSparkline(r.gmv_m3,r.gmv_m4,r.gmv_m5,r.gmv_m6,r.gmv_m7);
+        r.price_m3=r._b.m3.p; r.price_m4=r._b.m4.p; r.price_m5=r._b.m5.p; r.price_m6=r._b.m6.p; r.price_m7=r._b.m7.p; r.price_m8=r._b.m8.p;
+        r.trend = amSparkline(r.gmv_m3,r.gmv_m4,r.gmv_m5,r.gmv_m6,r.gmv_m7,r.gmv_m8);
         r.price_avg = (r.units_total > 0) ? Math.round(r.gmv_total / r.units_total) : 0;
         delete r._b; delete r._maxG;
         result.push(r);
@@ -214,6 +219,7 @@ function renderAsinMonthly() {
     }
 
     if (sort === "gmv_total") D.sort(function(a, b) { return b.gmv_total - a.gmv_total; });
+    else if (sort === "gmv_m8") D.sort(function(a, b) { return b.gmv_m8 - a.gmv_m8; });
     else if (sort === "gmv_m7") D.sort(function(a, b) { return b.gmv_m7 - a.gmv_m7; });
     else if (sort === "gmv_m6") D.sort(function(a, b) { return b.gmv_m6 - a.gmv_m6; });
     else if (sort === "gmv_m5") D.sort(function(a, b) { return b.gmv_m5 - a.gmv_m5; });
@@ -240,21 +246,22 @@ function renderAsinMonthly() {
     var sm = document.getElementById("am-summary");
     var paSet={},brSet={},coSet={};D.forEach(function(r){if(r.parent_asin)paSet[r.parent_asin]=1;if(r.brand)brSet[r.brand]=1;if(r.company)coSet[r.company]=1});
     var paCnt=Object.keys(paSet).length,brCnt=Object.keys(brSet).length,coCnt=Object.keys(coSet).length;
-    var sG7=0;D.forEach(function(r){sG7+=r.gmv_m7||0});
-    if (sm) sm.innerHTML = '当前 <b>'+D.length+'/'+amData.length+'</b> 条 · <b>'+paCnt+'</b> 父ASIN · <b>'+brCnt+'</b> 品牌 · <b>'+coCnt+'</b> 公司 · 7月GMV合计 <b style="color:var(--accent);font-weight:600">$'+Math.round(sG7).toLocaleString()+'</b> | 第'+amPage+'/'+totalPages+'页';
+    var sG8=0;D.forEach(function(r){sG8+=r.gmv_m8||0});
+    if (sm) sm.innerHTML = '当前 <b>'+D.length+'/'+amData.length+'</b> 条 · <b>'+paCnt+'</b> 父ASIN · <b>'+brCnt+'</b> 品牌 · <b>'+coCnt+'</b> 公司 · 8月GMV合计 <b style="color:var(--accent);font-weight:600">$'+Math.round(sG8).toLocaleString()+'</b> | 第'+amPage+'/'+totalPages+'页';
 
-    // Summary row (3-7月)
-    var sG3 = 0, sG4 = 0, sG5 = 0, sG6 = 0, sG7 = 0, sU3 = 0, sU4 = 0, sU5 = 0, sU6 = 0, sU7 = 0, sGT = 0, sUT = 0;
-    var sP3 = 0, sP4 = 0, sP5 = 0, sP6 = 0, sP7 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0;
+    // Summary row (3-8月)
+    var sG3 = 0, sG4 = 0, sG5 = 0, sG6 = 0, sG7 = 0, sG8 = 0, sU3 = 0, sU4 = 0, sU5 = 0, sU6 = 0, sU7 = 0, sU8 = 0, sGT = 0, sUT = 0;
+    var sP3 = 0, sP4 = 0, sP5 = 0, sP6 = 0, sP7 = 0, sP8 = 0, c3 = 0, c4 = 0, c5 = 0, c6 = 0, c7 = 0, c8 = 0;
     D.forEach(function(r) {
-      sG3 += r.gmv_m3 || 0; sG4 += r.gmv_m4 || 0; sG5 += r.gmv_m5 || 0; sG6 += r.gmv_m6 || 0; sG7 += r.gmv_m7 || 0;
-      sU3 += r.units_m3 || 0; sU4 += r.units_m4 || 0; sU5 += r.units_m5 || 0; sU6 += r.units_m6 || 0; sU7 += r.units_m7 || 0;
+      sG3 += r.gmv_m3 || 0; sG4 += r.gmv_m4 || 0; sG5 += r.gmv_m5 || 0; sG6 += r.gmv_m6 || 0; sG7 += r.gmv_m7 || 0; sG8 += r.gmv_m8 || 0;
+      sU3 += r.units_m3 || 0; sU4 += r.units_m4 || 0; sU5 += r.units_m5 || 0; sU6 += r.units_m6 || 0; sU7 += r.units_m7 || 0; sU8 += r.units_m8 || 0;
       sGT += r.gmv_total || 0; sUT += r.units_total || 0;
       if (r.price_m3 > 0) { sP3 += r.price_m3; c3++; }
       if (r.price_m4 > 0) { sP4 += r.price_m4; c4++; }
       if (r.price_m5 > 0) { sP5 += r.price_m5; c5++; }
       if (r.price_m6 > 0) { sP6 += r.price_m6; c6++; }
       if (r.price_m7 > 0) { sP7 += r.price_m7; c7++; }
+      if (r.price_m8 > 0) { sP8 += r.price_m8; c8++; }
     });
     var sumHTML = '<tr>';
     // 左3列冻结区域：td[1] td[2] 空，td[3] 放合计标签
@@ -269,18 +276,21 @@ function renderAsinMonthly() {
     sumHTML += '<td data-metric="gmv" style="color:var(--a4)">$' + sG5.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="gmv" style="color:var(--a4)">$' + sG6.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="gmv" style="color:var(--a4)">$' + sG7.toLocaleString() + '</td>';
+    sumHTML += '<td data-metric="gmv" style="color:var(--a4)">$' + sG8.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="units" style="color:var(--accent)">' + sU3.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="units" style="color:var(--accent)">' + sU4.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="units" style="color:var(--accent)">' + sU5.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="units" style="color:var(--accent)">' + sU6.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="units" style="color:var(--accent)">' + sU7.toLocaleString() + '</td>';
+    sumHTML += '<td data-metric="units" style="color:var(--accent)">' + sU8.toLocaleString() + '</td>';
     sumHTML += '<td data-metric="price" style="color:var(--t2)">$' + (c3 ? sP3 / c3 : 0).toFixed(0) + '</td>';
     sumHTML += '<td data-metric="price" style="color:var(--t2)">$' + (c4 ? sP4 / c4 : 0).toFixed(0) + '</td>';
     sumHTML += '<td data-metric="price" style="color:var(--t2)">$' + (c5 ? sP5 / c5 : 0).toFixed(0) + '</td>';
     sumHTML += '<td data-metric="price" style="color:var(--t2)">$' + (c6 ? sP6 / c6 : 0).toFixed(0) + '</td>';
     sumHTML += '<td data-metric="price" style="color:var(--t2)">$' + (c7 ? sP7 / c7 : 0).toFixed(0) + '</td>';
+    sumHTML += '<td data-metric="price" style="color:var(--t2)">$' + (c8 ? sP8 / c8 : 0).toFixed(0) + '</td>';
     sumHTML += '<td data-metric="all" style="color:var(--a4);font-size:18px">$' + sGT.toLocaleString() + '</td>';
-    sumHTML += '<td data-metric="all" style="text-align:center;padding:2px 4px">' + amSparkline(sG3, sG4, sG5, sG6, sG7) + '</td></tr>';
+    sumHTML += '<td data-metric="all" style="text-align:center;padding:2px 4px">' + amSparkline(sG3, sG4, sG5, sG6, sG7, sG8) + '</td></tr>';
     document.getElementById("amSummaryRow").innerHTML = sumHTML;
 
     // 检测重复父ASIN：同一父ASIN出现≥2次 → 整行高亮
@@ -305,18 +315,21 @@ function renderAsinMonthly() {
         + "<td data-metric='gmv' class=price>$" + (r.gmv_m5 || 0).toLocaleString() + "</td>"
         + "<td data-metric='gmv' class=price>$" + (r.gmv_m6 || 0).toLocaleString() + "</td>"
         + "<td data-metric='gmv' class=price>$" + (r.gmv_m7 || 0).toLocaleString() + "</td>"
+        + "<td data-metric='gmv' class=price>$" + (r.gmv_m8 || 0).toLocaleString() + "</td>"
         + "<td data-metric='units'>" + (r.units_m3 || 0).toLocaleString() + "</td>"
         + "<td data-metric='units'>" + (r.units_m4 || 0).toLocaleString() + "</td>"
         + "<td data-metric='units'>" + (r.units_m5 || 0).toLocaleString() + "</td>"
         + "<td data-metric='units'>" + (r.units_m6 || 0).toLocaleString() + "</td>"
         + "<td data-metric='units'>" + (r.units_m7 || 0).toLocaleString() + "</td>"
+        + "<td data-metric='units'>" + (r.units_m8 || 0).toLocaleString() + "</td>"
         + "<td data-metric='price'>$" + (r.price_m3 || 0).toFixed(0) + "</td>"
         + "<td data-metric='price'>$" + (r.price_m4 || 0).toFixed(0) + "</td>"
         + "<td data-metric='price'>$" + (r.price_m5 || 0).toFixed(0) + "</td>"
         + "<td data-metric='price'>$" + (r.price_m6 || 0).toFixed(0) + "</td>"
         + "<td data-metric='price'>$" + (r.price_m7 || 0).toFixed(0) + "</td>"
+        + "<td data-metric='price'>$" + (r.price_m8 || 0).toFixed(0) + "</td>"
         + "<td data-metric='all' class=gmv>$" + r.gmv_total.toLocaleString() + "</td>"
-        + "<td data-metric='all' style='text-align:center;padding:2px 4px'>" + (r.trend || amSparkline(r.gmv_m3,r.gmv_m4,r.gmv_m5,r.gmv_m6,r.gmv_m7)) + "</td>"
+        + "<td data-metric='all' style='text-align:center;padding:2px 4px'>" + (r.trend || amSparkline(r.gmv_m3,r.gmv_m4,r.gmv_m5,r.gmv_m6,r.gmv_m7,r.gmv_m8)) + "</td>"
         + "</tr>";
     }).join("");
 
