@@ -101,8 +101,12 @@ function loadAmData(cb) {
     .catch(function(e) { amData = []; amLoaded = true; amLoading = false; amCbs.forEach(function(c){c()}); amCbs = []; });
 }
 
-function amGoPage(n) { amPage = n; renderAsinMonthly(); }
-function amReset() { amPage = 1; renderAsinMonthly(); }
+function amScrollToTop(){
+  var w = document.querySelector('#sc-asin-detail .table-wrapper');
+  if(w) w.scrollTop = 0;
+}
+function amGoPage(n){ amPage = n; renderAsinMonthly(); setTimeout(amScrollToTop, 50); }
+function amReset(){ amPage = 1; renderAsinMonthly(); setTimeout(amScrollToTop, 50); }
 
 function amPopulateFilters() {
   if (!amData.length) { setTimeout(amPopulateFilters, 300); return; }
